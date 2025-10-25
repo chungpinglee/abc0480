@@ -248,61 +248,61 @@
         let QUESTIONS_DATABASE = [
             {
                 id: 'q1',
-                disabled: false, // 預設啟用 (A類)
-                question: "115年月曆筆記本有需要嗎? (A類 筆記本)", // 使用者指定的標題
-                description: "請選擇您需要的「筆記本」(4選1)，或選擇不需要此項。",
+                disabled: false, // 預設啟用 ()
+                question: "115年月曆筆記本有需要嗎? (筆記本)", // 使用者指定的標題
+                description: "請選擇您需要的「筆記本」(2選1)，或選擇不需要此項。",
                 animationSvg: `<svg xmlns="http://www.w3.org/2000/svg" class="text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"></path><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2"></path><path d="M7 7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2"></path></svg>`,
                 type: 'static',
                 options: [
-                    { text: "A1. 大筆記本", score: 10 },
-                    { text: "A2. 小筆記本", score: 10 },
-                    { text: "我不需要 A類 筆記本", score: 0 },
-                    { text: "我不需要 A類 筆記本", score: 0 }
+                    { text: "大筆記本", score: 10 },
+                    { text: "小筆記本", score: 10 },
+                    { text: "我不需要!", score: 0 },
+                    
                 ],
                 dynamicOptions: [ [0,0], [0,0], [0,0], [0,0] ]
             },
             {
                 id: 'q2',
                 disabled: false, // 預設啟用 (B類 - 1/2)
-                question: "115年月曆需求 (B類 月曆 - 1/2)",
-                description: "請選擇您需要的「月曆」(4選1)，或選擇不需要此項。",
+                question: "115年月曆需求 - 1/2)",
+                description: "請選擇您需要的「月曆」(3選1)，或選擇不需要此項。",
                 animationSvg: `<svg xmlns="http://www.w3.org/2000/svg" class="text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
                 type: 'static',
                 options: [
-                    { text: "B1. 桌曆", score: 10 },
-                    { text: "B2. 雙月掛曆", score: 10 },
-                    { text: "B3. 兒童月曆", score: 10 },
-                    { text: "我不需要 B類 月曆 (或請見下頁)", score: 0 }
+                    { text: "桌曆", score: 10 },
+                    { text: "雙月掛曆", score: 10 },
+                    { text: "兒童月曆", score: 10 },
+                    { text: "我不需要!", score: 0 }
                 ],
                 dynamicOptions: [ [0,0], [0,0], [0,0], [0,0] ]
             },
             {
                 id: 'q3',
                 disabled: false, // 預設啟用 (B類 - 2/2)
-                question: "115年月曆需求 (B類 月曆 - 2/2)",
-                description: "請選擇您需要的「月曆」(4選1)，或選擇不需要此項。",
+                question: "115年月曆需求 月曆 - 2/2",
+                description: "請選擇您需要的「月曆」(2選1)，或選擇不需要此項。",
                 animationSvg: `<svg xmlns="http://www.w3.org/2000/svg" class="text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
                 type: 'static',
                 options: [
-                    { text: "B4. 福字月曆", score: 10 },
-                    { text: "B5. 農民曆", score: 10 },
-                    { text: "我不需要 B類 月曆", score: 0 },
-                    { text: "我不需要 B類 月曆", score: 0 }
+                    { text: "福字月曆", score: 10 },
+                    { text: "農民曆", score: 10 },
+                    { text: "我不需要!", score: 0 },
+                    
                 ],
                 dynamicOptions: [ [0,0], [0,0], [0,0], [0,0] ]
             },
             {
                 id: 'q4',
                 disabled: true, // ★★★ 關鍵：C類 預設停用 ★★★
-                question: "115年電子禮券需求 (C類 禮券)",
-                description: "請選擇您需要的「電子禮券」(4選1)，或選擇不需要此項。",
+                question: "115年電子禮券需求",
+                description: "請選擇您需要的「電子禮券」(2選1)，或選擇不需要此項。",
                 animationSvg: `<svg xmlns="http://www.w3.org/2000/svg" class="text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
                 type: 'static',
                 options: [
-                    { text: "C1. 85度C 100元禮券", score: 10 },
-                    { text: "C2. 100元7-11電子禮券", score: 10 },
-                    { text: "我不需要 C類 禮券", score: 0 },
-                    { text: "我不需要 C類 禮券", score: 0 }
+                    { text: "85度C 100元禮券", score: 10 },
+                    { text: "100元7-11電子禮券", score: 10 },
+                    { text: "我不需要!", score: 0 },
+                    
                 ],
                 dynamicOptions: [ [0,0], [0,0], [0,0], [0,0] ]
             },
