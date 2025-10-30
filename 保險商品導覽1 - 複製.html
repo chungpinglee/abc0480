@@ -1,0 +1,3147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南山人壽 - 保險商品分類導覽</title>
+    <style>
+        /* --- CSS 變數定義 (顏色管理) --- */
+        :root {
+            --level-0-bg: #28a745;
+            --level-0-text: #ffffff;
+            --level-1-text: #007bff;
+            --level-2-text: #654321;
+            --level-3-text: #E65100;
+            --level-4-text: #8E44AD; /* 新增第五層顏色變數 */
+            --product-text: #333333;
+        }
+
+        /* --- 全局樣式 --- */
+        body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background-color: #f0f4f8; color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; background-color: #fff; padding: 25px 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h1, h2, h4 { color: #005a9c; }
+        h1 { margin-top: 0; margin-bottom: 0; } /* 調整h1邊距以對齊按鈕 */
+        h2 { margin: 0; }
+        h4 { margin-top: 0; border-bottom: 1px solid #e9ecef; padding-bottom: 8px; }
+        h5 { margin: 0; font-size: 1.1em; }
+        button { cursor: pointer; border: none; border-radius: 5px; color: #fff; padding: 8px 12px; font-size: 0.9em; transition: background-color 0.2s, color 0.2s; }
+        input, select { padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-family: inherit; font-size: 0.95em; }
+
+        /* --- 統一按鈕懸停效果 --- */
+        #open-management-modal-btn:hover,
+        #open-suggested-modal-btn:hover,
+        #add-main-category-btn:hover,
+        .category-list-item .btn-edit:hover,
+        .category-list-item .btn-delete:hover,
+        #save-html-btn:hover,
+        #print-btn:hover,
+        #print-suggested-view-btn:hover, /* 【新增】建議書列印按鈕 */
+        .filter-btn:hover,
+        #modal-save-btn:hover,
+        #modal-cancel-btn:hover,
+        #modal-back-btn:hover,
+        .btn-add-sub:hover,
+        .btn-delete-sub:hover,
+        .back-button:hover,
+        #go-to-admin-view-btn:hover,
+        #go-to-circle-view-btn:hover,
+        #go-to-suggested-view-btn:hover, /* 【新增】 */
+        #go-back-to-main-menu-btn:hover /* 【新增】 */
+         {
+            background-color: #dc3545; /* 紅色 */
+            color: #ffffff; /* 白色 */
+        }
+
+        /* ---
+        --- 新增：頁面視圖管理 (From 商品建議書首頁4.html)
+        --- */
+        .page-view {
+            display: none; /* 預設所有頁面隱藏 */
+            width: 100%;
+            animation: fadeIn 0.5s ease; /* 預設動畫時間 0.5 秒 */
+        }
+        .page-view.active {
+            display: block; /* 只顯示當前的頁面 */
+        }
+
+        /* ---
+        --- 【！本次修改！】
+        --- 1. 設定第三層選單 (#product-list-view) 動畫時間為 2.0 秒
+        --- 2. 調整頁面切換動畫為單純淡入
+        --- */
+        #product-list-view,
+        #suggested-product-list-view /* 【新增】建議書的列表也套用相同動畫 */
+         {
+            animation-duration: 2.0s; /* 覆蓋預設的 0.5s */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ---
+        --- 新增：標題與返回按鈕 (From 商品建議書首頁4.html)
+        --- */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #005a9c;
+            padding-bottom: 15px;
+            flex-wrap: wrap; /* 換行 */
+        }
+        .page-header h1 {
+            color: #005a9c;
+            margin: 0;
+            font-size: 2.2em;
+            flex-grow: 1; /* 讓標題佔據多餘空間 */
+        }
+        .back-button, #go-to-admin-view-btn, #go-to-circle-view-btn,
+        #go-to-suggested-view-btn, #go-back-to-main-menu-btn,
+        #print-suggested-view-btn /* 【新增】 */
+        {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex-shrink: 0; /* 防止按鈕縮小 */
+        }
+        #go-to-admin-view-btn { background-color: #005a9c; }
+        #go-to-circle-view-btn { background-color: #007bff; }
+        #go-to-suggested-view-btn { background-color: #28a745; } /* 【新增】建議書按鈕(綠色) */
+        #print-suggested-view-btn { background-color: #17a2b8; } /* 【新增】列印按鈕(青色) */
+
+
+        /* ---
+        --- 新增：圓圈選單樣式 (From 商品建議書首頁4.html)
+        --- */
+        .circle-menu-container {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            margin: 50px auto;
+            padding: 0;
+        }
+        .circle-positioner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            margin: -100px 0 0 -100px;
+        }
+        .menu-circle {
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(145deg, #0052D4, #4364F7, #6FB1FC);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 82, 212, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-image 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .menu-circle:hover {
+            transform: scale(1.2);
+            background-image: linear-gradient(145deg, #D32F2F, #E53935, #F44336);
+            color: #ffffff;
+            box-shadow: 0 15px 30px rgba(229, 57, 53, 0.4);
+        }
+        .menu-circle-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+        }
+        .menu-circle-name {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        a.menu-circle-link {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #006400;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            max-width: 90%;
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+        a.menu-circle-link:hover {
+            background-color: #006400;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+        /* --- 圓圈選單 CSS 結束 --- */
+
+
+        /* ---
+        --- 【！本次修改！】：修改「建議書商品總覽」框架樣式
+        --- */
+        .suggested-summary-container {
+            display: none; /* 預設隱藏 */
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f8f9fa; /* 淡灰色背景 */
+            border: 1px solid #dee2e6; /* 淺灰色邊框 */
+            border-radius: 8px;
+        }
+        .suggested-summary-container h4 {
+            color: #005a9c; /* 藍色標題 */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ced4da;
+            padding-bottom: 10px;
+            font-size: 1.2em;
+        }
+        .suggested-summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+         /* 修改項目樣式以容納連結 */
+        .suggested-summary-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #e0e0e0;
+            font-size: 0.95em;
+        }
+        .suggested-summary-item:last-child {
+            border-bottom: none;
+        }
+        /* 新增連結樣式 */
+        .summary-product-name {
+            font-weight: bold;
+            color: #333;
+            margin-right: 15px; /* 與連結間隔 */
+        }
+        .summary-link {
+            font-size: 0.9em;
+            color: #007bff; /* 藍色連結 */
+            text-decoration: none;
+            margin-right: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .summary-link:hover {
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+        }
+        /* --- 建議書商品列表樣式結束 --- */
+
+
+        /* ---
+        --- 新增：圓圈選單載入動畫 (仿 Untitled-1.html)
+        --- */
+        @keyframes circle-pop-in {
+            from { opacity: 0; transform: scale(0.5); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        /* 套用到主選單 (L1) 和子選單 (L2) 的圓圈 */
+        #main-menu-container .menu-circle,
+        #sub-menu-container .menu-circle,
+        #suggested-main-menu-container .menu-circle, /* 【新增】 */
+        #suggested-sub-menu-container .menu-circle /* 【新增】 */
+        {
+            opacity: 0; /* 動畫前隱藏 */
+            animation: circle-pop-in 0.5s ease-out forwards; /* 應用動畫 */
+        }
+
+        /* L1 依序出現的延遲 (使用 .circle-positioner 來定位 :nth-child) */
+        #main-menu-container .circle-positioner:nth-child(1) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(1) .menu-circle /* 【新增】 */
+        { animation-delay: 0.2s; }
+        #main-menu-container .circle-positioner:nth-child(2) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(2) .menu-circle /* 【新增】 */
+        { animation-delay: 0.3s; }
+        #main-menu-container .circle-positioner:nth-child(3) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(3) .menu-circle /* 【新增】 */
+        { animation-delay: 0.4s; }
+        #main-menu-container .circle-positioner:nth-child(4) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(4) .menu-circle /* 【新增】 */
+        { animation-delay: 0.5s; }
+        #main-menu-container .circle-positioner:nth-child(5) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(5) .menu-circle /* 【新增】 */
+        { animation-delay: 0.6s; }
+        #main-menu-container .circle-positioner:nth-child(6) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(6) .menu-circle /* 【新增】 */
+        { animation-delay: 0.7s; }
+        #main-menu-container .circle-positioner:nth-child(7) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(7) .menu-circle /* 【新增】 */
+        { animation-delay: 0.8s; }
+        #main-menu-container .circle-positioner:nth-child(8) .menu-circle,
+        #suggested-main-menu-container .circle-positioner:nth-child(8) .menu-circle /* 【新增】 */
+        { animation-delay: 0.9s; }
+
+
+        /* L2 依序出現的延遲 (使用 .circle-positioner 來定位 :nth-child) */
+        #sub-menu-container .circle-positioner:nth-child(1) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(1) .menu-circle /* 【新增】 */
+        { animation-delay: 0.2s; }
+        #sub-menu-container .circle-positioner:nth-child(2) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(2) .menu-circle /* 【新增】 */
+        { animation-delay: 0.3s; }
+        #sub-menu-container .circle-positioner:nth-child(3) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(3) .menu-circle /* 【新增】 */
+        { animation-delay: 0.4s; }
+        #sub-menu-container .circle-positioner:nth-child(4) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(4) .menu-circle /* 【新增】 */
+        { animation-delay: 0.5s; }
+        #sub-menu-container .circle-positioner:nth-child(5) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(5) .menu-circle /* 【新增】 */
+        { animation-delay: 0.6s; }
+        #sub-menu-container .circle-positioner:nth-child(6) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(6) .menu-circle /* 【新增】 */
+        { animation-delay: 0.7s; }
+        #sub-menu-container .circle-positioner:nth-child(7) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(7) .menu-circle /* 【新增】 */
+        { animation-delay: 0.8s; }
+        #sub-menu-container .circle-positioner:nth-child(8) .menu-circle,
+        #suggested-sub-menu-container .circle-positioner:nth-child(8) .menu-circle /* 【新增】 */
+        { animation-delay: 0.9s; }
+        /* --- 圓圈動畫結束 --- */
+
+
+        /* ---
+        --- 以下為「原版檔案」的 CSS (保持不變)
+        --- */
+
+        /* --- 主編輯按鈕 --- */
+        .main-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;}
+
+        /* --- 【新增】標題與返回按鈕的容器 --- */
+        .title-and-back-button-container {
+            display: flex;
+            align-items: center; /* 垂直置中對齊 */
+            gap: 15px; /* 按鈕和標題之間的間距 */
+            flex-wrap: wrap;
+        }
+
+        /* --- 【新增】返回主入口按鈕樣式 --- */
+        .back-to-main-btn {
+            display: inline-block;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff; /* 主題藍色 */
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .back-to-main-btn:hover {
+            background-color: #0056b3; /* 滑鼠懸停時加深顏色 */
+        }
+
+        .main-controls-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        #open-management-modal-btn { background-color: #005a9c; font-size: 1.1em; padding: 12px 20px; }
+        #open-suggested-modal-btn { background-color: #007bff; font-size: 1.1em; padding: 12px 20px; }
+        #save-html-btn { background-color: #17a2b8; font-size: 1.1em; padding: 12px 20px; }
+        #print-btn { background-color: #6c757d; font-size: 1.1em; padding: 12px 20px; }
+
+        /* --- 主分類管理區 (Modal內) --- */
+        #category-manager { margin-top: 25px; }
+        .manager-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        #add-main-category-btn { background-color: #28a745; }
+        .category-list-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #e9ecef; }
+        .category-list-item:nth-child(even) { background-color: #f8f9fa; }
+        .category-name-span { flex-grow: 1; font-weight: bold; }
+        .category-list-item .btn-edit { background-color: #007bff; }
+        .category-list-item .btn-delete { background-color: #dc3545; margin-left: 8px; }
+
+        /* --- 顏色管理選單 --- */
+        #color-manager { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 5px; padding: 15px; }
+        .color-pickers-container { display: flex; flex-wrap: wrap; gap: 15px; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group label { font-size: 0.9em; }
+        input[type="color"] { width: 40px; height: 25px; border: 1px solid #ccc; padding: 2px; border-radius: 4px; cursor: pointer; }
+
+        /* --- 畫面顯示切換按鈕 --- */
+        .view-controls { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .view-controls-left { display: flex; align-items: center; gap: 20px; }
+        .view-controls .buttons-right { display: flex; gap: 20px; align-items: flex-end; }
+        .filter-btn { background-color: #17a2b8; font-size: 0.95em; padding: 10px 15px; border: 2px solid transparent; }
+        #toggle-all-btn { width: auto; }
+
+        /* --- 啟用中按鈕樣式 --- */
+        .filter-btn.active-filter, .filter-btn.active-filter:hover {
+            background-color: orange;
+            color: red;
+            font-weight: bold;
+            border: 2px solid red;
+        }
+
+        /* 計數器樣式 */
+        .filter-button-wrapper { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .product-count-badge {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 5px;
+            min-height: 1.2em;
+        }
+
+        /* --- 彈出式編輯視窗 (Modal) --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px 30px; border: 1px solid #888; width: 85%; max-width: 900px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; margin-bottom: 20px; }
+        .modal-header h3 { margin: 0; color: #005a9c; display: flex; align-items: center;}
+        .close-btn { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-btn:hover, .close-btn:focus { color: black; text-decoration: none; }
+        #modal-form-container, #suggested-product-list-container { max-height: 60vh; overflow-y: auto; padding-right: 15px; }
+        .modal-footer { margin-top: 20px; text-align: right; border-top: 1px solid #dee2e6; padding-top: 15px; }
+        #modal-save-btn, #suggested-save-btn { background-color: #28a745; }
+        #modal-cancel-btn, #modal-back-btn, #suggested-cancel-btn { background-color: #6c757d; margin-left: 10px; }
+
+        .header-count-badge {
+            font-size: 0.7em;
+            font-weight: bold;
+            color: #ffffff;
+            margin-left: 15px;
+            background-color: #28a745;
+            padding: 4px 10px;
+            border-radius: 12px;
+            vertical-align: middle;
+        }
+
+        /* --- 全部取消勾選按鈕樣式 --- */
+        .deselect-btn {
+            background-color: #6c757d;
+            font-size: 0.8em;
+            padding: 3px 8px;
+            margin-left: 15px;
+            vertical-align: middle;
+        }
+        .deselect-btn:hover {
+            background-color: #dc3545 !important;
+            color: #ffffff !important;
+        }
+
+        .modal-view { display: none; }
+        .modal-view.active { display: block; }
+
+        .category-form-group { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; flex-wrap: wrap; }
+        .category-form-group .type-select { flex-basis: 90px; }
+        .category-form-group .name-input { flex: 1 1 180px; }
+        .category-form-group .status-select { flex-basis: 100px; }
+        .category-form-group .btn-action { font-size: 1.2em; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0; }
+        .btn-add-sub { background-color: #17a2b8; }
+        .btn-delete-sub { background-color: #ffc107; }
+        .nested-group { margin-left: 30px; padding-left: 15px; border-left: 2px dashed #e0e0e0; }
+
+        .product-links-container { width: 100%; box-sizing: border-box; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 10px; margin-top: 8px; }
+        .link-group { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; flex-grow: 1; min-width: 300px; }
+        .link-group input { width: 100%; box-sizing: border-box; }
+        .product-links-container .link-group { margin-bottom: 8px; }
+        .product-links-container .link-group:last-child { margin-bottom: 0; }
+        .discontinued-date-input { margin-left: 8px; flex-basis: 150px; }
+
+        /* --- 樹狀結構 --- */
+        .product-tree { list-style: none; padding-left: 0; margin: 0; }
+        .tree-node { padding-left: 20px; border-left: 1px dashed #ced4da; }
+        .category > .category-title { cursor: pointer; font-size: 1.2em; font-weight: bold; color: #005a9c; padding: 8px 0; display: flex; align-items: center; flex-wrap: wrap; }
+        .toggle-icon { display: inline-block; width: 20px; text-align: center; font-weight: bold; color: #007bff; transition: transform 0.2s ease-in-out; }
+        .category.collapsed > .category-title > .toggle-icon { transform: rotate(-90deg); }
+        .children-container { padding-left: 20px; max-height: 2000px; overflow: hidden; transition: max-height 0.4s ease-in-out; }
+        .category.collapsed > .children-container { max-height: 0; }
+
+        a.link-icon-button { font-size: 1em; color: #007bff; text-decoration: none; margin-left: 8px; padding: 2px 5px; border-radius: 4px; transition: all 0.2s ease-in-out; }
+        a.link-icon-button:hover { transform: scale(1.2); background-color: #e9ecef; color: #0056b3; }
+
+        /* --- 商品樣式 --- */
+        .product-item { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; margin: 8px 0; padding: 10px 15px; font-size: 0.95em; }
+        .product-name { font-weight: bold; color: var(--product-text); }
+        .product-status { display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 10px; font-size: 0.8em; color: #fff; }
+        .product-status.active { background-color: #28a745; }
+        .product-status.discontinued { background-color: #dc3545; }
+        .product-status.suggested { background-color: #007bff; }
+        .product-links { margin-left: 15px; font-size: 0.9em; }
+        .product-links a { color: #0056b3; text-decoration: none; }
+        .product-links a:hover { text-decoration: underline; }
+
+        .link-wrapper:not(:last-of-type)::after {
+            content: '，';
+            margin-right: 0.5em;
+            color: #333;
+        }
+
+        /* --- 建議商品設定 Modal 的專屬樣式 --- */
+        #suggested-product-list-container h5 { color: #005a9c; border-bottom: 1px solid #e9ecef; padding-bottom: 5px; margin: 15px 0 10px 0; }
+        #suggested-product-list-container label {
+            display: block;
+            padding: 8px 12px;
+            margin: 4px 0;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #suggested-product-list-container label:hover { background-color: #e9ecef; }
+        #suggested-product-list-container input[type="checkbox"] { margin-right: 10px; transform: scale(1.1); }
+
+        /* --- 分類階層顏色管理 (使用CSS變數) --- */
+        .category-title.level-0 > .category-name {
+            background-color: var(--level-0-bg);
+            color: var(--level-0-text);
+            padding: 4px 10px;
+            border-radius: 5px;
+        }
+        .category-title.level-1 > .category-name { color: var(--level-1-text); }
+        .category-title.level-1 { font-size: 1.1em; }
+
+        .category-title.level-2 > .category-name { color: var(--level-2-text); }
+        .category-title.level-2 { font-size: 1.05em; }
+
+        .category-title.level-3 > .category-name { color: var(--level-3-text); }
+        .category-title.level-3 { font-size: 1em; }
+
+        .category-title.level-4 > .category-name,
+        .category-title.level-5 > .category-name { color: var(--level-4-text); }
+
+
+        /* ---
+        --- 【！本次修改！】 依您的需求，新增的列印標題樣式
+        --- */
+        .print-only-suggested-title {
+            display: none; /* 預設在螢幕上隱藏 */
+            text-align: center;
+            color: #000000;
+            font-size: 2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* ---
+        --- 【！本次修改！】 新增：建議書導覽專用列印樣式
+        --- */
+        @media print {
+            /* 當觸發「建議書列印」時 (body 會被 JS 加上 .printing-suggested-view) */
+            body.printing-suggested-view {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* 1. 隱藏所有不相關的頁面 */
+            body.printing-suggested-view .page-view:not(#suggested-main-menu-view) {
+                display: none !important;
+            }
+
+            /* 2. 強制顯示建議書主頁面 */
+            body.printing-suggested-view #suggested-main-menu-view {
+                display: block !important;
+            }
+
+            /* --- 【！本次修改！】 (依您的需求修改) --- */
+            /* 3. 顯示「列印專用標題」 */
+            body.printing-suggested-view .print-only-suggested-title {
+                display: block !important;
+            }
+
+            /* 4. 隱藏「螢幕版」的標題 (包含按鈕和底線) */
+            body.printing-suggested-view #suggested-main-menu-view .page-header {
+                display: none !important;
+            }
+            /* --- 修改結束 --- */
+
+
+            /* 5. 確保容器樣式正確 */
+            body.printing-suggested-view .container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 10px !important;
+                max-width: 100% !important;
+            }
+
+            /* 6. 處理分頁：圓圈圖 (Page 1) 和 列表 (Page 2) */
+            body.printing-suggested-view #suggested-main-menu-container {
+                page-break-after: always; /* 圓圈圖印完後強制換頁 */
+                height: auto !important; /* 確保圓圈圖完整顯示 */
+                margin: 50px auto;
+
+                /* --- 【！本次修改！】 縮放圓圈圖以完整列印 --- */
+                width: 100%; /* 確保容器佔滿寬度以正確置中 */
+                transform: scale(0.75); /* 將 800px 的圓圈圖縮小 75% (600px) */
+                transform-origin: top center; /* 從頂部中心開始縮放 */
+                min-height: 800px; /* 確保容器在縮放前有 800px 高度來容納所有圓圈 */
+                /* --- 修改結束 --- */
+            }
+            body.printing-suggested-view .suggested-summary-container {
+                page-break-before: always; /* 列表在新的一頁開始 */
+                display: block !important; /* 確保列表可見 */
+                margin-top: 20px;
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* 7. 確保圓圈圖顏色被列印 */
+            body.printing-suggested-view .menu-circle {
+                background-image: linear-gradient(145deg, #0052D4, #4364F7, #6FB1FC) !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body.printing-suggested-view a.menu-circle-link {
+                background-color: #ffffff !important;
+                color: #006400 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        /* --- 原版列印專用樣式 (不受影響) --- */
+        @media print {
+            /* 當 body 沒有 .printing-suggested-view 時，以下規則正常運作 */
+            body:not(.printing-suggested-view) {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background-color: #ffffff;
+                padding: 0;
+                margin: 0;
+            }
+            body:not(.printing-suggested-view) .container {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 10px;
+                max-width: 100%;
+            }
+            /* 隱藏所有非傳統列表的視圖 */
+            body:not(.printing-suggested-view) .page-view:not(#traditional-list-view) {
+                display: none !important;
+            }
+            body:not(.printing-suggested-view) #traditional-list-view {
+                display: block !important; /* 強制顯示傳統列表 */
+            }
+            body:not(.printing-suggested-view) .main-controls-buttons,
+            body:not(.printing-suggested-view) .view-controls .buttons-right,
+            body:not(.printing-suggested-view) .view-controls-left #toggle-all-btn,
+            body:not(.printing-suggested-view) .back-to-main-btn,
+            body:not(.printing-suggested-view) #go-to-circle-view-btn,
+            body:not(.printing-suggested-view) .page-header /* 隱藏所有圓圈選單的標頭 */
+            {
+                display: none;
+            }
+            body:not(.printing-suggested-view) .main-controls { justify-content: flex-start; }
+            body:not(.printing-suggested-view) hr { display: none; }
+            body:not(.printing-suggested-view) .category,
+            body:not(.printing-suggested-view) .product-item { break-inside: avoid; }
+            body:not(.printing-suggested-view) .category-title.level-0 > .category-name,
+            body:not(.printing-suggested-view) .product-status { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body:not(.printing-suggested-view) .en-link-wrapper { display: none; }
+            body:not(.printing-suggested-view) .suggested-summary-container { display: none !important; } /* 【原版】列印時隱藏總覽 */
+        }
+    </style>
+</head><body>
+    <div class="container">
+
+        <div id="main-menu-view" class="page-view active">
+            <div class="page-header">
+                <h1>商品導覽主選單</h1>
+                <button id="go-to-suggested-view-btn">建議書商品導覽</button>
+                <button id="go-to-admin-view-btn">前往後台管理/列表</button>
+            </div>
+            <div id="main-menu-container" class="circle-menu-container">
+            </div>
+        </div>
+
+        <div id="sub-menu-view" class="page-view">
+            <div class="page-header">
+                <button class="back-button" id="main-menu-back-btn">返回主選單</button>
+                <h1 id="sub-menu-title"></h1>
+            </div>
+            <div id="sub-menu-container" class="circle-menu-container">
+            </div>
+        </div>
+
+        <div id="product-list-view" class="page-view">
+            <div class="page-header">
+                <button class="back-button" id="product-list-back-btn">返回上一層</button>
+                <h1 id="product-list-title"></h1>
+            </div>
+            <div id="product-list-content">
+            </div>
+        </div>
+
+        <div id="suggested-main-menu-view" class="page-view">
+
+            <h1 class="print-only-suggested-title">建議書商品導覽</h1>
+
+            <div class="page-header">
+                <button id="go-back-to-main-menu-btn" class="back-button">返回主選單</button>
+                <h1>建議書商品導覽</h1>
+                <button id="print-suggested-view-btn">列印本頁</button>
+            </div>
+            <div id="suggested-main-menu-container" class="circle-menu-container">
+            </div>
+            <div id="l1-suggested-summary-container" class="suggested-summary-container">
+            </div>
+        </div>
+
+        <div id="suggested-sub-menu-view" class="page-view">
+            <div class="page-header">
+                <button class="back-button" id="suggested-main-menu-back-btn">返回建議書主選單</button>
+                <h1 id="suggested-sub-menu-title"></h1>
+            </div>
+            <div id="suggested-sub-menu-container" class="circle-menu-container">
+            </div>
+            <div id="l2-suggested-summary-container" class="suggested-summary-container">
+            </div>
+        </div>
+
+        <div id="suggested-product-list-view" class="page-view">
+            <div class="page-header">
+                <button class="back-button" id="suggested-product-list-back-btn">返回上一層</button>
+                <h1 id="suggested-product-list-title"></h1>
+            </div>
+            <div id="suggested-product-list-content">
+            </div>
+        </div>
+
+
+        <div id="traditional-list-view" class="page-view">
+            <div class="main-controls">
+                <div class="title-and-back-button-container">
+                    <a href="../主要入口.html" class="back-to-main-btn">回入口</a>
+                    <h1>保險商品導覽(原版)</h1>
+                    <button id="go-to-circle-view-btn">返回圓圈選單</button>
+                </div>
+                <div class="main-controls-buttons">
+                    <button id="save-html-btn">另存html檔</button>
+                    <button id="print-btn">列印檔</button>
+                    <button id="open-management-modal-btn">管理商品分類結構</button>
+                    <button id="open-suggested-modal-btn">設定建議商品</button>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid #005a9c; margin: 40px 0;">
+
+            <div class="view-controls">
+                <div class="view-controls-left">
+                    <h2>商品導覽</h2>
+                    <button id="toggle-all-btn" class="filter-btn">全部收合</button>
+                </div>
+                <div class="buttons-right">
+                    <div class="filter-button-wrapper">
+                        <span id="active-suggested-count" class="product-count-badge">0</span>
+                        <button id="show-active-suggested-btn" class="filter-btn">銷售中+建議</button>
+                    </div>
+                    <div class="filter-button-wrapper">
+                        <span id="suggested-count" class="product-count-badge">0</span>
+                        <button id="show-suggested-btn" class="filter-btn">僅顯示建議商品</button>
+                    </div>
+                    <div class="filter-button-wrapper">
+                        <span id="discontinued-count" class="product-count-badge">0</span>
+                        <button id="show-discontinued-btn" class="filter-btn">顯示已停售保單</button>
+                    </div>
+                </div>
+            </div>
+            <div id="product-tree-container"></div>
+        </div>
+
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <div id="modal-list-view" class="modal-view active">
+                    <div class="modal-header">
+                        <h3>主分類管理</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+                    <section id="color-manager">
+                        <h4>導覽顏色設定</h4>
+                        <div class="color-pickers-container">
+                            <div class="color-picker-group"><label for="l0-bg-color">第一層背景:</label><input type="color" id="l0-bg-color" data-css-var="--level-0-bg"></div>
+                            <div class="color-picker-group"><label for="l0-text-color">第一層文字:</label><input type="color" id="l0-text-color" data-css-var="--level-0-text"></div>
+                            <div class="color-picker-group"><label for="l1-text-color">第二層文字:</label><input type="color" id="l1-text-color" data-css-var="--level-1-text"></div>
+                            <div class="color-picker-group"><label for="l2-text-color">第三層文字:</label><input type="color" id="l2-text-color" data-css-var="--level-2-text"></div>
+                            <div class="color-picker-group"><label for="l3-text-color">第四層文字:</label><input type="color" id="l3-text-color" data-css-var="--level-3-text"></div>
+                            <div class="color-picker-group"><label for="l4-text-color">第五層文字:</label><input type="color" id="l4-text-color" data-css-var="--level-4-text"></div>
+                            <div class="color-picker-group"><label for="product-text-color">商品文字:</label><input type="color" id="product-text-color" data-css-var="--product-text"></div>
+                        </div>
+                    </section>
+                    <section id="category-manager">
+                        <h4>分類結構編輯</h4>
+                        <div class="manager-header">
+                            <h5>所有主分類</h5>
+                            <button id="add-main-category-btn">＋ 新增主分類</button>
+                        </div>
+                        <ul id="category-list"></ul>
+                    </section>
+                </div>
+                <div id="modal-editor-view" class="modal-view">
+                    <div class="modal-header">
+                        <h3>編輯分類結構</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+                    <div id="modal-form-container"></div>
+                    <div class="modal-footer">
+                        <button id="modal-save-btn">儲存所有變更</button>
+                        <button id="modal-back-btn">返回</button>
+                        <button id="modal-cancel-btn">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="suggested-product-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>設定建議商品 <span id="suggested-count-display" class="header-count-badge"></span><button id="deselect-all-btn" class="deselect-btn">全部取消勾選</button></h3>
+                    <span class="close-btn">&times;</span>
+                </div>
+                <p style="margin-top:0; color: #666;">請勾選所有您想設定為「建議商品」的項目。未勾選的項目將會被設為「銷售中」。</p>
+                <div id="suggested-product-list-container">
+                </div>
+                <div class="modal-footer">
+                    <button id="suggested-save-btn">儲存變更</button>
+                    <button id="suggested-cancel-btn">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // --- 資料儲存核心 ---
+    const LOCAL_STORAGE_KEY = 'nanshanProductData';
+    const COLOR_STORAGE_KEY = 'nanshanColorSettings';
+
+    // 預設資料 (僅在完全沒有任何已存資料時載入)
+    const initialProductData = [
+        {
+            type: 'category', name: '人生財務目標規劃', url: '', children: [
+                { type: 'category', name: '台幣理財型壽險', linkText: '前往台幣理財型介紹', url: '#', children: [
+                    { type: 'category', name: '累積型', url: 'https://www.nanshangeneral.com.tw/', children: [
+                         { type: 'category', name: '第四層範例', children: [
+                            { type: 'category', name: '第五層範例', children: [] }
+                         ]},
+                        { type: 'product', name: '商品1 (銷售中)', status: 'active', links: [{text:'建議商品', url:'#'}, {text:'影音簡報', url:'#'}, {text:'目錄', url:'#'}, {text:'條款', url:''}, {text:'EN', url:'#'}, {text:'', url:''}]},
+                        { type: 'product', name: '商品2 (已停售)', status: 'discontinued', discontinuedDate: '113.12.31', links: [{text:'', url:''}, {text:'', url:''}, {text:'', url:''}, {text:'', url:''}, {text:'', url:''}, {text:'', url:''}]},
+                        { type: 'product', name: '商品3 (建議)', status: 'suggested', links: [{text:'建議商品', url:'#'}, {text:'影音簡報', url:'#'}, {text:'目錄', url:'#'}, {text:'條款', url:'#'}, {text:'EN', url:'#'}, {text:'', url:''}]}
+                    ]},
+                    { type: 'category', name: '還本型', url: '', children: [] }
+                ]},
+                { type: 'category', name: '美元理財型壽險', url: '', children: [] },
+                { type: 'category', name: '投資型-月撥回', url: '', children: [] }
+            ]
+        },
+        { type: 'category', name: '保障家人安全規劃', url: '', children: [] },
+        { type: 'category', name: '住院各項財務補助', url: '', children: [] },
+        { type: 'category', name: '癌症醫療', url: '', children: [] },
+    ];
+
+    const defaultColors = {
+        '--level-0-bg': '#28a745',
+        '--level-0-text': '#ffffff',
+        '--level-1-text': '#007bff',
+        '--level-2-text': '#654321',
+        '--level-3-text': '#E65100',
+        '--level-4-text': '#8E44AD',
+        '--product-text': '#333333'
+    };
+
+    // ---
+    // --- 【修改】唯讀檔案腳本模板 (View-only Script Template)
+    // --- **注入了圓圈選單的 HTML 和 JS**
+    // ---
+    const VIEW_ONLY_SCRIPT_TEMPLATE = `
+        const productData = %%PRODUCT_DATA%%;
+        let displayFilter = ['active', 'suggested'];
+        const treeContainer = document.getElementById('product-tree-container');
+        let suggestedModalTotalCount = 0;
+        let currentMainIndex = -1;
+        // 【新增】建議書專用
+        let suggestedProductData = [];
+        let currentSuggestedMainIndex = -1;
+
+
+        // ---
+        // --- 新增：圓圈選單 JS
+        // ---
+        function showView(viewId) {
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            const viewToShow = document.querySelector(viewId);
+            if(viewToShow) viewToShow.classList.add('active');
+            window.scrollTo(0, 0);
+
+            // --- 【新功能】離開 L2 時，清空 L2 列表 ---
+            if (viewId !== '#suggested-sub-menu-view') {
+                const l2SummaryContainer = document.getElementById('l2-suggested-summary-container');
+                if (l2SummaryContainer) {
+                    l2SummaryContainer.innerHTML = '';
+                    l2SummaryContainer.style.display = 'none';
+                }
+            }
+            // --- 【新功能】離開 L1 時，清空 L1 列表 ---
+            if (viewId !== '#suggested-main-menu-view') {
+                const l1SummaryContainer = document.getElementById('l1-suggested-summary-container');
+                if (l1SummaryContainer) {
+                    l1SummaryContainer.innerHTML = '';
+                    l1SummaryContainer.style.display = 'none';
+                }
+            }
+        }
+function createCircleMenuProductTree(nodes, level = 0) {
+            const ul = document.createElement('ul');
+            ul.className = level === 0 ? 'product-tree' : 'children-container';
+
+            nodes.forEach(node => {
+                const li = document.createElement('li');
+
+                if (node.type === 'category') {
+                    li.className = 'tree-node category';
+                    const nameElement = \`<span class="category-name">\${node.name}</span>\`;
+                    const hasUrl = node.url && node.url.trim() !== '';
+                    const hasLinkText = node.linkText && node.linkText.trim() !== '';
+                    let linkElement = '';
+
+                    if (hasUrl && hasLinkText) {
+                        linkElement = \`<a href="\${node.url}" target="_blank" class="product-links">\${node.linkText.trim()}</a>\`;
+                    } else if (hasUrl) {
+                        linkElement = \`<a href="\${node.url}" target="_blank" title="開啟連結: \${node.url}" class="link-icon-button">📎</a>\`;
+                    }
+
+                    li.innerHTML = \`<div class="category-title level-\${level}"><span class="toggle-icon">\${(node.children && node.children.length > 0) ? '▼' : ''}</span>\${nameElement}\${linkElement}</div>\`;
+
+                    if (node.children && node.children.length > 0) {
+                        li.appendChild(createCircleMenuProductTree(node.children, level + 1));
+                    }
+
+                    li.querySelector('.category-title').addEventListener('click', (e) => {
+                        if (e.target.tagName === 'A' || e.target.closest('a')) return;
+                        const categoryNode = e.currentTarget.parentNode;
+                        if (categoryNode.querySelector('.children-container')) {
+                            categoryNode.classList.toggle('collapsed');
+                            const icon = categoryNode.querySelector('.toggle-icon');
+                            if (icon) icon.textContent = categoryNode.classList.contains('collapsed') ? '▶' : '▼';
+                        }
+                    });
+
+                } else if (node.type === 'product') {
+                    li.className = 'tree-node product-item';
+
+                    let statusText = '';
+                    switch (node.status) {
+                        case 'active': statusText = '銷售中'; break;
+                        case 'discontinued': statusText = '已停售'; break;
+                        case 'suggested': statusText = '建議商品'; break;
+                        default: statusText = '銷售中';
+                    }
+
+                    if (node.status === 'discontinued' && node.discontinuedDate) {
+                        statusText += \` (\${node.discontinuedDate})\`;
+                    }
+
+                    let linksHTML = '';
+                    if (node.links && Array.isArray(node.links)) {
+                        // ==================================================================
+                        // === 【第一項修改】: 在另存的檔案中，過濾掉 "EN" 連結 (圓圈選單列表) ===
+                        // ==================================================================
+                        const validLinks = node.links
+                            .filter(link =>
+                                link.text && link.text.trim() !== '' &&
+                                link.url && link.url.trim() !== '' &&
+                                link.text.trim().toUpperCase() !== 'EN' // 【修改】過濾掉 EN
+                            );
+
+                        if (validLinks.length > 0) {
+                            const linkContent = validLinks.map(link => {
+                                // 【修改】移除 isEnLink 判斷，因為 EN 已被過濾
+                                const wrapperClass = 'class="link-wrapper"';
+                                return \`<span \${wrapperClass}><a href="\${link.url}" target="_blank">\${link.text.trim()}</a></span>\`;
+                            }).join('');
+                            linksHTML = \`<span class="product-links">\${linkContent}</span>\`;
+                        }
+                    }
+                    li.innerHTML = \`<span class="product-name">\${node.name}</span><span class="product-status \${node.status || 'active'}">\${statusText}</span>\${linksHTML}\`;
+                }
+
+                ul.appendChild(li);
+            });
+            return ul;
+        }
+
+        // ---
+        // --- 【修改】主要圓圈選單 (L1)
+        // ---
+        function renderMainMenu() {
+            const container = document.getElementById('main-menu-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            const numItems = productData.length;
+            if (numItems === 0) return; // 【修正】加上分號或換行
+            const radius = 300;
+            const angleStep = (2 * Math.PI) / numItems;
+
+            productData.forEach((category, index) => {
+                const angle = index * angleStep - (Math.PI / 2);
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+
+                const positioner = document.createElement('div');
+                positioner.className = 'circle-positioner';
+                positioner.style.transform = \`translate(\${x}px, \${y}px)\`;
+
+                const circle = document.createElement('div');
+                circle.className = 'menu-circle';
+
+                const hasLink = category.linkText && category.linkText.trim() !== '' && category.url && category.url.trim() !== '';
+                const linkHTML = hasLink
+                    ? \`<a href="\${category.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">\${category.linkText}</a>\`
+                    : '';
+
+                circle.innerHTML = \`
+                    <div class="menu-circle-content">
+                        <div class="menu-circle-name">\${category.name}</div>
+                        \${linkHTML}
+                    </div>
+                \`;
+
+                circle.onclick = () => {
+                    showSubMenu(index);
+                };
+
+                positioner.appendChild(circle);
+                container.appendChild(positioner);
+            });
+        }
+
+        // ---
+        // --- 【修改】主要圓圈選單 (L2)
+        // ---
+        function showSubMenu(mainIndex) {
+            currentMainIndex = mainIndex;
+            const mainCategory = productData[mainIndex];
+            const subCategories = mainCategory.children || [];
+
+            document.getElementById('sub-menu-title').innerText = mainCategory.name;
+            const container = document.getElementById('sub-menu-container');
+            container.innerHTML = '';
+
+            const numItems = subCategories.length;
+            if (numItems === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666; width:100%;">此分類下沒有子項目。</p>';
+                showView('#sub-menu-view');
+                return;
+            }
+
+            const radius = 220;
+            const angleStep = (2 * Math.PI) / numItems;
+
+            subCategories.forEach((subCategory, subIndex) => {
+                const angle = subIndex * angleStep - (Math.PI / 2);
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+
+                const positioner = document.createElement('div');
+                positioner.className = 'circle-positioner';
+                positioner.style.transform = \`translate(\${x}px, \${y}px)\`;
+
+                const circle = document.createElement('div');
+                circle.className = 'menu-circle';
+
+                const hasLink = subCategory.linkText && subCategory.linkText.trim() !== '' && subCategory.url && subCategory.url.trim() !== '';
+                const linkHTML = hasLink
+                    ? \`<a href="\${subCategory.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">\${subCategory.linkText}</a>\`
+                    : '';
+
+                circle.innerHTML = \`
+                    <div class="menu-circle-content">
+                        <div class="menu-circle-name">\${subCategory.name}</div>
+                        \${linkHTML}
+                    </div>
+                \`;
+
+                circle.onclick = () => {
+                    showProductList(mainIndex, subIndex);
+                };
+
+                positioner.appendChild(circle);
+                container.appendChild(positioner);
+            });
+
+            showView('#sub-menu-view');
+        }
+
+        // ---
+        // --- 【修改】主要圓圈選單 (L3)
+        // ---
+        function showProductList(mainIndex, subIndex) {
+            const subCategory = productData[mainIndex].children[subIndex];
+            const products = subCategory.children || [];
+
+            document.getElementById('product-list-title').innerText = subCategory.name;
+            const content = document.getElementById('product-list-content');
+            content.innerHTML = '';
+
+            const productTreeElement = createCircleMenuProductTree(products, 0);
+            content.appendChild(productTreeElement);
+
+            showView('#product-list-view');
+        }
+
+        // ---
+        // --- 【新增】過濾建議書商品
+        // ---
+        function filterDataForSuggested(nodes) {
+            const result = [];
+            for (const node of nodes) {
+                if (node.type === 'category') {
+                    const filteredChildren = filterDataForSuggested(node.children || []);
+                    if (filteredChildren.length > 0) {
+                        result.push({ ...node, children: filteredChildren });
+                    }
+                } else if (node.type === 'product' && node.status === 'suggested') {
+                    result.push(node);
+                }
+            }
+            return result;
+        }
+
+        // ---
+        // --- 【！本次修改！】 修改建議書總表相關函式 (for 唯讀範本)，加入連結
+        // ---
+        function collectSuggestedProducts(nodes) {
+            let products = [];
+            for (const node of nodes) {
+                if (node.type === 'category') {
+                    products = products.concat(collectSuggestedProducts(node.children || []));
+                } else if (node.type === 'product' && node.status === 'suggested') {
+                    products.push(node);
+                }
+            }
+            return products;
+        }
+
+        function renderUniqueSuggestedList(productList, targetContainer, title) {
+            targetContainer.innerHTML = '';
+            if (productList.length === 0) {
+                targetContainer.style.display = 'none';
+                return;
+            }
+            const uniqueProductsMap = new Map();
+            productList.forEach(product => {
+                if (!uniqueProductsMap.has(product.name)) {
+                    uniqueProductsMap.set(product.name, product);
+                }
+            });
+            const uniqueProducts = Array.from(uniqueProductsMap.values());
+            uniqueProducts.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
+
+            const listItems = uniqueProducts.map(product => {
+                let linksHTML = '';
+                if (product.links && Array.isArray(product.links)) {
+                    // ====================================================================
+                    // === 【第二項修改】: 在另存的檔案中，過濾掉 "EN" 連結 (L1/L2 總覽列表) ===
+                    // ====================================================================
+                    linksHTML = product.links
+                        .filter(link =>
+                            link.text && link.text.trim() !== '' &&
+                            link.url && link.url.trim() !== '' &&
+                            link.text.trim().toUpperCase() !== 'EN' // 【修改】過濾掉 EN
+                        )
+                        .map(link => \`<a href="\${link.url}" target="_blank" class="summary-link">\${link.text.trim()}</a>\`)
+                        .join(' '); // 用空格分隔連結
+                }
+                // 返回包含名稱和連結的列表項 HTML
+                return \`<li class="suggested-summary-item"><span class="summary-product-name">\${product.name}</span>\${linksHTML}</li>\`;
+            }).join('');
+
+            targetContainer.innerHTML = \`
+                <h4>\${title} (共 \${uniqueProducts.length} 項)</h4>
+                <ul class="suggested-summary-list">
+                    \${listItems}
+                </ul>
+            \`;
+            targetContainer.style.display = 'block';
+        }
+
+        // ---
+        // --- 【新增】建議書圓圈選單 (L1)
+        // ---
+        function renderSuggestedMainMenu() {
+            const container = document.getElementById('suggested-main-menu-container');
+            container.innerHTML = '';
+
+            const numItems = suggestedProductData.length;
+            if (numItems === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666; width:100%;">目前沒有設定建議書商品。</p>';
+                // 【新功能】清空 L1 總表
+                const l1SummaryContainer = document.getElementById('l1-suggested-summary-container');
+                if (l1SummaryContainer) l1SummaryContainer.style.display = 'none';
+                return;
+            }
+
+            const radius = 300;
+            const angleStep = (2 * Math.PI) / numItems;
+
+            suggestedProductData.forEach((category, index) => {
+                const angle = index * angleStep - (Math.PI / 2);
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+
+                const positioner = document.createElement('div');
+                positioner.className = 'circle-positioner';
+                positioner.style.transform = \`translate(\${x}px, \${y}px)\`;
+
+                const circle = document.createElement('div');
+                circle.className = 'menu-circle';
+
+                const hasLink = category.linkText && category.linkText.trim() !== '' && category.url && category.url.trim() !== '';
+                const linkHTML = hasLink
+                    ? \`<a href="\${category.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">\${category.linkText}</a>\`
+                    : '';
+
+                circle.innerHTML = \`
+                    <div class="menu-circle-content">
+                        <div class="menu-circle-name">\${category.name}</div>
+                        \${linkHTML}
+                    </div>
+                \`;
+
+                circle.onclick = () => {
+                    showSuggestedSubMenu(index);
+                };
+
+                positioner.appendChild(circle);
+                container.appendChild(positioner);
+            });
+
+            // --- 【！本次修改！】 渲染 L1 商品總表 ---
+            const allSuggestedProducts = collectSuggestedProducts(suggestedProductData);
+            const l1SummaryContainer = document.getElementById('l1-suggested-summary-container');
+            renderUniqueSuggestedList(allSuggestedProducts, l1SummaryContainer, '建議書商品總覽');
+        }
+
+        // ---
+        // --- 【新增】建議書圓圈選單 (L2)
+        // ---
+        function showSuggestedSubMenu(mainIndex) {
+            currentSuggestedMainIndex = mainIndex;
+            const mainCategory = suggestedProductData[mainIndex];
+            const subCategories = mainCategory.children || [];
+
+            document.getElementById('suggested-sub-menu-title').innerText = mainCategory.name;
+            const container = document.getElementById('suggested-sub-menu-container');
+            container.innerHTML = '';
+
+            const numItems = subCategories.length;
+            if (numItems === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666; width:100%;">此分類下沒有子項目。</p>';
+                // 【新功能】清空 L2 總表
+                const l2SummaryContainer = document.getElementById('l2-suggested-summary-container');
+                if (l2SummaryContainer) l2SummaryContainer.style.display = 'none';
+                showView('#suggested-sub-menu-view');
+                return;
+            }
+
+            const radius = 220;
+            const angleStep = (2 * Math.PI) / numItems;
+
+            subCategories.forEach((subCategory, subIndex) => {
+                const angle = subIndex * angleStep - (Math.PI / 2);
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+
+                const positioner = document.createElement('div');
+                positioner.className = 'circle-positioner';
+                positioner.style.transform = \`translate(\${x}px, \${y}px)\`;
+
+                const circle = document.createElement('div');
+                circle.className = 'menu-circle';
+
+                const hasLink = subCategory.linkText && subCategory.linkText.trim() !== '' && subCategory.url && subCategory.url.trim() !== '';
+                const linkHTML = hasLink
+                    ? \`<a href="\${subCategory.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">\${subCategory.linkText}</a>\`
+                    : '';
+
+                circle.innerHTML = \`
+                    <div class="menu-circle-content">
+                        <div class="menu-circle-name">\${subCategory.name}</div>
+                        \${linkHTML}
+                    </div>
+                \`;
+
+                circle.onclick = () => {
+                    showSuggestedProductList(mainIndex, subIndex);
+                };
+
+                positioner.appendChild(circle);
+                container.appendChild(positioner);
+            });
+
+            // --- 【！本次修改！】 渲染 L2 商品總表 ---
+            const l2SuggestedProducts = collectSuggestedProducts(subCategories);
+            const l2SummaryContainer = document.getElementById('l2-suggested-summary-container');
+            renderUniqueSuggestedList(l2SuggestedProducts, l2SummaryContainer, \`「\${mainCategory.name}」分類商品\`);
+
+            showView('#suggested-sub-menu-view');
+        }
+
+        // ---
+        // --- 【新增】建議書圓圈選單 (L3)
+        // ---
+        function showSuggestedProductList(mainIndex, subIndex) {
+            const subCategory = suggestedProductData[mainIndex].children[subIndex];
+            const products = subCategory.children || [];
+
+            document.getElementById('suggested-product-list-title').innerText = subCategory.name;
+            const content = document.getElementById('suggested-product-list-content');
+            content.innerHTML = '';
+
+            const productTreeElement = createCircleMenuProductTree(products, 0);
+            content.appendChild(productTreeElement);
+
+            showView('#suggested-product-list-view');
+        }
+        // --- 圓圈選單 JS 結束 ---
+
+
+        // ---
+        // --- 以下為「原版檔案」的 JS (View-Only 版本)
+        // ---
+        function filterDataRecursive(nodes) {
+            const result = [];
+            for (const node of nodes) {
+                if (node.type === 'category') {
+                    const filteredChildren = filterDataRecursive(node.children || []);
+                    if (filteredChildren.length > 0) {
+                        result.push({ ...node, children: filteredChildren });
+                    }
+                } else {
+                    const currentStatus = node.status || 'active';
+                    if (displayFilter.includes(currentStatus)) {
+                        result.push(node);
+                    }
+                }
+            }
+            return result;
+        }
+
+        function createTreeRecursive(nodes, level = 0) {
+            const ul = document.createElement('ul');
+            ul.className = level === 0 ? 'product-tree' : 'children-container';
+            nodes.forEach(node => {
+                const li = document.createElement('li');
+                if (node.type === 'category') {
+                    li.className = 'tree-node category';
+                    const nameElement = \`<span class="category-name">\${node.name}</span>\`;
+                    const hasUrl = node.url && node.url.trim() !== '';
+                    const hasLinkText = node.linkText && node.linkText.trim() !== '';
+                    let linkElement = '';
+                    if (hasUrl && hasLinkText) {
+                        linkElement = \`<a href="\${node.url}" target="_blank" class="product-links">\${node.linkText.trim()}</a>\`;
+                    } else if (hasUrl) {
+                        linkElement = \`<a href="\${node.url}" target="_blank" title="開啟連結: \${node.url}" class="link-icon-button">📎</a>\`;
+                    }
+                    li.innerHTML = \`<div class="category-title level-\${level}"><span class="toggle-icon">\${(node.children && node.children.length > 0) ? '▼' : ''}</span>\${nameElement}\${linkElement}</div>\`;
+                    if (node.children && node.children.length > 0) {
+                        li.appendChild(createTreeRecursive(node.children, level + 1));
+                    }
+                } else if (node.type === 'product') {
+                    li.className = 'tree-node product-item';
+                    let statusText = '';
+                    switch (node.status) {
+                        case 'active': statusText = '銷售中'; break;
+                        case 'discontinued': statusText = '已停售'; break;
+                        case 'suggested': statusText = '建議商品'; break;
+                        default: statusText = '銷售中';
+                    }
+                    if (node.status === 'discontinued' && node.discontinuedDate) {
+                        statusText += \` (\${node.discontinuedDate})\`;
+                    }
+
+                    let linksHTML = '';
+                    if (node.links && Array.isArray(node.links)) {
+                        // ======================================================================
+                        // === 【第三項修改】: 在另存的檔案中，過濾掉 "EN" 連結 (傳統列表模式) ===
+                        // ======================================================================
+                        const validLinks = node.links
+                            .filter(link =>
+                                link.text && link.text.trim() !== '' &&
+                                link.url && link.url.trim() !== '' &&
+                                link.text.trim().toUpperCase() !== 'EN' // 【修改】過濾掉 EN
+                            );
+
+                        if (validLinks.length > 0) {
+                            const linkContent = validLinks.map(link => {
+                                // 【修改】移除 isEnLink 判斷
+                                return \`<span class="link-wrapper"><a href="\${link.url}" target="_blank">\${link.text.trim()}</a></span>\`;
+                            }).join('');
+                            linksHTML = \`<span class="product-links">\${linkContent}</span>\`;
+                        }
+                    }
+                    li.innerHTML = \`<span class="product-name">\${node.name}</span><span class="product-status \${node.status || 'active'}">\${statusText}</span>\${linksHTML}\`;
+                }
+                ul.appendChild(li);
+            });
+            return ul;
+        }
+
+        function renderProductTree() {
+            const filteredData = filterDataRecursive(JSON.parse(JSON.stringify(productData)));
+            treeContainer.innerHTML = '';
+            if (filteredData.length > 0) {
+                treeContainer.appendChild(createTreeRecursive(filteredData));
+            } else {
+                treeContainer.innerHTML = '<p style="text-align:center; color:#6c757d;">在此檢視模式下沒有可顯示的商品。</p>';
+            }
+        }
+
+        function handleToggle(event) {
+            const title = event.target.closest('.category-title');
+            if (!title) return;
+            if (event.target.tagName === 'A' || event.target.closest('a')) { return; }
+            const categoryNode = title.parentNode;
+            if (categoryNode.querySelector('.children-container')) {
+                categoryNode.classList.toggle('collapsed');
+                const icon = title.querySelector('.toggle-icon');
+                if (icon) {
+                    icon.textContent = categoryNode.classList.contains('collapsed') ? '▶' : '▼';
+                }
+            }
+        }
+
+        function toggleAll(expand) {
+            const allCategories = treeContainer.querySelectorAll('.category');
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            allCategories.forEach(categoryNode => {
+                if (categoryNode.querySelector('.children-container')) {
+                    const icon = categoryNode.querySelector('.toggle-icon');
+                    if (expand) {
+                        categoryNode.classList.remove('collapsed');
+                        if (icon) icon.textContent = '▼';
+                    } else {
+                        categoryNode.classList.add('collapsed');
+                        if (icon) icon.textContent = '▶';
+                    }
+                }
+            });
+            toggleAllBtn.textContent = expand ? '全部收合' : '全部展開';
+            toggleAllBtn.dataset.state = expand ? 'expanded' : 'collapsed';
+        }
+
+        function updateFilter(newFilter, activeBtn) {
+            const allFilterBtns = document.querySelectorAll('.buttons-right .filter-btn');
+            displayFilter = newFilter;
+            allFilterBtns.forEach(btn => btn.classList.remove('active-filter'));
+            activeBtn.classList.add('active-filter');
+            renderProductTree();
+            toggleAll(true);
+        }
+
+        function updateFilterCounts() {
+            let activeSuggestedCount = 0, suggestedCount = 0, discontinuedCount = 0;
+            function countProductsRecursive(nodes) {
+                nodes.forEach(node => {
+                    if (node.type === 'category' && node.children) {
+                        countProductsRecursive(node.children);
+                    } else if (node.type === 'product') {
+                        const status = node.status || 'active';
+                        if (status === 'active' || status === 'suggested') activeSuggestedCount++;
+                        if (status === 'suggested') suggestedCount++;
+                        if (status === 'discontinued') discontinuedCount++;
+                    }
+                });
+            }
+            countProductsRecursive(productData);
+            document.getElementById('active-suggested-count').textContent = activeSuggestedCount;
+            document.getElementById('suggested-count').textContent = suggestedCount;
+            document.getElementById('discontinued-count').textContent = discontinuedCount;
+        }
+function updateSuggestedCountDisplay(checkedCount) {
+            const suggestedCountDisplay = document.getElementById('suggested-count-display');
+            if (suggestedCountDisplay) {
+                suggestedCountDisplay.textContent = \`已勾選 \${checkedCount} / 總計 \${suggestedModalTotalCount}\`;
+            }
+        }
+
+        function renderSuggestedProductManager() {
+            const suggestedProductListContainer = document.getElementById('suggested-product-list-container');
+            suggestedProductListContainer.innerHTML = '';
+            let totalCount = 0;
+            let checkedCount = 0;
+
+            function findAndRenderProductsRecursive(nodes, parentCategoryName) {
+                nodes.forEach(node => {
+                    if (node.type === 'product' && (node.status === 'active' || node.status === 'suggested')) {
+                        totalCount++;
+                        const isSuggested = node.status === 'suggested';
+                        if (isSuggested) checkedCount++;
+
+                        const itemLabel = document.createElement('label');
+                        const safeNodeName = node.name.replace(/"/g, '&quot;');
+                        itemLabel.innerHTML = \`<input type="checkbox" value="\${safeNodeName}" \${isSuggested ? 'checked' : ''}> <span>\${node.name}</span>\`;
+                        const container = suggestedProductListContainer.querySelector(\`[data-category-name="\${parentCategoryName}"]\`);
+                        if(container) container.appendChild(itemLabel);
+                    }
+                    if (node.type === 'category' && node.children) {
+                        const currentCategoryName = \`\${parentCategoryName} > \${node.name}\`;
+                        const categoryContainer = document.createElement('div');
+                        categoryContainer.innerHTML = \`<h5>\${node.name}</h5>\`;
+                        categoryContainer.dataset.categoryName = currentCategoryName;
+                        suggestedProductListContainer.appendChild(categoryContainer);
+                        findAndRenderProductsRecursive(node.children, currentCategoryName);
+                        if (categoryContainer.querySelectorAll('label').length === 0) categoryContainer.remove();
+                    }
+                });
+            }
+
+            productData.forEach(mainCategory => {
+                const mainCategoryContainer = document.createElement('div');
+                mainCategoryContainer.innerHTML = \`<h5>\${mainCategory.name}</h5>\`;
+                mainCategoryContainer.dataset.categoryName = mainCategory.name;
+                suggestedProductListContainer.appendChild(mainCategoryContainer);
+                if (mainCategory.children) {
+                    findAndRenderProductsRecursive(mainCategory.children, mainCategory.name);
+                }
+                if (mainCategoryContainer.querySelectorAll('label').length === 0) mainCategoryContainer.remove();
+            });
+
+            suggestedModalTotalCount = totalCount;
+            updateSuggestedCountDisplay(checkedCount);
+
+            if (totalCount === 0) {
+                suggestedProductListContainer.innerHTML = '<p>沒有可設定為建議的商品 (狀態為 "銷售中" 或 "建議")。</p>';
+            }
+        }
+
+        function closeSuggestedModal() {
+            const suggestedProductModal = document.getElementById('suggested-product-modal');
+            if (suggestedProductModal) {
+                suggestedProductModal.style.display = 'none';
+            }
+        }
+
+        function saveSuggestedProducts() {
+            const suggestedProductListContainer = document.getElementById('suggested-product-list-container');
+            const checkedInputs = suggestedProductListContainer.querySelectorAll('input[type="checkbox"]:checked');
+            const suggestedProductNames = new Set(Array.from(checkedInputs).map(input => input.value));
+
+            function updateStatusRecursive(nodes) {
+                nodes.forEach(node => {
+                    if (node.type === 'product') {
+                        if (suggestedProductNames.has(node.name)) {
+                            node.status = 'suggested';
+                        } else if (node.status === 'suggested') {
+                            node.status = 'active';
+                        }
+                    }
+                    if (node.children) updateStatusRecursive(node.children);
+                });
+            }
+
+            updateStatusRecursive(productData);
+
+            const activeFilterBtn = document.querySelector('.buttons-right .active-filter') || document.getElementById('show-active-suggested-btn');
+            updateFilter(displayFilter, activeFilterBtn);
+            updateFilterCounts();
+
+            closeSuggestedModal();
+            alert('建議商品已在本頁面更新！\\n刷新或關閉頁面後將會還原。');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 新增：圓圈選單按鈕 ---
+            const goToAdminBtn = document.getElementById('go-to-admin-view-btn');
+            const mainMenuBackBtn = document.getElementById('main-menu-back-btn');
+            const productListBackBtn = document.getElementById('product-list-back-btn');
+            const goToCircleBtn = document.getElementById('go-to-circle-view-btn');
+            // --- 【新增】建議書導覽按鈕 ---
+            const goToSuggestedViewBtn = document.getElementById('go-to-suggested-view-btn');
+            const goBackToMainMenuBtn = document.getElementById('go-back-to-main-menu-btn');
+            const suggestedMainMenuBackBtn = document.getElementById('suggested-main-menu-back-btn');
+            const suggestedProductListBackBtn = document.getElementById('suggested-product-list-back-btn');
+            const printSuggestedViewBtn = document.getElementById('print-suggested-view-btn'); // 【新增】建議書列印按鈕
+
+
+            // --- 原版：傳統列表按鈕 ---
+            const showDiscontinuedBtn = document.getElementById('show-discontinued-btn');
+            const showSuggestedBtn = document.getElementById('show-suggested-btn');
+            const showActiveSuggestedBtn = document.getElementById('show-active-suggested-btn');
+            const toggleAllBtn = document.getElementById('toggle-all-btn');
+            const openSuggestedModalBtn = document.getElementById('open-suggested-modal-btn');
+            const suggestedProductModal = document.getElementById('suggested-product-modal');
+            const suggestedSaveBtn = document.getElementById('suggested-save-btn');
+            const suggestedCancelBtn = document.getElementById('suggested-cancel-btn');
+            const suggestedProductListContainer = document.getElementById('suggested-product-list-container');
+            const printBtn = document.getElementById('print-btn');
+            const deselectAllBtn = document.getElementById('deselect-all-btn');
+
+            // ---
+            // --- 【修改】初始化：同時初始化兩個視圖
+            // ---
+            updateFilterCounts(); // 1. 計算所有數字
+            updateFilter(displayFilter, showActiveSuggestedBtn); // 2. 渲染傳統列表 (隱藏)
+            renderMainMenu(); // 3. 渲染圓圈選單 (顯示)
+            // 4. 預設視圖已由 HTML class="active" 設定
+
+            // --- 新增：圓圈選單導航事件 ---
+            if(goToAdminBtn) goToAdminBtn.addEventListener('click', () => showView('#traditional-list-view'));
+            if(goToCircleBtn) goToCircleBtn.addEventListener('click', () => showView('#main-menu-view'));
+            if(mainMenuBackBtn) mainMenuBackBtn.addEventListener('click', () => showView('#main-menu-view'));
+            if(productListBackBtn) productListBackBtn.addEventListener('click', () => {
+                if (currentMainIndex !== -1) showSubMenu(currentMainIndex);
+            });
+
+            // --- 【新增】建議書導覽事件 ---
+            if(goToSuggestedViewBtn) goToSuggestedViewBtn.addEventListener('click', () => {
+                suggestedProductData = filterDataForSuggested(JSON.parse(JSON.stringify(productData)));
+                renderSuggestedMainMenu();
+                showView('#suggested-main-menu-view');
+            });
+            // --- 【！本次修改！】 返回按鈕增加清空總覽功能 ---
+            if(goBackToMainMenuBtn) goBackToMainMenuBtn.addEventListener('click', () => {
+                showView('#main-menu-view');
+            });
+            if(suggestedMainMenuBackBtn) suggestedMainMenuBackBtn.addEventListener('click', () => {
+                 showView('#suggested-main-menu-view');
+            });
+            if(suggestedProductListBackBtn) suggestedProductListBackBtn.addEventListener('click', () => {
+                if (currentSuggestedMainIndex !== -1) showSuggestedSubMenu(currentSuggestedMainIndex);
+            });
+
+            // --- 【！本次修改！】 建議書列印事件 ---
+            if(printSuggestedViewBtn) printSuggestedViewBtn.addEventListener('click', () => {
+                // 1. 在 body 加上標記 class
+                document.body.classList.add('printing-suggested-view');
+                // 2. 觸發瀏覽器列印
+                window.print();
+                // 3. 列印結束後 (無論是確認或取消)，移除標記 class
+                //    使用 setTimeout 確保列印對話框有足夠時間反應
+                setTimeout(() => {
+                    document.body.classList.remove('printing-suggested-view');
+                }, 500);
+            });
+
+
+            // --- 原版：傳統列表事件 ---
+            showActiveSuggestedBtn.addEventListener('click', () => updateFilter(['active', 'suggested'], showActiveSuggestedBtn));
+            showSuggestedBtn.addEventListener('click', () => updateFilter(['suggested'], showSuggestedBtn));
+            showDiscontinuedBtn.addEventListener('click', () => updateFilter(['discontinued'], showDiscontinuedBtn));
+            treeContainer.addEventListener('click', handleToggle);
+
+            toggleAllBtn.addEventListener('click', () => {
+                const shouldExpand = toggleAllBtn.dataset.state === 'collapsed';
+                toggleAll(shouldExpand);
+            });
+
+            openSuggestedModalBtn.addEventListener('click', () => {
+                renderSuggestedProductManager();
+                suggestedProductModal.style.display = 'block';
+            });
+
+            suggestedSaveBtn.addEventListener('click', saveSuggestedProducts);
+            suggestedCancelBtn.addEventListener('click', closeSuggestedModal);
+
+            if (suggestedProductModal) {
+                suggestedProductModal.querySelector('.close-btn').addEventListener('click', closeSuggestedModal);
+            }
+
+            if (deselectAllBtn) {
+                deselectAllBtn.addEventListener('click', () => {
+                    if (confirm("確定要取消已勾選商品?")) {
+                        const checkboxes = suggestedProductListContainer.querySelectorAll('input[type="checkbox"]');
+                        checkboxes.forEach(cb => {
+                            cb.checked = false;
+                        });
+                        updateSuggestedCountDisplay(0);
+                    }
+                });
+            }
+
+            suggestedProductListContainer.addEventListener('change', (event) => {
+                if (event.target.type === 'checkbox') {
+                    const currentCheckedCount = suggestedProductListContainer.querySelectorAll('input:checked').length;
+                    updateSuggestedCountDisplay(currentCheckedCount);
+                }
+            });
+
+            if (printBtn) {
+                printBtn.addEventListener('click', () => {
+                    // 【重要】確保原版列印不受影響 (body 上沒有 .printing-suggested-view)
+                    document.body.classList.remove('printing-suggested-view');
+                    window.print();
+                });
+            }
+
+            window.addEventListener('click', (event) => {
+                if (event.target == suggestedProductModal) {
+                    closeSuggestedModal();
+                }
+            });
+        });
+    `;
+
+    let productData;
+    let displayFilter = ['active', 'suggested'];
+    // --- 新增：圓圈選單的全域變數 ---
+    let currentMainIndex = -1;
+    // --- 【新增】建議書導覽的全域變數 ---
+    let suggestedProductData = [];
+    let currentSuggestedMainIndex = -1;
+
+    // ---
+    // --- 新增：圓圈選單的 JS 函式 (From 商品建議書首頁4.html)
+    // ---
+
+    /**
+     * 顯示指定的頁面視圖
+     */
+    function showView(viewId) {
+        document.querySelectorAll('.page-view').forEach(view => {
+            view.classList.remove('active');
+        });
+        const viewToShow = document.querySelector(viewId);
+        if(viewToShow) viewToShow.classList.add('active');
+        window.scrollTo(0, 0);
+
+        // --- 【！本次修改！】 離開 L2 時，清空 L2 列表 ---
+        if (viewId !== '#suggested-sub-menu-view') {
+            const l2SummaryContainer = document.getElementById('l2-suggested-summary-container');
+            if (l2SummaryContainer) {
+                l2SummaryContainer.innerHTML = '';
+                l2SummaryContainer.style.display = 'none';
+            }
+        }
+        // --- 【！本次修改！】 離開 L1 時，清空 L1 列表 ---
+        if (viewId !== '#suggested-main-menu-view') {
+            const l1SummaryContainer = document.getElementById('l1-suggested-summary-container');
+            if (l1SummaryContainer) {
+                l1SummaryContainer.innerHTML = '';
+                l1SummaryContainer.style.display = 'none';
+            }
+        }
+    }
+
+    /**
+     * 建立商品樹狀圖 (此函式專門給圓圈選單的商品列表頁使用，因為它包含了自己的點擊事件)
+     * 【*** 這是編輯器「目前畫面」的函式，保持原樣，顯示 EN ***】
+     */
+    function createCircleMenuProductTree(nodes, level = 0) {
+        const ul = document.createElement('ul');
+        ul.className = level === 0 ? 'product-tree' : 'children-container';
+
+        nodes.forEach(node => {
+            const li = document.createElement('li');
+
+            if (node.type === 'category') {
+                li.className = 'tree-node category';
+                const nameElement = `<span class="category-name">${node.name}</span>`;
+                const hasUrl = node.url && node.url.trim() !== '';
+                const hasLinkText = node.linkText && node.linkText.trim() !== '';
+                let linkElement = '';
+
+                if (hasUrl && hasLinkText) {
+                    linkElement = `<a href="${node.url}" target="_blank" class="product-links">${node.linkText.trim()}</a>`;
+                } else if (hasUrl) {
+                    linkElement = `<a href="${node.url}" target="_blank" title="開啟連結: ${node.url}" class="link-icon-button">📎</a>`;
+                }
+                li.innerHTML = `<div class="category-title level-${level}"><span class="toggle-icon">${(node.children && node.children.length > 0) ? '▼' : ''}</span>${nameElement}${linkElement}</div>`;
+
+                if (node.children && node.children.length > 0) {
+                    li.appendChild(createCircleMenuProductTree(node.children, level + 1));
+                }
+
+                // --- 圓圈選單列表的專屬點擊事件 ---
+                li.querySelector('.category-title').addEventListener('click', (e) => {
+                    if (e.target.tagName === 'A' || e.target.closest('a')) return;
+                    const categoryNode = e.currentTarget.parentNode;
+                    if (categoryNode.querySelector('.children-container')) {
+                        categoryNode.classList.toggle('collapsed');
+                        const icon = categoryNode.querySelector('.toggle-icon');
+                        if (icon) icon.textContent = categoryNode.classList.contains('collapsed') ? '▶' : '▼';
+                    }
+                });
+
+            } else if (node.type === 'product') {
+                li.className = 'tree-node product-item';
+
+                let statusText = '';
+                switch (node.status) {
+                    case 'active': statusText = '銷售中'; break;
+                    case 'discontinued': statusText = '已停售'; break;
+                    case 'suggested': statusText = '建議商品'; break;
+                    default: statusText = '銷售中';
+                }
+
+                if (node.status === 'discontinued' && node.discontinuedDate) {
+                    statusText += ` (${node.discontinuedDate})`;
+                }
+
+                let linksHTML = '';
+                if (node.links && Array.isArray(node.links)) {
+                    const validLinks = node.links
+                        .filter(link => link.text && link.text.trim() !== '' && link.url && link.url.trim() !== '');
+
+                    if (validLinks.length > 0) {
+                        const linkContent = validLinks.map(link => {
+                            // 【保持原樣】
+                            const isEnLink = link.text.trim().toUpperCase() === 'EN';
+                            const wrapperClass = isEnLink ? 'class="link-wrapper en-link-wrapper"' : 'class="link-wrapper"';
+                            return `<span ${wrapperClass}><a href="${link.url}" target="_blank">${link.text.trim()}</a></span>`;
+                        }).join('');
+                        linksHTML = `<span class="product-links">${linkContent}</span>`;
+                    }
+                }
+                li.innerHTML = `<span class="product-name">${node.name}</span><span class="product-status ${node.status || 'active'}">${statusText}</span>${linksHTML}`;
+            }
+
+            ul.appendChild(li);
+        });
+        return ul;
+    }
+
+
+    /**
+     * 產生主選單 (L1 圓圈)
+     */
+    function renderMainMenu() {
+        const container = document.getElementById('main-menu-container');
+        container.innerHTML = ''; // 清空
+
+        const numItems = productData.length;
+        if (numItems === 0) return; // 【修正】加上分號或換行
+        const radius = 300; // L1 半徑
+        const angleStep = (2 * Math.PI) / numItems;
+
+        productData.forEach((category, index) => {
+            const angle = index * angleStep - (Math.PI / 2);
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+
+            const positioner = document.createElement('div');
+            positioner.className = 'circle-positioner';
+            positioner.style.transform = `translate(${x}px, ${y}px)`;
+
+            const circle = document.createElement('div');
+            circle.className = 'menu-circle';
+
+            const hasLink = category.linkText && category.linkText.trim() !== '' && category.url && category.url.trim() !== '';
+            const linkHTML = hasLink
+                ? `<a href="${category.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">${category.linkText}</a>`
+                : '';
+
+            circle.innerHTML = `
+                <div class="menu-circle-content">
+                    <div class="menu-circle-name">${category.name}</div>
+                    ${linkHTML}
+                </div>
+            `;
+
+            circle.onclick = () => {
+                showSubMenu(index);
+            };
+
+            positioner.appendChild(circle);
+            container.appendChild(positioner);
+        });
+    }
+
+    /**
+     * 顯示次選單 (L2 圓圈)
+     */
+    function showSubMenu(mainIndex) {
+        currentMainIndex = mainIndex;
+        const mainCategory = productData[mainIndex];
+        const subCategories = mainCategory.children || [];
+
+        document.getElementById('sub-menu-title').innerText = mainCategory.name;
+        const container = document.getElementById('sub-menu-container');
+        container.innerHTML = '';
+
+        const numItems = subCategories.length;
+        if (numItems === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#666; width:100%;">此分類下沒有子項目。</p>';
+            showView('#sub-menu-view');
+            return;
+        }
+
+        const radius = 220; // L2 半徑
+        const angleStep = (2 * Math.PI) / numItems;
+
+        subCategories.forEach((subCategory, subIndex) => {
+            const angle = subIndex * angleStep - (Math.PI / 2);
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+
+            const positioner = document.createElement('div');
+            positioner.className = 'circle-positioner';
+            positioner.style.transform = `translate(${x}px, ${y}px)`;
+
+            const circle = document.createElement('div');
+            circle.className = 'menu-circle';
+
+            const hasLink = subCategory.linkText && subCategory.linkText.trim() !== '' && subCategory.url && subCategory.url.trim() !== '';
+            const linkHTML = hasLink
+                ? `<a href="${subCategory.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">${subCategory.linkText}</a>`
+                : '';
+
+            circle.innerHTML = `
+                <div class="menu-circle-content">
+                    <div class="menu-circle-name">${subCategory.name}</div>
+                    ${linkHTML}
+                </div>
+            `;
+
+            circle.onclick = () => {
+                showProductList(mainIndex, subIndex);
+            };
+
+            positioner.appendChild(circle);
+            container.appendChild(positioner);
+        });
+
+        showView('#sub-menu-view');
+    }
+
+    /**
+     * 顯示最終的商品列表
+     */
+    function showProductList(mainIndex, subIndex) {
+        const subCategory = productData[mainIndex].children[subIndex];
+        const products = subCategory.children || [];
+
+        document.getElementById('product-list-title').innerText = subCategory.name;
+        const content = document.getElementById('product-list-content');
+        content.innerHTML = '';
+
+        // --- 修改：呼叫專屬的 'createCircleMenuProductTree' 函式 ---
+        const productTreeElement = createCircleMenuProductTree(products, 0);
+        content.appendChild(productTreeElement);
+
+        showView('#product-list-view');
+    }
+
+    // ---
+    // --- 【！本次修改！】 建議書導覽專用函式 (即時編輯)，加入連結
+    // ---
+
+    /**
+     * @brief (新) 遞迴收集所有 'suggested' 商品
+     * @param {Array} nodes - 要搜尋的節點
+     * @returns {Array} - 包含商品物件的陣列
+     */
+    function collectSuggestedProducts(nodes) {
+        let products = [];
+        for (const node of nodes) {
+            if (node.type === 'category') {
+                products = products.concat(collectSuggestedProducts(node.children || []));
+            } else if (node.type === 'product' && node.status === 'suggested') {
+                products.push(node);
+            }
+        }
+        return products;
+    }/**
+     * @brief (新) 將商品陣列去重並渲染到目標容器 (包含連結)
+     * 【*** 這是編輯器「目前畫面」的函式，保持原樣，顯示 EN ***】
+     * @param {Array} productList - 商品物件陣列
+     * @param {HTMLElement} targetContainer - 要渲染的 DOM 元素
+     * @param {string} title - 顯示的標題
+     */
+    function renderUniqueSuggestedList(productList, targetContainer, title) {
+        targetContainer.innerHTML = ''; // 清空
+        if (productList.length === 0) {
+            targetContainer.style.display = 'none'; // 如果沒商品，隱藏容器
+            return;
+        }
+
+        // 1. 依據 'name' 去重
+        const uniqueProductsMap = new Map();
+        productList.forEach(product => {
+            if (!uniqueProductsMap.has(product.name)) {
+                uniqueProductsMap.set(product.name, product);
+            }
+        });
+        const uniqueProducts = Array.from(uniqueProductsMap.values());
+
+        // 2. 排序
+        uniqueProducts.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
+
+        // 3. 產生 HTML (包含連結)
+        const listItems = uniqueProducts.map(product => {
+            let linksHTML = '';
+            if (product.links && Array.isArray(product.links)) {
+                linksHTML = product.links
+                    // 【保持原樣】不過濾 EN
+                    .filter(link => link.text && link.text.trim() !== '' && link.url && link.url.trim() !== '')
+                    .map(link => `<a href="${link.url}" target="_blank" class="summary-link">${link.text.trim()}</a>`)
+                    .join(' '); // 用空格分隔連結
+            }
+            // 返回包含名稱和連結的列表項 HTML
+            return `<li class="suggested-summary-item"><span class="summary-product-name">${product.name}</span>${linksHTML}</li>`;
+        }).join('');
+
+
+        targetContainer.innerHTML = `
+            <h4>${title} (共 ${uniqueProducts.length} 項)</h4>
+            <ul class="suggested-summary-list">
+                ${listItems}
+            </ul>
+        `;
+        targetContainer.style.display = 'block'; // 顯示容器
+    }
+
+
+    /**
+     * @brief 遞迴過濾出只包含 "suggested" 商品的資料樹
+     * @param {Array} nodes - 要過濾的節點陣列
+     * @returns {Array} - 只包含建議商品及其父分類的新陣列
+     */
+    function filterDataForSuggested(nodes) {
+        const result = [];
+        for (const node of nodes) {
+            if (node.type === 'category') {
+                // 遞迴過濾子節點
+                const filteredChildren = filterDataForSuggested(node.children || []);
+                // 如果這個分類有子節點 (代表子節點中有建議商品)，則保留它
+                if (filteredChildren.length > 0) {
+                    result.push({ ...node, children: filteredChildren });
+                }
+            } else if (node.type === 'product' && node.status === 'suggested') {
+                // 如果是商品且狀態為 'suggested'，保留它
+                result.push(node);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 【新增】產生建議書主選單 (L1 圓圈)
+     */
+    function renderSuggestedMainMenu() {
+        const container = document.getElementById('suggested-main-menu-container');
+        container.innerHTML = ''; // 清空
+
+        const numItems = suggestedProductData.length;
+        if (numItems === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#666; width:100%;">目前沒有設定建議書商品。</p>';
+            // 【新功能】清空 L1 總表
+            const l1SummaryContainer = document.getElementById('l1-suggested-summary-container');
+            if (l1SummaryContainer) l1SummaryContainer.style.display = 'none';
+            return;
+        }
+
+        const radius = 300; // L1 半徑
+        const angleStep = (2 * Math.PI) / numItems;
+
+        suggestedProductData.forEach((category, index) => {
+            const angle = index * angleStep - (Math.PI / 2);
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+
+            const positioner = document.createElement('div');
+            positioner.className = 'circle-positioner';
+            positioner.style.transform = `translate(${x}px, ${y}px)`;
+
+            const circle = document.createElement('div');
+            circle.className = 'menu-circle';
+
+            const hasLink = category.linkText && category.linkText.trim() !== '' && category.url && category.url.trim() !== '';
+            const linkHTML = hasLink
+                ? `<a href="${category.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">${category.linkText}</a>`
+                : '';
+
+            circle.innerHTML = `
+                <div class="menu-circle-content">
+                    <div class="menu-circle-name">${category.name}</div>
+                    ${linkHTML}
+                </div>
+            `;
+
+            circle.onclick = () => {
+                showSuggestedSubMenu(index);
+            };
+
+            positioner.appendChild(circle);
+            container.appendChild(positioner);
+        });
+
+        // --- 【！本次修改！】 渲染 L1 商品總表 ---
+        const allSuggestedProducts = collectSuggestedProducts(suggestedProductData);
+        const l1SummaryContainer = document.getElementById('l1-suggested-summary-container');
+        renderUniqueSuggestedList(allSuggestedProducts, l1SummaryContainer, '建議書商品總覽');
+        // --- 結束 ---
+    }/**
+     * 【新增】顯示建議書次選單 (L2 圓圈)
+     */
+    function showSuggestedSubMenu(mainIndex) {
+        currentSuggestedMainIndex = mainIndex; // 使用建議書專用的 index
+        const mainCategory = suggestedProductData[mainIndex];
+        const subCategories = mainCategory.children || [];
+
+        document.getElementById('suggested-sub-menu-title').innerText = mainCategory.name;
+        const container = document.getElementById('suggested-sub-menu-container');
+        container.innerHTML = '';
+
+        const numItems = subCategories.length;
+        if (numItems === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#666; width:100%;">此分類下沒有子項目。</p>';
+            // 【新功能】清空 L2 總表
+            const l2SummaryContainer = document.getElementById('l2-suggested-summary-container');
+            if (l2SummaryContainer) l2SummaryContainer.style.display = 'none';
+            showView('#suggested-sub-menu-view');
+            return;
+        }
+
+        const radius = 220; // L2 半徑
+        const angleStep = (2 * Math.PI) / numItems;
+
+        subCategories.forEach((subCategory, subIndex) => {
+            const angle = subIndex * angleStep - (Math.PI / 2);
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+
+            const positioner = document.createElement('div');
+            positioner.className = 'circle-positioner';
+            positioner.style.transform = `translate(${x}px, ${y}px)`;
+
+            const circle = document.createElement('div');
+            circle.className = 'menu-circle';
+
+            const hasLink = subCategory.linkText && subCategory.linkText.trim() !== '' && subCategory.url && subCategory.url.trim() !== '';
+            const linkHTML = hasLink
+                ? `<a href="${subCategory.url}" target="_blank" class="menu-circle-link" onclick="event.stopPropagation()">${subCategory.linkText}</a>`
+                : '';
+
+            circle.innerHTML = `
+                <div class="menu-circle-content">
+                    <div class="menu-circle-name">${subCategory.name}</div>
+                    ${linkHTML}
+                </div>
+            `;
+
+            circle.onclick = () => {
+                showSuggestedProductList(mainIndex, subIndex);
+            };
+
+            positioner.appendChild(circle);
+            container.appendChild(positioner);
+        });
+
+        // --- 【！本次修改！】 渲染 L2 商品總表 ---
+        // 注意：這裡是從 subCategories (L2) 開始收集
+        const l2SuggestedProducts = collectSuggestedProducts(subCategories);
+        const l2SummaryContainer = document.getElementById('l2-suggested-summary-container');
+        renderUniqueSuggestedList(l2SuggestedProducts, l2SummaryContainer, `「${mainCategory.name}」分類商品`);
+        // --- 結束 ---
+
+        showView('#suggested-sub-menu-view');
+    }
+
+    /**
+     * 【新增】顯示建議書最終的商品列表
+     */
+    function showSuggestedProductList(mainIndex, subIndex) {
+        const subCategory = suggestedProductData[mainIndex].children[subIndex];
+        const products = subCategory.children || [];
+
+        document.getElementById('suggested-product-list-title').innerText = subCategory.name;
+        const content = document.getElementById('suggested-product-list-content');
+        content.innerHTML = '';
+
+        const productTreeElement = createCircleMenuProductTree(products, 0);
+        content.appendChild(productTreeElement);
+
+        showView('#suggested-product-list-view');
+    }
+
+    // --- 圓圈選單 JS 結束 ---
+
+
+    // ---
+    // --- 以下為「原版檔案」的 JS (保持不變)
+    // ---
+
+    function saveData() {
+        try {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(productData));
+        } catch (e) {
+            console.error("Error saving data to localStorage", e);
+            alert("儲存資料時發生錯誤！");
+        }
+    }
+
+    function loadData() {
+        const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (storedData) {
+            try {
+                productData = JSON.parse(storedData);
+            } catch (e) {
+                console.error("Error parsing data from localStorage", e);
+                productData = JSON.parse(JSON.stringify(initialProductData));
+            }
+        } else {
+            productData = JSON.parse(JSON.stringify(initialProductData));
+        }
+    }
+
+    function applyColors(colorSettings) {
+        for (const [key, value] of Object.entries(colorSettings)) {
+            document.documentElement.style.setProperty(key, value);
+        }
+    }
+
+    function loadAndApplyColors() {
+        const storedColors = localStorage.getItem(COLOR_STORAGE_KEY);
+        const colors = storedColors ? JSON.parse(storedColors) : defaultColors;
+        applyColors(colors);
+        document.querySelectorAll('#color-manager input[type="color"]').forEach(picker => {
+            const cssVar = picker.dataset.cssVar;
+            if (colors[cssVar]) {
+                picker.value = colors[cssVar];
+            }
+        });
+    }
+
+    function saveColorSettings() {
+        const newSettings = {};
+        document.querySelectorAll('#color-manager input[type="color"]').forEach(picker => {
+            newSettings[picker.dataset.cssVar] = picker.value;
+        });
+        localStorage.setItem(COLOR_STORAGE_KEY, JSON.stringify(newSettings));
+    }
+
+    // ===================================================================================
+    // === 【修改】「另存html檔」功能 (已注入圓圈選單的 HTML 和 JS, 且更新了總覽列表) ===
+    // ===================================================================================
+    function generateAndDownloadHtml() {
+        // 1. 取得目前的顏色設定
+        const currentColors = {};
+        Object.keys(defaultColors).forEach(key => {
+            currentColors[key] = getComputedStyle(document.documentElement).getPropertyValue(key).trim();
+        });
+        const colorStyleBlock = `:root { ${Object.entries(currentColors).map(([k, v]) => `${k}: ${v};`).join(' ')} }`;
+
+        // 2. 將目前的商品資料轉換為安全的文字字串
+        const productDataString = JSON.stringify(productData, null, 2);
+
+        // 3. 將商品資料安全地嵌入腳本模板中
+        //    【修改】注入了建議書導覽的相關JS (已包含更新後的 renderUniqueSuggestedList)
+        //    【*** 此處 VIEW_ONLY_SCRIPT_TEMPLATE 已在第 1、2 部分被修改，會過濾 EN ***】
+        const finalScript = VIEW_ONLY_SCRIPT_TEMPLATE.replace('%%PRODUCT_DATA%%', productDataString);
+
+        // 4. 組合出一個全新的、完整的 HTML 內容字串 (包含新的視圖結構)
+        //    【！本次修改！】 在 'suggested-main-menu-view' 中加入新的列印按鈕
+        const htmlParts = [
+            '<!DOCTYPE html>',
+            '<html lang="zh-Hant">',
+            '<head>',
+            '    <meta charset="UTF-8">',
+            '    <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+            '    <title>保險商品導覽</title>',
+            '    <style>',
+            document.querySelector('style').innerHTML, // 包含 .summary-link 和新的 @media print 樣式
+            '    </style>',
+            '    <style>',
+            colorStyleBlock,
+            '    </style>',
+            '</head>',
+            '<body>',
+            '    <div class="container">',
+
+            // --- 修改：圓圈選單的 HTML 結構 (L1) ---
+            '        <div id="main-menu-view" class="page-view active">',
+            '            <div class="page-header">',
+            '                <h1>商品導覽主選單</h1>',
+            '                <button id="go-to-suggested-view-btn" style="background-color: #28a745;">建議書商品導覽</button>', // 【新增】
+            '                <button id="go-to-admin-view-btn" style="background-color: #005a9c;">前往傳統列表模式</button>',
+            '            </div>',
+            '            <div id="main-menu-container" class="circle-menu-container"></div>',
+            '        </div>',
+            // --- 圓圈選單 (L2) ---
+            '        <div id="sub-menu-view" class="page-view">',
+            '            <div class="page-header">',
+            '                <button class="back-button" id="main-menu-back-btn">返回主選單</button>',
+            '                <h1 id="sub-menu-title"></h1>',
+            '            </div>',
+            '            <div id="sub-menu-container" class="circle-menu-container"></div>',
+            '        </div>',
+            // --- 圓圈選單 (L3) ---
+            '        <div id="product-list-view" class="page-view">',
+            '            <div class="page-header">',
+            '                <button class="back-button" id="product-list-back-btn">返回上一層</button>',
+            '                <h1 id="product-list-title"></h1>',
+            '            </div>',
+            '            <div id="product-list-content"></div>',
+            '        </div>',
+
+            // --- 【新增】建議書導覽 HTML 結構 (L1) ---
+            '        <div id="suggested-main-menu-view" class="page-view">',
+
+            // --- 【！本次修改！】 依您的需求，在另存的檔案中加入列印標題 ---
+            '            <h1 class="print-only-suggested-title">建議書商品導覽</h1>',
+
+            '            <div class="page-header">',
+            '                <button id="go-back-to-main-menu-btn" class="back-button">返回主選單</button>',
+            '                <h1>建議書商品導覽</h1>',
+            // --- 【！本次修改！】 在另存的檔案中也加入列印按鈕 ---
+            '                <button id="print-suggested-view-btn" style="background-color: #17a2b8;">列印本頁</button>',
+            '            </div>',
+            '            <div id="suggested-main-menu-container" class="circle-menu-container"></div>',
+            // --- 【！本次修改！】 新增 L1 建議商品總覽框架 ---
+            '            <div id="l1-suggested-summary-container" class="suggested-summary-container"></div>',
+            '        </div>',
+            // --- 【新增】建議書導覽 (L2) ---
+            '        <div id="suggested-sub-menu-view" class="page-view">',
+            '            <div class="page-header">',
+            '                <button class="back-button" id="suggested-main-menu-back-btn">返回建議書主選單</button>',
+            '                <h1 id="suggested-sub-menu-title"></h1>',
+            '            </div>',
+            '            <div id="suggested-sub-menu-container" class="circle-menu-container"></div>',
+            // --- 【！本次修改！】 新增 L2 建議商品總覽框架 ---
+            '            <div id="l2-suggested-summary-container" class="suggested-summary-container"></div>',
+            '        </div>',
+            // --- 【新增】建議書導覽 (L3) ---
+            '        <div id="suggested-product-list-view" class="page-view">',
+            '            <div class="page-header">',
+            '                <button class="back-button" id="suggested-product-list-back-btn">返回上一層</button>',
+            '                <h1 id="suggested-product-list-title"></h1>',
+            '            </div>',
+            '            <div id="suggested-product-list-content"></div>',
+            '        </div>',
+
+            // --- 修改：原始的列表視圖 (包在 page-view 中) ---
+            '        <div id="traditional-list-view" class="page-view">',
+            '            <div class="main-controls">',
+            '                 <div class="title-and-back-button-container" style="justify-content: space-between; width: 100%;">',
+            '                     <h1 style="margin:0;">保險商品導覽 (列表模式)</h1>',
+            '                     <button id="go-to-circle-view-btn" style="background-color: #007bff;">返回圓圈選單</button>',
+            '                 </div>',
+            '            </div>',
+            '            <div class="main-controls" style="margin-top: 20px;">',
+            '                <h2 style="margin:0;"></h2>', // 佔位
+            '                <div class="main-controls-buttons">',
+            '                     <button id="open-suggested-modal-btn" style="background-color: #007bff; font-size: 1.1em; padding: 12px 20px;">設定建議商品</button>',
+            '                     <button id="print-btn" style="background-color: #6c757d; font-size: 1.1em; padding: 12px 20px;">列印</button>',
+            '                </div>',
+            '            </div>',
+            '            <hr style="border: 1px solid #005a9c; margin: 40px 0;">',
+            '            <div class="view-controls">',
+            '                <div class="view-controls-left">',
+            '                   <h2>商品導覽</h2>',
+            '                   <button id="toggle-all-btn" class="filter-btn">全部收合</button>',
+            '                </div>',
+            '                <div class="buttons-right">',
+            '                     <div class="filter-button-wrapper">',
+            '                        <span id="active-suggested-count" class="product-count-badge">0</span>',
+            '                        <button id="show-active-suggested-btn" class="filter-btn">銷售中+建議</button>',
+            '                    </div>',
+            '                    <div class="filter-button-wrapper">',
+            '                        <span id="suggested-count" class="product-count-badge">0</span>',
+            '                        <button id="show-suggested-btn" class="filter-btn">僅顯示建議商品</button>',
+            '                    </div>',
+            '                    <div class="filter-button-wrapper">',
+            '                        <span id="discontinued-count" class="product-count-badge">0</span>',
+            '                        <button id="show-discontinued-btn" class="filter-btn">顯示已停售保單</button>',
+            '                    </div>',
+            '                </div>',
+            '            </div>',
+            '            <div id="product-tree-container"></div>',
+            '        </div>', // 結束 traditional-list-view
+
+            // --- 保持不變：Modal 彈窗 ---
+            '        <div id="suggested-product-modal" class="modal">',
+            '            <div class="modal-content">',
+            '                <div class="modal-header">',
+            '                    <h3>設定建議商品 <span id="suggested-count-display" class="header-count-badge"></span><button id="deselect-all-btn" class="deselect-btn">全部取消勾選</button></h3>',
+            '                    <span class="close-btn">&times;</span>',
+            '                </div>',
+            '                <p style="margin-top:0; color: #666;">請勾選所有您想設定為「建議商品」的項目。未勾選的項目將會被設為「銷售中」。</p>',
+            '                <div id="suggested-product-list-container"></div>',
+            '                <div class="modal-footer">',
+            '                    <button id="suggested-save-btn">儲存變更</button>',
+            '                    <button id="suggested-cancel-btn">取消</button>',
+            '                </div>',
+            '            </div>',
+            '        </div>',
+            '    </div>', // 結束 container
+            '    <script>',
+            finalScript,
+            '    <\/script>',
+            '</body>',
+            '</html>'
+        ];
+
+        const cleanHtmlContent = htmlParts.join('\n');
+
+        // 5. 觸發瀏覽器下載
+        const blob = new Blob([cleanHtmlContent], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '保險商品導覽.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    // === END OF THE NEW SAVE FUNCTION ===
+
+
+    // --- 以下為頁面互動邏輯 (Page Interaction Logic) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 變數宣告 (原版) ---
+        const treeContainer = document.getElementById('product-tree-container');
+        const categoryList = document.getElementById('category-list');
+        const addMainCategoryBtn = document.getElementById('add-main-category-btn');
+        const openManagementModalBtn = document.getElementById('open-management-modal-btn');
+        const saveHtmlBtn = document.getElementById('save-html-btn');
+        const printBtn = document.getElementById('print-btn');
+        const showDiscontinuedBtn = document.getElementById('show-discontinued-btn');
+        const showSuggestedBtn = document.getElementById('show-suggested-btn');
+        const showActiveSuggestedBtn = document.getElementById('show-active-suggested-btn');
+        const toggleAllBtn = document.getElementById('toggle-all-btn');
+        const allFilterBtns = [showActiveSuggestedBtn, showSuggestedBtn, showDiscontinuedBtn];
+        const modal = document.getElementById('edit-modal');
+        const modalFormContainer = document.getElementById('modal-form-container');
+        const modalSaveBtn = document.getElementById('modal-save-btn');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalBackBtn = document.getElementById('modal-back-btn');
+        const modalListView = document.getElementById('modal-list-view');
+        const modalEditorView = document.getElementById('modal-editor-view');
+        const openSuggestedModalBtn = document.getElementById('open-suggested-modal-btn');
+        const suggestedProductModal = document.getElementById('suggested-product-modal');
+        const suggestedProductListContainer = document.getElementById('suggested-product-list-container');
+        const suggestedSaveBtn = document.getElementById('suggested-save-btn');
+        const suggestedCancelBtn = document.getElementById('suggested-cancel-btn');
+        const allCloseBtns = document.querySelectorAll('.close-btn');
+        const suggestedCountDisplay = document.getElementById('suggested-count-display');
+        const deselectAllBtn = document.getElementById('deselect-all-btn');
+
+        // --- 變數宣告 (新增：圓圈選單導航) ---
+        const goToAdminBtn = document.getElementById('go-to-admin-view-btn');
+        const goToCircleBtn = document.getElementById('go-to-circle-view-btn');
+        const mainMenuBackBtn = document.getElementById('main-menu-back-btn');
+        const productListBackBtn = document.getElementById('product-list-back-btn');
+        // --- 【新增】建議書導覽按鈕 ---
+        const goToSuggestedViewBtn = document.getElementById('go-to-suggested-view-btn');
+        const goBackToMainMenuBtn = document.getElementById('go-back-to-main-menu-btn');
+        const suggestedMainMenuBackBtn = document.getElementById('suggested-main-menu-back-btn');
+        const suggestedProductListBackBtn = document.getElementById('suggested-product-list-back-btn');
+        const printSuggestedViewBtn = document.getElementById('print-suggested-view-btn'); // 【新增】
+
+
+        let suggestedModalTotalCount = 0;
+        let modalEditingL1Index = -1;
+        let tempCategoryBranch = null;
+        let originalCategoryBranchString = null;
+
+        function renderMainCategoryManager() {
+            categoryList.innerHTML = '';
+            productData.forEach((category, index) => {
+                const li = document.createElement('li');
+                li.className = 'category-list-item';
+                li.innerHTML = `
+                    <span class="category-name-span">${category.name}</span>
+                    <button class="btn-edit" data-index="${index}">編輯結構</button>
+                    <button class="btn-delete" data-index="${index}">刪除</button>
+                `;
+                categoryList.appendChild(li);
+            });
+        }
+
+        function renderAll() {
+            renderProductTree(); // 更新傳統列表
+            renderMainMenu(); // 更新圓圈選單
+            updateFilterCounts(); // 更新計數器
+
+            // 【！本次修改！】 如果建議書資料已載入，也同步更新
+            if (suggestedProductData.length > 0) {
+                 // 1. 重新過濾最新的 productData
+                suggestedProductData = filterDataForSuggested(JSON.parse(JSON.stringify(productData)));
+                 // 2. 重新渲染 L1 建議書選單 (這會自動更新 L1 總表)
+                renderSuggestedMainMenu();
+
+                // 3. 清理可能殘留的 L2 總表
+                const l2SummaryContainer = document.getElementById('l2-suggested-summary-container');
+                if (l2SummaryContainer) {
+                    l2SummaryContainer.innerHTML = '';
+                    l2SummaryContainer.style.display = 'none';
+                }
+            }
+        }
+        function updateTempDataFromForm() {
+            if (!tempCategoryBranch) return;
+            const newTempBranch = JSON.parse(JSON.stringify(tempCategoryBranch));
+
+            modalFormContainer.querySelectorAll('[data-path][data-prop]').forEach(input => {
+                const pathStr = input.dataset.path;
+                const prop = input.dataset.prop;
+                const value = input.value;
+                const nodeToUpdate = getObjectByPath(newTempBranch, pathStr);
+                if (nodeToUpdate) {
+                    nodeToUpdate[prop] = value;
+                }
+            });
+
+            modalFormContainer.querySelectorAll('[data-link-index]').forEach(input => {
+                const pathStr = input.dataset.path;
+                const linkIndex = parseInt(input.dataset.linkIndex);
+                const linkProp = input.dataset.linkProp;
+                const nodeToUpdate = getObjectByPath(newTempBranch, pathStr);
+                if (nodeToUpdate && nodeToUpdate.type === 'product' && nodeToUpdate.links && nodeToUpdate.links[linkIndex]) {
+                    nodeToUpdate.links[linkIndex][linkProp] = input.value;
+                }
+            });
+
+            tempCategoryBranch = newTempBranch;
+        }
+
+        function createFormGroupRecursive(node, path) {
+            const container = document.createElement('div');
+            const group = document.createElement('div');
+            group.className = 'category-form-group';
+
+            const isCategory = node.type === 'category';
+
+            const typeSelect = `<select class="type-select" data-path="${path}" data-prop="type"><option value="category" ${isCategory ? 'selected' : ''}>分類</option><option value="product" ${!isCategory ? 'selected' : ''}>商品</option></select>`;
+            const nameInput = `<input type="text" class="name-input" placeholder="名稱" value="${node.name}" data-path="${path}" data-prop="name">`;
+
+            let otherInputs = '';
+            let productLinksHTML = '';
+
+            if (isCategory) {
+                otherInputs = `
+                    <div class="link-group">
+                        <input type="text" placeholder="連結文字 (可選)" value="${node.linkText || ''}" data-path="${path}" data-prop="linkText">
+                        <input type="text" placeholder="超連結網址 (可選)" value="${node.url || ''}" data-path="${path}" data-prop="url">
+                    </div>
+                `;
+            } else {
+                const status = node.status || 'active';
+                otherInputs = `<select class="status-select" data-path="${path}" data-prop="status">
+                                <option value="active" ${status === 'active' ? 'selected' : ''}>銷售中</option>
+                                <option value="discontinued" ${status === 'discontinued' ? 'selected' : ''}>已停售</option>
+                                <option value="suggested" ${status === 'suggested' ? 'selected' : ''}>建議商品</option>
+                               </select>`;
+
+                if (status === 'discontinued') {
+                    otherInputs += `<input type="text" class="discontinued-date-input" placeholder="停售日期 (114.09.12)" value="${node.discontinuedDate || ''}" data-path="${path}" data-prop="discontinuedDate">`;
+                }
+
+                let linksHTML = '';
+                for (let i = 0; i < 6; i++) {
+                    const link = node.links ? (node.links[i] || { text: '', url: '' }) : { text: '', url: '' };
+                    linksHTML += `
+                        <div class="link-group">
+                            <input type="text" placeholder="連結文字 ${i+1}" value="${link.text}" data-path="${path}" data-link-index="${i}" data-link-prop="text">
+                            <input type="text" placeholder="超連結網址 ${i+1}" value="${link.url}" data-path="${path}" data-link-index="${i}" data-link-prop="url">
+                        </div>
+                    `;
+                }
+                productLinksHTML = `<div class="product-links-container">${linksHTML}</div>`;
+            }
+
+            const buttons = `${isCategory ? '<button class="btn-action btn-add-sub" data-path="'+path+'" title="新增子項目">＋</button>' : ''}<button class="btn-action btn-delete-sub" data-path="${path}" title="刪除此項目">－</button>`;
+
+            group.innerHTML = typeSelect + nameInput + otherInputs + buttons;
+            if(productLinksHTML){
+                const linksContainerWrapper = document.createElement('div');
+                linksContainerWrapper.style.flexBasis = '100%';
+                linksContainerWrapper.innerHTML = productLinksHTML;
+                group.appendChild(linksContainerWrapper);
+            }
+            container.appendChild(group);
+
+            if (isCategory && node.children && node.children.length > 0) {
+                const nestedContainer = document.createElement('div');
+                nestedContainer.className = 'nested-group';
+                node.children.forEach((child, index) => {
+                    const newPath = path ? `${path}.children.${index}` : `children.${index}`;
+                    nestedContainer.appendChild(createFormGroupRecursive(child, newPath));
+                });
+                container.appendChild(nestedContainer);
+            }
+            return container;
+        }
+
+        function handleModalClickActions(event) {
+            const target = event.target;
+            if (!target.classList.contains('btn-action')) return;
+            updateTempDataFromForm();
+            const pathStr = target.dataset.path;
+            const node = getObjectByPath(tempCategoryBranch, pathStr);
+            if (!node) return;
+
+            if (target.classList.contains('btn-add-sub')) {
+                if (!node.children) node.children = [];
+                node.children.push({ type: 'category', name: '新分類', url: '', children: [] });
+                buildEditForm();
+            } else if (target.classList.contains('btn-delete-sub')) {
+                 if (pathStr === "") {
+                     alert("無法刪除最頂層分類，請在主介面操作。");
+                     return;
+                 }
+                const path = pathStr.split('.');
+                const parentPath = path.slice(0, -2).join('.');
+                const parentNode = getObjectByPath(tempCategoryBranch, parentPath);
+                const indexToDelete = parseInt(path[path.length - 1]);
+                if (parentNode && parentNode.children) {
+                    parentNode.children.splice(indexToDelete, 1);
+                    buildEditForm();
+                }
+            }
+        }
+
+        function handleModalChangeActions(event) {
+            const target = event.target;
+            if (!target.dataset.path) return;
+
+            updateTempDataFromForm();
+            const pathStr = target.dataset.path;
+            const node = getObjectByPath(tempCategoryBranch, pathStr);
+            if (!node) return;
+
+            if (target.dataset.prop === 'type') {
+                 const newType = target.value;
+                 if (newType === 'category') {
+                     node.type = 'category';
+                     node.children = node.children || [];
+                     node.url = node.url || '';
+                     node.linkText = node.linkText || '';
+                     delete node.status;
+                     delete node.links;
+                     delete node.discontinuedDate;
+                 } else {
+                     node.type = 'product';
+                     node.status = node.status || 'active';
+                     node.links = Array(6).fill(null).map(() => ({text: '', url: ''}));
+                     delete node.children;
+                     delete node.url;
+                     delete node.linkText;
+                 }
+            }
+
+            if (target.dataset.prop === 'status') {
+                if(target.value === 'active' || target.value === 'suggested') {
+                    delete node.discontinuedDate;
+                } else {
+                    node.discontinuedDate = node.discontinuedDate || '';
+                }
+            }
+
+            buildEditForm();
+        }
+
+        modalSaveBtn.addEventListener('click', () => {
+            updateTempDataFromForm();
+            let cleanData = JSON.parse(JSON.stringify(tempCategoryBranch));
+
+            function cleanupData(node) {
+                if (node.type === 'product') {
+                    delete node.children;
+                    delete node.url;
+                    delete node.linkText;
+                    if(node.status === 'active' || node.status === 'suggested'){
+                        delete node.discontinuedDate;
+                    }
+                } else if (node.type === 'category') {
+                    delete node.status;
+                    delete node.links;
+                    delete node.discontinuedDate;
+                    if (node.children) {
+                       node.children.forEach(cleanupData);
+                    }
+                }
+            }
+            cleanupData(cleanData);
+
+            productData[modalEditingL1Index] = cleanData;
+
+            saveData();
+            renderAll(); // --- 修改：更新所有視圖 ---
+            showModalView('list');
+        });
+
+        function buildEditForm() {
+            modalFormContainer.innerHTML = '';
+            modalFormContainer.appendChild(createFormGroupRecursive(tempCategoryBranch, ''));
+        }
+
+        function getObjectByPath(obj, pathStr) {
+            if (!pathStr) return obj;
+            const path = pathStr.split('.');
+            return path.reduce((acc, part) => (acc && acc[part] !== undefined) ? acc[part] : null, obj);
+        }
+
+        function showModalView(viewName) {
+            if (viewName === 'list') {
+                renderMainCategoryManager();
+                modalListView.classList.add('active');
+                modalEditorView.classList.remove('active');
+            } else if (viewName === 'editor') {
+                modalListView.classList.remove('active');
+                modalEditorView.classList.add('active');
+            }
+        }
+
+        function openModalForEditing(index) {
+            modalEditingL1Index = index;
+            tempCategoryBranch = JSON.parse(JSON.stringify(productData[index]));
+
+            function ensureDataStructure(node){
+                if (node.type === 'product') {
+                    if (!Array.isArray(node.links)) node.links = [];
+                    while(node.links.length < 6){
+                        node.links.push({text:'', url:''});
+                    }
+                }
+                if(node.children) node.children.forEach(ensureDataStructure);
+            }
+            ensureDataStructure(tempCategoryBranch);
+
+            originalCategoryBranchString = JSON.stringify(tempCategoryBranch);
+            buildEditForm();
+            showModalView('editor');
+        }
+
+        function closeEditModal() {
+            if (modalEditorView.classList.contains('active')) {
+                updateTempDataFromForm();
+                const currentBranchString = JSON.stringify(tempCategoryBranch);
+                if (currentBranchString !== originalCategoryBranchString) {
+                    if (confirm("您有未儲存的變更，確定要捨棄並返回列表嗎？")) {
+                        showModalView('list');
+                    }
+                } else {
+                    showModalView('list');
+                }
+            } else {
+                modal.style.display = 'none';
+            }
+        }
+
+        function forceCloseAllModals() {
+            modal.style.display = 'none';
+            suggestedProductModal.style.display = 'none';
+            modalFormContainer.innerHTML = '';
+            modalEditingL1Index = -1;
+            tempCategoryBranch = null;
+            originalCategoryBranchString = null;
+            showModalView('list');
+        }
+
+        function filterDataRecursive(nodes) {
+             const result = [];
+             for (const node of nodes) {
+                 if (node.type === 'category') {
+                     const filteredChildren = filterDataRecursive(node.children || []);
+                     if (filteredChildren.length > 0 || displayFilter.includes('discontinued')) {
+                         result.push({ ...node, children: filteredChildren });
+                     }
+                 } else {
+                     const currentStatus = node.status || 'active';
+                     if (displayFilter.includes(currentStatus)) {
+                         result.push(node);
+                     }
+                 }
+             }
+             return result;
+         }
+
+        function renderProductTree() {
+            const filteredData = filterDataRecursive(JSON.parse(JSON.stringify(productData)));
+            treeContainer.innerHTML = '';
+            if(filteredData.length > 0) {
+                treeContainer.appendChild(createTreeRecursive(filteredData));
+            } else {
+                treeContainer.innerHTML = `<p style="text-align:center; color:#6c757d;">在此檢視模式下沒有可顯示的商品。</p>`;
+            }
+        }
+
+        /**
+         * 建立「傳統列表」的樹狀圖 (不包含點擊事件)
+         * 【*** 這是編輯器「目前畫面」的函式，保持原樣，顯示 EN ***】
+         */
+        function createTreeRecursive(nodes, level = 0) {
+            const ul = document.createElement('ul');
+            ul.className = level === 0 ? 'product-tree' : 'children-container';
+
+            nodes.forEach(node => {
+                const li = document.createElement('li');
+
+                if (node.type === 'category') {
+                    li.className = 'tree-node category';
+                    const nameElement = `<span class="category-name">${node.name}</span>`;
+                    const hasUrl = node.url && node.url.trim() !== '';
+                    const hasLinkText = node.linkText && node.linkText.trim() !== '';
+                    let linkElement = '';
+
+                    if (hasUrl && hasLinkText) {
+                        linkElement = `<a href="${node.url}" target="_blank" class="product-links">${node.linkText.trim()}</a>`;
+                    } else if (hasUrl) {
+                        linkElement = `<a href="${node.url}" target="_blank" title="開啟連結: ${node.url}" class="link-icon-button">📎</a>`;
+                    }
+
+                    li.innerHTML = `<div class="category-title level-${level}"><span class="toggle-icon">${(node.children && node.children.length > 0) ? '▼' : ''}</span>${nameElement}${linkElement}</div>`;
+
+                    if (node.children && node.children.length > 0) {
+                        li.appendChild(createTreeRecursive(node.children, level + 1));
+                    }
+                } else if (node.type === 'product') {
+                    li.className = 'tree-node product-item';
+
+                    let statusText = '';
+                    switch (node.status) {
+                        case 'active': statusText = '銷售中'; break;
+                        case 'discontinued': statusText = '已停售'; break;
+                        case 'suggested': statusText = '建議商品'; break;
+                        default: statusText = '銷售中';
+                    }
+
+                    if (node.status === 'discontinued' && node.discontinuedDate) {
+                        statusText += ` (${node.discontinuedDate})`;
+                    }
+
+                    let linksHTML = '';
+                    if (node.links && Array.isArray(node.links)) {
+                        const validLinks = node.links
+                            .filter(link => link.text && link.text.trim() !== '' && link.url && link.url.trim() !== '');
+
+                        if (validLinks.length > 0) {
+                            const linkContent = validLinks.map(link => {
+                                // 【保持原樣】
+                                const isEnLink = link.text.trim().toUpperCase() === 'EN';
+                                const wrapperClass = isEnLink ? 'class="link-wrapper en-link-wrapper"' : 'class="link-wrapper"';
+                                return `<span ${wrapperClass}><a href="${link.url}" target="_blank">${link.text.trim()}</a></span>`;
+                            }).join('');
+                            linksHTML = `<span class="product-links">${linkContent}</span>`;
+                        }
+                    }
+                    li.innerHTML = `<span class="product-name">${node.name}</span><span class="product-status ${node.status || 'active'}">${statusText}</span>${linksHTML}`;
+                }
+
+                ul.appendChild(li);
+            });
+            return ul;
+        }
+
+        function handleToggle(event) {
+            const title = event.target.closest('.category-title');
+            if (!title) return;
+            if (event.target.tagName === 'A' || event.target.closest('a')) return;
+            const categoryNode = title.parentNode;
+            if (categoryNode.querySelector('.children-container')) {
+                categoryNode.classList.toggle('collapsed');
+                const icon = title.querySelector('.toggle-icon');
+                if (icon) icon.textContent = categoryNode.classList.contains('collapsed') ? '▶' : '▼';
+            }
+        }
+
+        function handleMainManagerActions(event) {
+            const target = event.target;
+            if (target.dataset.index === undefined) return;
+            const index = parseInt(target.dataset.index);
+
+            if (target.classList.contains('btn-edit')) {
+                openModalForEditing(index);
+            } else if (target.classList.contains('btn-delete')) {
+                if (confirm(`確定要刪除主分類 "${productData[index].name}" 嗎？`)) {
+                    productData.splice(index, 1);
+                    saveData();
+                    renderMainCategoryManager();
+                    renderAll(); // --- 修改：更新所有視圖 ---
+                }
+            }
+        }
+
+        function renderSuggestedProductManager() {
+            suggestedProductListContainer.innerHTML = '';
+            let totalCount = 0;
+            let checkedCount = 0;
+
+            function findAndRenderProductsRecursive(nodes, parentCategoryName) {
+                nodes.forEach(node => {
+                    if (node.type === 'product' && (node.status === 'active' || node.status === 'suggested')) {
+                        totalCount++;
+                        const isSuggested = node.status === 'suggested';
+                        if (isSuggested) checkedCount++;
+
+                        const itemLabel = document.createElement('label');
+                        const safeNodeName = node.name.replace(/"/g, '&quot;');
+                        itemLabel.innerHTML = `<input type="checkbox" value="${safeNodeName}" ${isSuggested ? 'checked' : ''}> <span>${node.name}</span>`;
+                        const container = suggestedProductListContainer.querySelector(`[data-category-name="${parentCategoryName}"]`);
+                        if(container) container.appendChild(itemLabel);
+                    }
+                    if (node.type === 'category' && node.children) {
+                        const currentCategoryName = `${parentCategoryName} > ${node.name}`;
+                        const categoryContainer = document.createElement('div');
+                        categoryContainer.innerHTML = `<h5>${node.name}</h5>`;
+                        categoryContainer.dataset.categoryName = currentCategoryName;
+                        suggestedProductListContainer.appendChild(categoryContainer);
+                        findAndRenderProductsRecursive(node.children, currentCategoryName);
+                        // If the category container has no product labels after recursion, remove it.
+                        if (categoryContainer.querySelectorAll('label').length === 0) {
+                             categoryContainer.remove();
+                        }
+                    }
+                });
+            }
+
+            productData.forEach(mainCategory => {
+                const mainCategoryContainer = document.createElement('div');
+                mainCategoryContainer.innerHTML = `<h5>${mainCategory.name}</h5>`;
+                mainCategoryContainer.dataset.categoryName = mainCategory.name;
+                suggestedProductListContainer.appendChild(mainCategoryContainer);
+                if (mainCategory.children) {
+                    findAndRenderProductsRecursive(mainCategory.children, mainCategory.name);
+                }
+                 // If the main category container has no product labels after recursion, remove it.
+                if (mainCategoryContainer.querySelectorAll('label').length === 0) {
+                    mainCategoryContainer.remove();
+                }
+            });
+
+            suggestedModalTotalCount = totalCount;
+            updateSuggestedCountDisplay(checkedCount);
+
+            if (totalCount === 0) {
+                suggestedProductListContainer.innerHTML = '<p>沒有可設定為建議的商品 (狀態為 "銷售中" 或 "建議")。</p>';
+            }
+        }
+
+        function updateFilterCounts() {
+            let activeSuggestedCount = 0, suggestedCount = 0, discontinuedCount = 0;
+            function countProductsRecursive(nodes) {
+                nodes.forEach(node => {
+                    if (node.type === 'category' && node.children) {
+                        countProductsRecursive(node.children);
+                    } else if (node.type === 'product') {
+                        const status = node.status || 'active';
+                        if (status === 'active' || status === 'suggested') activeSuggestedCount++;
+                        if (status === 'suggested') suggestedCount++;
+                        if (status === 'discontinued') discontinuedCount++;
+                    }
+                });
+            }
+            countProductsRecursive(productData);
+            document.getElementById('active-suggested-count').textContent = activeSuggestedCount;
+            document.getElementById('suggested-count').textContent = suggestedCount;
+            document.getElementById('discontinued-count').textContent = discontinuedCount;
+        }
+
+        function updateSuggestedCountDisplay(checkedCount) {
+             suggestedCountDisplay.textContent = `已勾選 ${checkedCount} / 總計 ${suggestedModalTotalCount}`;
+        }
+
+        function saveSuggestedProducts() {
+            const checkedInputs = suggestedProductListContainer.querySelectorAll('input[type="checkbox"]:checked');
+            const suggestedProductNames = new Set(Array.from(checkedInputs).map(input => input.value));
+
+            function updateStatusRecursive(nodes) {
+                nodes.forEach(node => {
+                    if (node.type === 'product') {
+                        if (suggestedProductNames.has(node.name)) {
+                            node.status = 'suggested';
+                        } else if (node.status === 'suggested') {
+                            node.status = 'active';
+                        }
+                    }
+                    if (node.children) updateStatusRecursive(node.children);
+                });
+            }
+
+            updateStatusRecursive(productData);
+            saveData();
+            renderAll(); // --- 修改：更新所有視圖 ---
+            forceCloseAllModals();
+            alert('建議商品已成功更新！');
+        }
+
+        function toggleAll(expand) {
+            const allCategories = treeContainer.querySelectorAll('.category');
+            allCategories.forEach(categoryNode => {
+                if (categoryNode.querySelector('.children-container')) {
+                    const icon = categoryNode.querySelector('.toggle-icon');
+                    if (expand) {
+                        categoryNode.classList.remove('collapsed');
+                        if (icon) icon.textContent = '▼';
+                    } else {
+                        categoryNode.classList.add('collapsed');
+                        if (icon) icon.textContent = '▶';
+                    }
+                }
+            });
+            toggleAllBtn.textContent = expand ? '全部收合' : '全部展開';
+            toggleAllBtn.dataset.state = expand ? 'expanded' : 'collapsed';
+        }
+
+        // ---
+        // --- 【修改】初始化與事件綁定
+        // ---
+        loadData();
+        loadAndApplyColors();
+        updateFilter(displayFilter, showActiveSuggestedBtn); // 1. 渲染傳統列表 (隱藏)
+        updateFilterCounts(); // 2. 計算數字
+        renderMainMenu(); // 3. 渲染圓圈選單
+        showView('#main-menu-view'); // 4. 顯示圓圈選單
+
+        // --- 新增：圓圈選單導航事件 ---
+        goToAdminBtn.addEventListener('click', () => showView('#traditional-list-view'));
+        goToCircleBtn.addEventListener('click', () => showView('#main-menu-view'));
+        mainMenuBackBtn.addEventListener('click', () => showView('#main-menu-view'));
+        productListBackBtn.addEventListener('click', () => {
+            if (currentMainIndex !== -1) showSubMenu(currentMainIndex);
+        });
+
+        // --- 【新增】建議書導覽事件 ---
+        goToSuggestedViewBtn.addEventListener('click', () => {
+            // 每次點擊都重新過濾一次，確保資料最新
+            suggestedProductData = filterDataForSuggested(JSON.parse(JSON.stringify(productData)));
+            renderSuggestedMainMenu();
+            showView('#suggested-main-menu-view');
+        });
+        // --- 【！本次修改！】 返回按鈕（因為 showView 已經會處理清空，這裡不用額外寫） ---
+        goBackToMainMenuBtn.addEventListener('click', () => showView('#main-menu-view'));
+        suggestedMainMenuBackBtn.addEventListener('click', () => showView('#suggested-main-menu-view'));
+
+        suggestedProductListBackBtn.addEventListener('click', () => {
+            if (currentSuggestedMainIndex !== -1) showSuggestedSubMenu(currentSuggestedMainIndex);
+        });
+
+        // --- 【！本次修改！】 建議書列印事件 ---
+        if (printSuggestedViewBtn) { // Add null check for safety
+            printSuggestedViewBtn.addEventListener('click', () => {
+                // 1. 在 body 加上標記 class
+                document.body.classList.add('printing-suggested-view');
+                // 2. 觸發瀏覽器列印
+                window.print();
+                // 3. 列印結束後 (無論是確認或取消)，移除標記 class
+                //    使用 setTimeout 確保列印對話框有足夠時間反應
+                setTimeout(() => {
+                    document.body.classList.remove('printing-suggested-view');
+                }, 500);
+            });
+        }
+
+
+        // --- 原版：後台管理事件 ---
+        openManagementModalBtn.addEventListener('click', () => { modal.style.display = 'block'; showModalView('list'); });
+        openSuggestedModalBtn.addEventListener('click', () => { renderSuggestedProductManager(); suggestedProductModal.style.display = 'block'; });
+        suggestedSaveBtn.addEventListener('click', saveSuggestedProducts);
+        suggestedCancelBtn.addEventListener('click', forceCloseAllModals);
+
+        if (deselectAllBtn) { // Add null check
+            deselectAllBtn.addEventListener('click', () => {
+                if (confirm("確定要取消已勾選商品?")) {
+                    const checkboxes = suggestedProductListContainer.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => {
+                        cb.checked = false;
+                    });
+                    updateSuggestedCountDisplay(0);
+                }
+            });
+        }
+
+        if (suggestedProductListContainer) { // Add null check
+             suggestedProductListContainer.addEventListener('change', (event) => {
+                if (event.target.type === 'checkbox') {
+                    const currentCheckedCount = suggestedProductListContainer.querySelectorAll('input:checked').length;
+                    updateSuggestedCountDisplay(currentCheckedCount);
+                }
+            });
+        }
+
+
+        allCloseBtns.forEach(btn => btn.addEventListener('click', forceCloseAllModals));
+
+        if (addMainCategoryBtn) { // Add null check
+            addMainCategoryBtn.addEventListener('click', () => {
+                const newName = prompt("請輸入新的主分類名稱：");
+                if (newName && newName.trim()) {
+                     if (productData.some(cat => cat.name === newName.trim())) {
+                         alert('分類名稱已存在！');
+                         return;
+                     }
+                     productData.push({ type: 'category', name: newName.trim(), url: '', children: [] });
+                     saveData();
+                     renderMainCategoryManager();
+                     renderAll(); // --- 修改：更新所有視圖 ---
+                }
+            });
+        }
+
+
+        function updateFilter(newFilter, activeBtn) {
+            displayFilter = newFilter;
+            allFilterBtns.forEach(btn => btn.classList.remove('active-filter'));
+            if(activeBtn) activeBtn.classList.add('active-filter'); // Check if activeBtn exists
+            renderProductTree();
+            toggleAll(true);
+        }
+
+        if(showActiveSuggestedBtn) showActiveSuggestedBtn.addEventListener('click', () => updateFilter(['active', 'suggested'], showActiveSuggestedBtn));
+        if(showSuggestedBtn) showSuggestedBtn.addEventListener('click', () => updateFilter(['suggested'], showSuggestedBtn));
+        if(showDiscontinuedBtn) showDiscontinuedBtn.addEventListener('click', () => updateFilter(['discontinued'], showDiscontinuedBtn));
+
+        if(treeContainer) treeContainer.addEventListener('click', handleToggle);
+        if(categoryList) categoryList.addEventListener('click', handleMainManagerActions);
+        if(modalFormContainer) modalFormContainer.addEventListener('click', handleModalClickActions);
+        if(modalFormContainer) modalFormContainer.addEventListener('change', handleModalChangeActions);
+
+        if(modalBackBtn) modalBackBtn.addEventListener('click', () => showModalView('list'));
+        if(modalCancelBtn) modalCancelBtn.addEventListener('click', forceCloseAllModals);
+
+        if(toggleAllBtn) { // Add null check
+            toggleAllBtn.addEventListener('click', () => {
+                const shouldExpand = toggleAllBtn.dataset.state === 'collapsed';
+                toggleAll(shouldExpand);
+            });
+        }
+
+        if(saveHtmlBtn) saveHtmlBtn.addEventListener('click', generateAndDownloadHtml);
+        if(printBtn) { // Add null check
+             printBtn.addEventListener('click', () => {
+                // 【重要】確保原版列印不受影響
+                document.body.classList.remove('printing-suggested-view');
+                window.print();
+            });
+        }
+
+
+        // 顏色選擇器
+        const colorPickers = document.querySelectorAll('#color-manager input[type="color"]');
+        colorPickers.forEach(picker => {
+            picker.addEventListener('input', () => {
+                document.documentElement.style.setProperty(picker.dataset.cssVar, picker.value);
+            });
+            picker.addEventListener('change', saveColorSettings); // Save on final change
+        });
+
+        // 全局點擊關閉 Modal
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                closeEditModal();
+            } else if (event.target == suggestedProductModal) {
+                forceCloseAllModals();
+            }
+        });
+    });
+</script>
+</body>
+</html>
