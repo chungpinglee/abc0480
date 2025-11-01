@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南山人壽精選傷病主約分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn {
+            /* * 【修改】: 
+             * 將 hover:text-blue-700 (滑鼠滑過變藍) 
+             * 改為 hover:text-red-700 (滑鼠滑過變紅)
+             */
+            @apply px-3 py-3 mx-8 text-sm md:text-base font-medium text-yellow-900 border-b-4 border-transparent hover:text-red-700 hover:border-blue-300 transition-all duration-200;
+        }
+        
+        /* 放大 20% 的效果不變 */
+        .tab-btn:hover {
+            transform: scale(1.2);
+        }
+        .tab-btn.active {
+            @apply text-blue-800 border-blue-700;
+        }
+        
+        /* 放大 20% 的效果不變 */
+        .tab-btn.active:hover {
+             transform: scale(1.2); 
+        }
+        .accordion-header {
+            @apply w-full flex justify-between items-center p-4 bg-gray-100 hover:bg-gray-200 rounded-lg cursor-pointer transition-colors;
+        }
+        .accordion-content {
+            @apply bg-white p-4 border border-t-0 border-gray-200 rounded-b-lg;
+        }
+        /* 響應式表格樣式 */
+        .table-wrapper {
+            @apply block w-full overflow-x-auto;
+        }
+        .data-table {
+            @apply min-w-full divide-y divide-gray-200;
+        }
+        .data-table th {
+            @apply px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider bg-gray-100 border border-gray-700;
+        }
+        .data-table td {
+            @apply px-4 py-4 whitespace-nowrap text-sm text-gray-700 bg-white border border-gray-700;
+        }
+        .data-table tr:nth-child(even) td {
+            @apply bg-gray-50;
+        }
+        .text-highlight {
+            @apply text-red-700 font-medium;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <main class="container mx-auto p-4 md:p-8 max-w-6xl">
+        
+        <header class="text-center mb-8">
+            <div class="bg-blue-600 rounded-lg py-4 mb-2 shadow-inner">
+                <h1 class="text-3xl md:text-4xl font-bold text-white">
+                    精選傷病定期保險
+                </h1>
+            </div>
+            <p class="text-lg md:text-xl text-green-700 font-bold">
+                TED35 vs. TED 主約分析
+            </p>
+        </header>
+
+        <nav class="flex justify-center border-b-2 border-gray-200 mb-6" id="nav-tabs">
+            <button class="tab-btn active" data-tab="comparison">
+                <span class="text-lg mr-1 md:mr-2">1️⃣</span> 方案比較
+            </button>
+            <button class="tab-btn" data-tab="benefits">
+                <span class="text-lg mr-1 md:mr-2">2️⃣</span> 保障詳情
+            </button>
+            <button class="tab-btn" data-tab="health-promo">
+                <span class="text-lg mr-1 md:mr-2">3️⃣</span> 健康促進
+            </button>
+            <button class="tab-btn" data-tab="summary">
+                <span class="text-lg mr-1 md:mr-2">4️⃣</span> 案例說明
+            </button>
+        </nav>
+
+        <div>
+            <section id="comparison-content" class="tab-content">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-blue-800">第一部分：核心商品差異</h2>
+                    <p class="text-gray-600 mt-1">兩款主約的核心差異在於「保障期間」與「投保年齡」。</p>
+                </div>
+                
+                <div class="table-wrapper rounded-lg border border-gray-700 bg-white shadow-lg overflow-hidden">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>項目 (Features)</th>
+                                <th class="text-blue-700 bg-blue-50">南山人壽精彩雙保 (TED35)</th>
+                                <th class="text-gray-700 bg-gray-100">南山人壽精選傷病 (TED)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>商品類型</td>
+                                <td class="bg-blue-50"><span class="text-highlight">定期人壽保險 (主約)</span></td>
+                                <td><span class="text-highlight">定期保險 (主約)</span></td>
+                            </tr>
+                            <tr>
+                                <td>保障期間/長度</td>
+                                <td class="bg-blue-50"><span class="text-highlight">保障期間 35 年</span></td>
+                                <td><span class="text-highlight">保障至 84 歲</span></td>
+                            </tr>
+                            <tr>
+                                <td>投保年齡 (範圍)</td>
+                                <td class="bg-blue-50"><span class="text-highlight">16歲 至 55歲</span></td>
+                                <td><span class="text-highlight">0歲 至 60歲</span></td>
+                            </tr>
+                            <tr>
+                                <td>滿期保險金</td>
+                                <td class="bg-blue-50"><span class="text-highlight">保障期間35年屆滿仍生存時給付</span></td>
+                                <td><span class="text-highlight">保險年齡達84歲之保單年度末仍生存時給付</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-8 bg-white p-6 rounded-xl shadow">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">共同特點</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <span class="text-2xl">🤝</span>
+                            <p class="font-medium">10 / 20年 繳費</p>
+                        </div>
+                        <div>
+                            <span class="text-2xl">✅</span>
+                            <p class="font-medium">二至六級失能豁免</p>
+                        </div>
+                        <div>
+                            <span class="text-2xl">👍</span>
+                            <p class="font-medium">健康促進係數</p>
+                        </div>
+                        <div>
+                            <span class="text-2xl">⏱️</span>
+                            <p class="font-medium">等待期間 (疾病30日/癌症90日)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="benefits-content" class="tab-content hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-blue-800">第二部分：41項精選傷病保障</h2>
+                    <p class="text-gray-600 mt-1">兩項商品的保障項目、分類、比例均相同。共分為三大類別。</p>
+                </div>
+
+                <div class="chart-container mb-8">
+                    <canvas id="benefitsChart"></canvas>
+                </div>
+                <p class="text-center text-gray-600 -mt-4 mb-8">41項精選傷病項目數量分佈</p>
+
+                <div class="space-y-4 max-w-4xl mx-auto">
+                    
+                    <div class="accordion-item">
+                        <button class="accordion-header" data-target="accordion-5">
+                            <span class="text-lg font-semibold text-yellow-700">5% 精選傷病項目 (2項)</span>
+                            <span class="accordion-icon text-xl font-bold text-gray-600">▼</span>
+                        </button>
+                        <div id="accordion-5" class="accordion-content hidden">
+                            <p class="text-sm text-gray-600 mb-3">給付限制：有效期間內給付以1次為限。</p>
+                            <ul class="divide-y divide-gray-100">
+                                <li class="py-2 flex justify-between">
+                                    <span class="text-gray-700">惡性腫瘤(癌症) - 癌症(初期)</span>
+                                    <span class="font-medium text-yellow-700">5% × 保額</span>
+                                </li>
+                                <li class="py-2 flex justify-between">
+                                    <span class="text-gray-700">神經系統疾病 - 思覺失調症</span>
+                                    <span class="font-medium text-yellow-700">5% × 保額</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" data-target="accordion-10">
+                            <span class="text-lg font-semibold text-orange-700">10% 精選傷病項目 (7項)</span>
+                            <span class="accordion-icon text-xl font-bold text-gray-600">▼</span>
+                        </button>
+                        <div id="accordion-10" class="accordion-content hidden">
+                            <p class="text-sm text-gray-600 mb-3">給付限制：有效期間內給付以1次為限。</p>
+                            <ul class="divide-y divide-gray-100">
+                                <li class="py-2 flex justify-between"><span>惡性腫瘤(癌症) - 癌症(輕度)</span><span class="font-medium text-orange-700">10% × 保額</span></li>
+                                <li class="py-2 flex justify-between"><span>認知功能障礙 - 認知功能障礙初期</span><span class="font-medium text-orange-700">10% × 保額</span></li>
+                                <li class="py-2 flex justify-between"><span>癱瘓 - 癱瘓(輕度)</span><span class="font-medium text-orange-700">10% × 保額</span></li>
+                                <li class="py-2 flex justify-between"><span>神經系統疾病 - 重症肌無力症</span><span class="font-medium text-orange-700">10% × 保額</span></li>
+                                <li class="py-2 flex justify-between"><span>其他 - 漢生病</span><span class="font-medium text-orange-700">10% × 保額</span></li>
+                                <li class="py-2 flex justify-between"><span>心腦血管 - 腦中風後障礙(輕度)</span><span class="font-medium text-orange-700">10% × 保額</span></li>
+                                <li class="py-2 flex justify-between"><span>心腦血管 - 急性心肌梗塞(輕度)</span><span class="font-medium text-orange-700">10% × 保額</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header" data-target="accordion-100">
+                            <span class="text-lg font-semibold text-red-700">100% 精選傷病項目 (32項)</span>
+                            <span class="accordion-icon text-xl font-bold text-gray-600">▼</span>
+                        </button>
+                        <div id="accordion-100" class="accordion-content hidden">
+                            <p class="text-sm text-gray-600 mb-3">給付限制：給付後契約終止。</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-gray-700">
+                                <span class="py-1">癌症(重度)</span>
+                                <span class="py-1">認知功能障礙中重度</span>
+                                <span class="py-1">癱瘓(重度)</span>
+                                <span class="py-1">腦中風後障礙(重度)</span>
+                                <span class="py-1">腦血管動脈瘤開顱手術</span>
+                                <span class="py-1">冠狀動脈繞道手術</span>
+                                <span class="py-1">急性心肌梗塞(重度)</span>
+                                <span class="py-1">主動脈外科置換手術</span>
+                                <span class="py-1">心臟瓣膜開心手術</span>
+                                <span class="py-1 font-semibold text-red-600">經導管心臟瓣膜置換術 (業界首創)</span>
+                                <span class="py-1">嚴重原發性肺動脈高血壓</span>
+                                <span class="py-1">因呼吸衰竭需長期使用呼吸器</span>
+                                <span class="py-1">病毒性猛暴性肝炎合併肝衰竭</span>
+                                <span class="py-1">慢性肝病合併肝衰竭</span>
+                                <span class="py-1">嚴重肝硬化症</span>
+                                <span class="py-1">末期腎病變</span>
+                                <span class="py-1">嚴重克隆氏病或潰瘍性結腸炎</span>
+                                <span class="py-1">重大器官移植或造血幹細胞移植</span>
+                                <span class="py-1">小腸移植</span>
+                                <span class="py-1">良性腦腫瘤併神經障礙後遺症</span>
+                                <span class="py-1">急性腦炎併神經障礙後遺症</span>
+                                <span class="py-1">脊髓灰質炎併神經障礙後遺症</span>
+                                <span class="py-1">多發性硬化症</span>
+                                <span class="py-1">嚴重巴金森氏症</span>
+                                <span class="py-1">嚴重運動神經元疾病</span>
+                                <span class="py-1">嚴重全身性紅斑性狼瘡腎病變</span>
+                                <span class="py-1">嚴重類風濕性關節炎</span>
+                                <span class="py-1">嚴重再生不良性貧血</span>
+                                <span class="py-1">嚴重肌肉失養症</span>
+                                <span class="py-1">深度昏迷</span>
+                                <span class="py-1">嚴重第三度燒燙傷</span>
+                                <span class="py-1">嚴重頭部創傷</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="health-promo-content" class="tab-content hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-blue-800">第三部分：健康促進係數詳情</h2>
+                    <p class="text-gray-600 mt-1">鼓勵您維持健康，理賠加倍 (最高 1.05)。</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow mb-8 max-w-4xl mx-auto">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">一、 健康促進係數的運作方式</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start p-3 bg-gray-50 rounded-lg">
+                            <strong class="font-semibold text-blue-800 w-24 shrink-0">適用對象</strong>
+                            <span class="text-gray-700">僅限投保當時保險年齡達16歲 (含) 以上者。</span>
+                        </li>
+                        <li class="flex items-start p-3">
+                            <strong class="font-semibold text-blue-800 w-24 shrink-0">體檢時機</strong>
+                            <span class="text-gray-700">第二保單年度的第八個月起至通知單期間屆滿前。</span>
+                        </li>
+                        <li class="flex items-start p-3 bg-gray-50 rounded-lg">
+                            <strong class="font-semibold text-blue-800 w-24 shrink-0">適用時點</strong>
+                            <span class="text-gray-700">第三保單年度起，適用體檢結果對應之係數。</span>
+                        </li>
+                        <li class="flex items-start p-3">
+                            <strong class="font-semibold text-blue-800 w-24 shrink-0">投保初期</strong>
+                            <span class="text-gray-700">投保生效日至第二保單年度末，一律適用 A 級 (1.0)。</span>
+                        </li>
+                         <li class="flex items-start p-3 bg-gray-50 rounded-lg">
+                            <strong class="font-semibold text-blue-800 w-24 shrink-0">未體檢者</strong>
+                            <span class="text-gray-700">逾期未完成體檢者，將適用 A 級 (1.0)。</span>
+                        </li>
+                        <li class="flex items-start p-3">
+                            <strong class="font-semibold text-blue-800 w-24 shrink-0">影響項目</strong>
+                            <span class="text-gray-700">100%精選傷病、身故、完全失能、滿期保險金。</span>
+                        </li>
+                        <li class="flex items-start p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <strong class="font-semibold text-blue-800 w-24 shrink-0">理賠公式</strong>
+                            <span class="text-gray-700 font-medium">〔保額 或 年繳保費總和×1.06倍，兩者擇高〕 × 健康促進係數</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow max-w-5xl mx-auto">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">二、 達成最高 S 級體位 (1.05) 之健康標準</h3>
+                    <p class="text-sm text-gray-600 mb-4">必須在以下所有七項檢查項目中，全部符合S級的數值範圍。</p>
+                    
+                    <div class="table-wrapper rounded-lg border border-gray-700">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="w-1/12">編號</th>
+                                    <th class="w-3/12">身體健康檢查項目</th>
+                                    <th class="w-4/12 text-green-700 bg-green-50">S級體位 (係數 1.05)</th>
+                                    <th class="w-4/12 text-gray-700 bg-gray-100">A級體位 (係數 1.0)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>①</td>
+                                    <td>身體質量指數 (BMI)</td>
+                                    <td class="bg-green-50 text-green-800 font-medium">
+                                        保險年齡 &le; 39歲：18 ~ 27.9<br>
+                                        保險年齡 &ge; 40歲：18 ~ 25.9
+                                    </td>
+                                    <td>不符合S級之數值</td>
+                                </tr>
+                                <tr>
+                                    <td>②</td>
+                                    <td>血壓 (收縮壓/舒張壓)</td>
+                                    <td class="bg-green-50 text-green-800 font-medium">
+                                        保險年齡 &le; 39歲：90~125 / 56~80 mmHg<br>
+                                        保險年齡 &ge; 40歲：90~135 / 56~85 mmHg
+                                    </td>
+                                    <td>
+                                        保險年齡 &le; 39歲：90~135 / 56~85 mmHg<br>
+                                        保險年齡 &ge; 40歲：90~135 / 56~85 mmHg
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>③</td>
+                                    <td>總膽 தலைநக固醇</td>
+                                    <td class="bg-green-50 text-green-800 font-medium">
+                                        保險年齡 &le; 39歲：&le; 199.9 mg/dl<br>
+                                        保險年齡 &ge; 40歲：&le; 214.9 mg/dl
+                                    </td>
+                                    <td>
+                                        保險年齡 &le; 39歲：&le; 214.9 mg/dl<br>
+                                        保險年齡 &ge; 40歲：&le; 214.9 mg/dl
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>④</td>
+                                    <td>高密度膽固醇 (HDL)</td>
+                                    <td class="bg-green-50 text-green-800 font-medium">&ge; 45 mg/dl</td>
+                                    <td>&ge; 45 mg/dl</td>
+                                </tr>
+                                <tr>
+                                    <td>⑤</td>
+                                    <td>腰圍</td>
+                                    <td class="bg-green-50 text-green-800 font-medium">男性：＜90公分；女性：＜80公分</td>
+                                    <td>男性：＜90公分；女性：＜80公分</td>
+                                </tr>
+                                <tr>
+                                    <td>⑥</td>
+                                    <td>空腹血糖</td>
+                                    <td class="bg-green-50 text-green-800 font-medium">＜100 mg/dl</td>
+                                    <td>＜100 mg/dl</td>
+                                </tr>
+                                <tr>
+                                    <td>⑦</td>
+                                    <td>三酸甘油酯</td>
+                                    <td class="bg-green-50 text-green-800 font-medium">＜150 mg/dl</td>
+                                    <td>＜150 mg/dl</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+            <section id="summary-content" class="tab-content hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-blue-800">第四部分：案例說明</h2>
+                </div>
+                
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-blue-200">
+                        <h4 class="text-xl font-semibold text-blue-900 mb-3">100% 給付計算方式</h4>
+                        <p class="text-lg text-gray-700">
+                            給付金額為 (「保險金額」或「年繳保險費總和 × 1.06倍」) 兩者擇高，
+                            <br class="hidden md:block">
+                            再乘上
+                            <span class="font-bold text-blue-700 text-xl mx-1">×</span>
+                            <span class="font-bold text-blue-700 text-xl">健康促進係數 (最高 1.05)</span>
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">三、 理賠故事範例 (投保保額 100 萬)</h3>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-md mb-6">
+                            <h4 class="font-bold text-yellow-800">重要理賠原則</h4>
+                            <p class="text-sm text-yellow-700">5% (初期) 與 10% (輕度) 給付為 <span class="font-semibold">額外給付</span>，理賠後契約繼續有效，且<span class="font-semibold">不會</span>從未來的 100% (重度) 給付中扣除。</p>
+                        </div>
+                        
+                        <p class="text-sm text-gray-600 mb-6">以下範例說明保戶在保障期間內，依序發生不同程度傷病的理賠流程。 (理賠金計算暫不考慮健康促進係數)</p>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                                <h4 class="text-lg font-semibold text-blue-900 mb-3">理賠故事 1：癌症保障 (分階段給付)</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <span class="text-yellow-600 bg-yellow-100 font-semibold px-2 py-1 rounded mr-3 shrink-0">階段 1</span>
+                                        <div>
+                                            <p class="text-gray-700">王先生發現罹患「癌症(初期)」。</p>
+                                            <p class="font-semibold text-gray-800">理賠 <span class="text-yellow-700 text-xl">50,000</span> 元 (100萬 × 5%)</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-orange-600 bg-orange-100 font-semibold px-2 py-1 rounded mr-3 shrink-0">階段 2</span>
+                                        <div>
+                                            <p class="text-gray-700">後續病情發展，符合「癌症(輕度)」。</p>
+                                            <p class="font-semibold text-gray-800">理賠 <span class="text-orange-700 text-xl">100,000</span> 元 (100萬 × 10%)</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-red-600 bg-red-100 font-semibold px-2 py-1 rounded mr-3 shrink-0">階段 3</span>
+                                        <div>
+                                            <p class="text-gray-700">後續癌症惡化，經診斷符合「癌症(重度)」。</p>
+                                            <p class="font-semibold text-gray-800">理賠 <span class="text-red-700 text-xl">1,000,000</span> 元 (100萬 × 100%)</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <hr class="my-4 border-blue-200">
+                                <p class="text-center font-semibold text-blue-800">累計總理賠：1,150,000 元 (契約因100%給付而終止)。</p>
+                            </div>
+                            
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                                <h4 class="text-lg font-semibold text-blue-900 mb-3">理賠故事 2：中風保障 (分階段給付)</h4>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <span class="text-orange-600 bg-orange-100 font-semibold px-2 py-1 rounded mr-3 shrink-0">階段 1</span>
+                                        <div>
+                                            <p class="text-gray-700">陳小姐因中風導致生活尚能自理，符合「腦中風後障礙(輕度)」。</p>
+                                            <p class="font-semibold text-gray-800">理賠 <span class="text-orange-700 text-xl">100,000</span> 元 (100萬 × 10%)</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-red-600 bg-red-100 font-semibold px-2 py-1 rounded mr-3 shrink-0">階段 2</span>
+                                        <div>
+                                            <p class="text-gray-700">後續狀況加重，生活無法自理，符合「腦中風後障D-21D礙(重度)」。</p>
+                                            <p class="font-semibold text-gray-800">理賠 <span class="text-red-700 text-xl">1,000,000</span> 元 (100萬 × 100%)</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <hr class="my-4 border-blue-200">
+                                <p class="text-center font-semibold text-blue-800">累計總理賠：1,100,000 元 (契約因100%給付而終止)。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-6 rounded-xl shadow text-center border border-green-200">
+                        <h4 class="text-xl font-semibold text-green-900 mb-2">結論：分階段給付，保障更全面</h4>
+                        <p class="text-lg text-gray-700">
+                            從輕度/初期就開始提供保障，讓保戶在需要時能及早獲得財務支持，應對後續的醫療與照護。
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- 標籤頁 (Tab) 邏輯 ---
+            const tabContainer = document.getElementById('nav-tabs');
+            const tabButtons = tabContainer.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabContainer.addEventListener('click', function (e) {
+                const clickedButton = e.target.closest('.tab-btn');
+                if (!clickedButton) return;
+
+                const tabId = clickedButton.dataset.tab;
+
+                // 更新按鈕狀態
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                clickedButton.classList.add('active');
+
+                // 更新內容可見性
+                tabContents.forEach(content => {
+                    if (content.id === `${tabId}-content`) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+
+            // --- 手風琴 (Accordion) 邏輯 ---
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function () {
+                    const targetId = this.dataset.target;
+                    const targetContent = document.getElementById(targetId);
+                    const icon = this.querySelector('.accordion-icon');
+
+                    if (targetContent.classList.contains('hidden')) {
+                        targetContent.classList.remove('hidden');
+                        icon.textContent = '▲';
+                    } else {
+                        targetContent.classList.add('hidden');
+                        icon.textContent = '▼';
+                    }
+                });
+            });
+
+            // --- 圖表 (Chart.js) 邏輯 ---
+            if (document.getElementById('benefitsChart')) {
+                const ctx = document.getElementById('benefitsChart').getContext('2d');
+                
+                // 16字元換行邏輯
+                function formatLabel(str, maxwidth) {
+                    if (typeof str !== 'string') {
+                        return str;
+                    }
+                    let sections = [];
+                    let words = str.split(" ");
+                    let temp = "";
+
+                    words.forEach((item, index) => {
+                        if (temp.length > 0) {
+                            temp += " " + item;
+                        } else {
+                            temp = item;
+                        }
+                        if (temp.length > maxwidth) {
+                            sections.push(temp);
+                            temp = "";
+                        }
+                        if (index === words.length - 1 && temp.length > 0) {
+                            sections.push(temp);
+                        }
+                    });
+                    return sections;
+                }
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['5% 精選傷病', '10% 精選傷病', '100% 精選傷病'],
+                        datasets: [{
+                            label: '項目數量',
+                            data: [2, 7, 32],
+                            backgroundColor: [
+                                'rgb(250, 204, 21)',  // yellow-400
+                                'rgb(234, 88, 12)',   // orange-600
+                                'rgb(220, 38, 38)'    // red-600
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        size: 14,
+                                        family: "'Inter', 'Noto Sans TC', sans-serif"
+                                    },
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + ' 項';
+                                        }
+                                        return label;
+                                    },
+                                    title: function(context) {
+                                        return formatLabel(context[0].label, 16);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
