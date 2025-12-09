@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>售後服務資源互動地圖</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f7fa;
+            font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #006064;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .map-container {
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 1000px;
+        }
+        
+        /* ---------------------------------------------------- */
+        /* ★★★ 修正重點區域 ★★★ */
+        /* ---------------------------------------------------- */
+
+        /* 1. 設定圖片本身的預設游標為「普通箭頭」 (default)
+           這樣滑在沒有連結的背景上時，就不會誤導使用者 */
+        img {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: default; /* 關鍵：平時保持普通箭頭 */
+        }
+
+        /* 2. 只針對「設定好連結的區域 (area)」改變游標
+           當滑鼠滑到按鈕範圍內，變成「紅色指示手勢」 */
+        area {
+            /* 這裡使用一個紅色的手勢 SVG */
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='32' width='32' viewBox='0 0 24 24'%3E%3Cpath fill='%23FF0000' stroke='white' stroke-width='1.5' d='M21,11l-2-2l-7.8,2.6L9,5.5C9,4.1,8.1,3,7,3S5,4.1,5,5.5v8l-1.8-1.1c-0.6-0.3-1.3-0.2-1.8,0.2L1,13l5,6 c1.1,1.3,2.7,2,4.4,2H17c2.2,0,4-1.8,4-4V11z'/%3E%3C/svg%3E") 10 2, pointer;
+        }
+
+        .hint {
+            margin-top: 15px;
+            color: #555;
+            font-size: 0.9em;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        #error-msg {
+            display: none;
+            color: white;
+            background-color: #d32f2f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>售後服務資源互動地圖</h1>
+
+    <div id="error-msg">
+        ⚠️ 圖片載入失敗！<br>
+        請確認圖片檔名為 <strong>map.png</strong> 且與此檔案在同一資料夾。
+    </div>
+
+    <div class="map-container">
+        <img src="map.png" usemap="#image-map" alt="售後服務資源地圖" onerror="document.getElementById('error-msg').style.display='block';">
+
+        <map name="image-map">
+            <area target="_blank" alt="南山人壽" title="南山人壽" href="https://www.nanshanlife.com.tw/nanshanlife/sitemap" coords="31,865,293,1205" shape="rect">
+            
+            <area target="_blank" alt="南山人壽AI智能客服" title="南山人壽AI智能客服" href="https://chatweb.nanshanlife.com.tw/?token=kTOszsUUuuuhVmDFdiPE9X4AaXYkFD0mthnj6hEB4Q5Mf1%2Fw0M4XapkgG7J9qk5GTmW6tRf45wI5PeqrYNn9LyrugF1PgkYIhyKB0yz%2BsQQAjjuqvb5x%2BQOAw0ffZEPRFDaHBgMrs6d7bERiPLADZCwdIZGS3O3O3T5cPk5MFCg%3D" coords="415,851,725,1120" shape="rect">
+            
+            <area target="_blank" alt="南山人壽手機APP" title="南山人壽手機APP" href="https://www.nanshanlife.com.tw/nanshanlife/service-online-nsapp" coords="307,1239,471,1578" shape="rect">
+            
+            <area target="_blank" alt="南山人壽LINE帳號" title="南山人壽LINE帳號" href="https://www.nanshanlife.com.tw/nanshanlife/service-online-line" coords="499,1224,689,1573" shape="rect">
+            
+            <area alt="南山人壽0800免付費客服電話" title="南山人壽0800免付費客服電話" href="tel:0800020060,1" coords="17,1761,239,2105" shape="rect">
+            
+            <area target="_blank" alt="各種表格下載" title="各種表格下載" href="https://www.nanshanlife.com.tw/nanshanlife/service-form" coords="359,1626,601,1885" shape="rect">
+            
+            <area target="_blank" alt="南山產物" title="南山產物" href="https://www.nanshangeneral.com.tw/sitemap" coords="842,742,1118,1023" shape="rect">
+            
+            <area target="_blank" alt="請加入南山產物的LINE帳號" title="請加入南山產物的LINE帳號" href="https://www.nanshangeneral.com.tw/line" coords="1219,867,1520,1178" shape="rect">
+            
+            <area target="_blank" alt="飛機延誤申請" title="飛機延誤申請" href="https://www.nanshangeneral.com.tw/PublicWebGeneral/flight_delay.html" coords="781,1134,1099,1445" shape="rect">
+            
+            <area target="_blank" alt="旅遊不便險理賠文件" title="旅遊不便險理賠文件" href="https://www.nanshangeneral.com.tw/240" coords="1066,1728,791,1473" shape="rect">
+            
+            <area target="_blank" alt="汽車拖吊及全省服務據點" title="汽車拖吊及全省服務據點" href="https://www.nanshangeneral.com.tw/contactus?tabTitle=%E5%8C%97%E5%8D%80&amp;page=1" coords="740,1780,1127,1994" shape="rect">
+            
+            <area target="_blank" alt="海外緊急救雲電話" title="海外緊急救雲電話" href="https://www.nanshangeneral.com.tw/service-119?tabTitle=%E8%A1%8C%E6%94%BF%E5%8F%8A%E6%97%85%E9%81%8A%E8%B3%87%E8%A8%8A%E5%8D%94%E5%8A%A9" coords="1273,1274,1522,1554" shape="rect">
+            
+            <area alt="南山產物0800免付費客服電話" title="南山產物0800免付費客服電話" href="tel:0800020060,2" coords="1289,1596,1527,1843" shape="rect">
+            
+            <area target="_blank" alt="車禍相關AI諮詢" title="車禍相關AI諮詢" href="https://notebooklm.google.com/notebook/2357da7b-cc3e-4bb1-b5af-88ba09d62456" coords="1230,1939,1530,2166" shape="rect">
+            
+            <area target="_blank" alt="免貼郵票回函" title="免貼郵票回函" href="https://drive.google.com/file/d/1rKt8lNDBWCZNoAlzn1HriZUvEVdxAi3v/view" coords="73,2328,325,2637" shape="rect">
+            
+            <area target="_blank" alt="電子郵件信箱" title="電子郵件信箱" href="https://mail.google.com/mail/u/0/?fs=1&amp;to=abc0480@gmail.com&amp;tf=cm" coords="412,2412,791,2696" shape="rect">
+            
+            <area target="_blank" alt="LINE仲平" title="LINE仲平" href="https://line.me/R/ti/p/~0932218851" coords="838,2415,1087,2710" shape="rect">
+            
+            <area target="_blank" alt="保岩快修站" title="保岩快修站" href="https://youtube.com/channel/UCHNl9TQDWCSIPffKsGCLhkw?si=9KjbV4aSgcF15ITO" coords="1171,2308,1494,2670" shape="rect">
+        </map>
+    </div>
+
+    <p class="hint">💡 提示：試著把滑鼠移到按鈕上，游標會變成紅色小手喔！</p>
+
+    <script>
+        !function(){"use strict";function r(){function e(){var r={width:u.width/u.naturalWidth,height:u.height/u.naturalHeight},a={width:parseInt(window.getComputedStyle(u,null).getPropertyValue("padding-left"),10),height:parseInt(window.getComputedStyle(u,null).getPropertyValue("padding-top"),10)};i.forEach(function(e,t){var n=0;o[t].coords=e.split(",").map(function(e){var t=1==(n=1-n)?"width":"height";return a[t]+Math.floor(Number(e)*r[t])}).join(",")})}var u,o=null,i=null;function n(){o=document.querySelector('map[name="image-map"]').getElementsByTagName("area"),i=Array.prototype.map.call(o,function(e){return e.coords}),u=document.querySelector('img[usemap="#image-map"]'),u.onload=e,window.addEventListener("resize",e,!1),window.addEventListener("focus",e,!1)}!function(){if("function"==typeof window.jQuery)jQuery("img[usemap]").imageMapResize();else{var e=document.querySelector('img[usemap]');if(!e)return;var t=e.getAttribute("usemap");"string"==typeof t&&0<t.length&&(n(),e.complete&&setTimeout(function(){e.dispatchEvent(new Event("load"))},100))}}()}
+        window.onload = function() { r(); };
+        }();
+    </script>
+
+</body>
+</html>
