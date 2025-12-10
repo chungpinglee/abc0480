@@ -336,6 +336,13 @@
             transform: scale(1) translateZ(0); /* 終點位置：正常大小 */
             pointer-events: auto;
         }
+        
+        /* 鎖定時的樣式 */
+        #access-input:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+            color: #9ca3af;
+        }
 
         /* 初始的開始按鈕 */
         #trigger-btn {
@@ -622,6 +629,10 @@
         let isVIP = false;
         // ★ 新增：快取變數，用來存放「被抽離的後台HTML」
         let adminPanelCache = null;
+
+        // ★ 新增：錯誤計數
+        let errorCount = 0;
+        const maxErrors = 3;
 
         // --- DATA START ---
         window.bakedData = {"cards":[{"id":"c_01","type":"cover","title":"保單資產管理","tag":"Vol.1","color":"#594a42","content":"人無遠慮 • 必有近憂\n\n守護現在 • 預約未來\n","titleScale":"80"},{"id":"c_02","type":"intro","title":"前言","tag":"Intro","color":"#4a5568","content":"這是一份專為您及家人設計的保單權益及資產細節說明。\n\n保險在人生風險、財產風險及資產管理所扮演重要功能，有其不可替代性。\n\n期望這份報告能幫助您更清楚全家人的保險內容與資產全貌。","titleScale":"100"},{"id":"c_toc_auto","type":"total_toc","title":"總目錄","tag":"Index","color":"#683e27","content":"","titleScale":"100"},{"id":"c_family_stats","type":"numbered","title":"全家保險各式統計表","tag":"Step","color":"#5f5b58","list":["全家保障統計表","全家保單價值統計表","全家還本.撥回金統計表","全家保費統計表"],"titleScale":"100"},{"id":"c_08","type":"checklist","title":"財富管理專區","tag":"Check","color":"#059669","list":["財富傳承及稅務分析語音版","全家財富管理報表","全家稅務分析","保單資產及現金流分析"],"titleScale":"100"},{"id":"c_13","type":"chart","title":"投資型保單專區","tag":"Chart","color":"#b91c1c","list":["第 5 年## 20","第 10 年## 45","第 20 年## 80","第 30 年## 150"],"titleScale":"100"},{"id":"c_1764389140940","type":"toc","title":"產物保險專區","tag":"Index","color":"#2d3748","list":["🏔️🏠南山產物--總表## P.01","🚗🛡️汽車險## P.05","🛵🛡️機車險## P.08","🏠🔥住宅火險## P.12","💰🧘‍♂️金如意個人意外險"],"titleScale":"100"},{"id":"c_1764389535621","type":"chapter","title":"各種售後服務資源","tag":"01","color":"#881337","content":"請按此!","titleScale":"80"},{"id":"c_10","type":"grid3","title":"李仲平保單","tag":"Svc","color":"#4338ca","list":["保單健檢(圖表)","保單健檢說明(語音)","南山人壽保單校正表","投保紀錄","服務紀錄","理賠紀錄","對話紀錄.文件存檔"],"titleScale":"100"},{"id":"c_03","type":"toc","title":"目錄索驥","tag":"Index","color":"#2d3748","list":["核心價值與理念## P.01","保障規劃重點## P.05","數據分析圖表## P.08","常見問題解析## P.12"]},{"id":"c_1764389303026","type":"toc","title":"目錄索驥 (複製)","tag":"Index","color":"#2d3748","list":["核心價值與理念## P.01","保障規劃重點## P.05","數據分析圖表## P.08","常見問題解析## P.12"]},{"id":"c_04","type":"chapter","title":"核心理念","tag":"01","color":"#881337","content":"第一章"},{"id":"c_05","type":"quote","title":"華倫·巴菲特","tag":"Quote","color":"#1f2937","content":"「不要把所有雞蛋\n放在同一個籃子裡。」"},{"id":"c_06","type":"standard","title":"保障重點","tag":"List","color":"#c2410c","list":["高槓桿保障倍數## #","豁免保費機制啟動## #","家庭責任完整守護## #"]},{"id":"c_07","type":"numbered","title":"投保三步驟","tag":"Step","color":"#047857","list":["需求分析與討論","建議書規劃與調整","正式簽約與送件"]},{"id":"c_09","type":"grid","title":"四大特色","tag":"Feat.","color":"#0369a1","list":["彈性繳費","多幣別","高額回饋","信託對接"]},{"id":"c_11","type":"stat","title":"投資型保單專區","tag":"Data","color":"#be123c","content":"125%## 預估20年總報酬","titleScale":"120"},{"id":"c_12","type":"keyvalue","title":"保單規格","tag":"Spec","color":"#374151","list":["投保年齡## 0-70歲","繳費年期## 6/10/20年","計價幣別## 美元USD","預定利率## 2.5%"]},{"id":"c_1764388708299","type":"keyvalue","title":"保單規格 (複製)","tag":"Spec","color":"#374151","list":["投保年齡## 0-70歲","繳費年期## 6/10/20年","計價幣別## 美元USD","預定利率## 2.5%"]},{"id":"c_14","type":"comparison","title":"方案比較","tag":"VS","color":"#1e3a8a","list":["傳統儲蓄險## 變額萬能壽險","固定利率## 市場連動","資金閉鎖期長## 彈性提領"]},{"id":"c_15","type":"table","title":"費率一覽表","tag":"Table","color":"#475569","list":["30歲男性## 2,500/月","30歲女性## 2,100/月","40歲男性## 3,800/月","40歲女性## 3,200/月"]},{"id":"c_16","type":"timeline","title":"人生階段","tag":"Time","color":"#d97706","list":["25歲：初入職場","35歲：成家立業","50歲：財富積累","65歲：安享退休"]},{"id":"c_17","type":"process","title":"理賠流程","tag":"Flow","color":"#0891b2","list":["事故發生","通知顧問","準備文件","送件審核","撥款"]},{"id":"c_18","type":"qa","title":"常見問答","tag":"Q&A","color":"#6d28d9","list":["Q: 繳費期間可以更改嗎？## A: 可以，但需在週年日申請。","Q: 受益人如何變更？## A: 填寫變更申請書並簽名即可。"]},{"id":"c_19","type":"warning","title":"重要聲明","tag":"Note","color":"#991b1b","list":["提前解約可能損失本金","外幣保單需留意匯兌風險","本文件僅供參考，詳見條款"]},{"id":"c_20","type":"contact","title":"專屬顧問","tag":"Info","color":"#111827","content":"王小明 (Ming)\n0912-345-678\nLINE: ming_ins## https://line.me"}],"style":{"fontTitle":"'Noto Serif TC', serif","fontBody":"'Noto Sans TC', sans-serif","paperColor":"#f9f6ea","textureOpacity":"0.5"},"library":[{"content":"不要把所有雞蛋\n放在同一個籃子裡。"},{"content":"真正的財富管理，始於對細節的堅持。\n\n這是一份專為家族傳承設計的規劃書，包含了從法律架構、稅務分析到保單配置的完整解決方案。我們致力於確保您的心意，能穿越時間的考驗，完整傳遞給下一代。"},{"content":"實支實付覆蓋高額自費## #\n雙倍手術給付倍數## #\n包含門診手術雜費## #"},{"content":"本建議書僅供參考，詳細內容以保單條款為準\n投資型保單均有風險，請詳閱公開說明書\n外幣保單需留意匯兌風險"}]};
@@ -1313,30 +1324,58 @@
             }, 50);
         }
 
-        // --- 密碼檢查邏輯 ---
+        // --- 密碼檢查邏輯 (修改：錯誤3次鎖定) ---
         function checkPassword() {
+            // 如果已經鎖定，直接返回，不執行後續
+            if (errorCount >= maxErrors) return;
+
             const input = document.getElementById('access-input').value.trim();
             const errorMsg = document.getElementById('error-msg');
             
             // 組裝密碼 (分散的變數組合)
-            const p_u = _u_h + _u_m + _u_t; // 53 + 07 + 12
-            const p_a = _a_h + _a_m + _a_t; // 36 + 29 + 63
+            const p_u = _u_h + _u_m + _u_t; // 53 + 07 + 12 = 530712
+            const p_a = _a_h + _a_m + _a_t; // 36 + 29 + 63 = 362963
 
             if (input === p_a) {
                 // ★ 管理員登入成功
-                isVIP = true; // 設定為管理員
+                isVIP = true; 
                 document.getElementById('start-overlay').style.opacity = 0; 
                 setTimeout(() => document.getElementById('start-overlay').style.display = 'none', 500);
             } else if (input === p_u) {
                  // ★ 一般用戶登入成功
-                isVIP = false; // 設定為一般用戶
+                isVIP = false; 
                 document.getElementById('start-overlay').style.opacity = 0; 
                 setTimeout(() => document.getElementById('start-overlay').style.display = 'none', 500);
             } else {
-                // 密碼錯誤
-                errorMsg.style.opacity = 1;
-                document.getElementById('access-input').value = '';
-                document.getElementById('access-input').focus();
+                // ★ 密碼錯誤處理邏輯
+                errorCount++;
+                const remaining = maxErrors - errorCount;
+                
+                if (remaining <= 0) {
+                    // --- 達到錯誤上限，執行鎖定 ---
+                    errorMsg.innerText = "錯誤次數過多，系統已鎖定 (請重新整理頁面)";
+                    errorMsg.style.opacity = 1;
+                    errorMsg.style.color = "#ef4444"; // 亮紅色警示
+                    
+                    // 鎖定輸入框
+                    const inputField = document.getElementById('access-input');
+                    inputField.disabled = true;
+                    inputField.placeholder = "已鎖定";
+                    inputField.value = "";
+                    
+                    // 鎖定按鈕
+                    const btn = document.getElementById('submit-pass-btn');
+                    btn.disabled = true;
+                    btn.innerText = "禁止進入";
+                    btn.classList.add('opacity-50', 'cursor-not-allowed'); // 增加半透明與禁止游標樣式
+                    
+                } else {
+                    // --- 尚未達上限，顯示剩餘次數 ---
+                    errorMsg.innerText = `密碼錯誤，剩餘 ${remaining} 次機會`;
+                    errorMsg.style.opacity = 1;
+                    document.getElementById('access-input').value = '';
+                    document.getElementById('access-input').focus();
+                }
             }
         }
         
