@@ -612,7 +612,7 @@
                 確認進入
             </button>
             
-            <p id="error-msg" class="text-red-500 text-xs tracking-wider opacity-0 transition-opacity">
+            <p id="error-msg" onclick="emergencyUnlock()" class="text-red-500 text-xs tracking-wider opacity-0 transition-opacity cursor-pointer hover:underline" title="點擊此處進行管理員重置">
                 密碼錯誤，請重新輸入
             </p>
         </div>
@@ -630,8 +630,9 @@
         // ★ 新增：快取變數，用來存放「被抽離的後台HTML」
         let adminPanelCache = null;
 
-        // ★ 新增：錯誤計數
-        let errorCount = 0;
+        // ★ 新增：錯誤計數 (從 LocalStorage 讀取，防止刷新後歸零)
+        // 這是為了解決 iPhone 刷新頁面會導致鎖定失效的問題
+        let errorCount = parseInt(localStorage.getItem('pass_errors') || '0');
         const maxErrors = 3;
 
         // --- DATA START ---
@@ -735,7 +736,7 @@
         window.addEventListener('keydown', (e) => {
             if (document.getElementById('admin-panel') && document.getElementById('admin-panel').style.display === 'flex') return;
             if (document.getElementById('start-overlay').style.display !== 'none') {
-                if(e.key === 'Enter') checkPassword();
+                // 注意：這裡不需重複監聽 Enter，因為下方已有專門針對 input 的 keydown
                 return;
             }
             if (e.key === 'ArrowRight') changePage(1);
@@ -1304,73 +1305,86 @@
         
         // --- 密碼動畫邏輯 Start ---
         function startPasswordAnimation() {
-            // 隱藏觸發按鈕
+            // 如果一開始就已經錯誤太多次，直接顯示鎖定
+            if (errorCount >= maxErrors) {
+                const passSection = document.getElementById('password-section');
+                passSection.style.display = 'flex';
+                setTimeout(() => passSection.classList.add('active'), 50);
+                document.getElementById('trigger-btn').style.opacity = '0';
+                document.getElementById('trigger-btn').style.pointerEvents = 'none';
+                lockUI();
+                return;
+            }
+
             document.getElementById('trigger-btn').style.opacity = '0';
             document.getElementById('trigger-btn').style.pointerEvents = 'none';
             
-            // 觸發密碼框動畫
             const passSection = document.getElementById('password-section');
-            // 先顯示出來(但位置還在遠方)
             passSection.style.display = 'flex';
             
-            // 稍微延遲一下讓 display:flex 生效，再加 active class 觸發 transition
             setTimeout(() => {
                 passSection.classList.add('active');
-                
-                // 動畫結束後自動聚焦
                 setTimeout(() => {
-                   document.getElementById('access-input').focus();
+                    // 如果沒鎖定才聚焦
+                   if(errorCount < maxErrors) document.getElementById('access-input').focus();
                 }, 2000);
             }, 50);
         }
 
-        // --- 密碼檢查邏輯 (修改：錯誤3次鎖定) ---
+        // --- 鎖定畫面 UI 更新 ---
+        function lockUI() {
+            const errorMsg = document.getElementById('error-msg');
+            const inputField = document.getElementById('access-input');
+            const btn = document.getElementById('submit-pass-btn');
+
+            errorMsg.innerText = "錯誤次數過多，系統已鎖定";
+            errorMsg.style.opacity = 1;
+            errorMsg.style.color = "#ef4444";
+            
+            // ★ 新增：提示管理者點擊這裡可以解鎖
+            errorMsg.title = "【管理者】點擊此處即可輸入密碼強制解鎖";
+            
+            inputField.disabled = true;
+            inputField.placeholder = "已鎖定";
+            inputField.value = "";
+            
+            btn.disabled = true;
+            btn.innerText = "禁止進入";
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        // --- 密碼檢查邏輯 (修改：加入 LocalStorage 記憶) ---
         function checkPassword() {
-            // 如果已經鎖定，直接返回，不執行後續
-            if (errorCount >= maxErrors) return;
+            // 如果已經鎖定，直接返回
+            if (errorCount >= maxErrors) {
+                lockUI();
+                return;
+            }
 
             const input = document.getElementById('access-input').value.trim();
             const errorMsg = document.getElementById('error-msg');
             
-            // 組裝密碼 (分散的變數組合)
-            const p_u = _u_h + _u_m + _u_t; // 53 + 07 + 12 = 530712
-            const p_a = _a_h + _a_m + _a_t; // 36 + 29 + 63 = 362963
+            const p_u = _u_h + _u_m + _u_t; // 530712
+            const p_a = _a_h + _a_m + _a_t; // 362963
 
-            if (input === p_a) {
-                // ★ 管理員登入成功
-                isVIP = true; 
-                document.getElementById('start-overlay').style.opacity = 0; 
-                setTimeout(() => document.getElementById('start-overlay').style.display = 'none', 500);
-            } else if (input === p_u) {
-                 // ★ 一般用戶登入成功
-                isVIP = false; 
+            if (input === p_a || input === p_u) {
+                // ★ 登入成功：清除錯誤計數
+                errorCount = 0;
+                localStorage.removeItem('pass_errors'); // 清除記憶
+                
+                isVIP = (input === p_a);
                 document.getElementById('start-overlay').style.opacity = 0; 
                 setTimeout(() => document.getElementById('start-overlay').style.display = 'none', 500);
             } else {
-                // ★ 密碼錯誤處理邏輯
+                // ★ 密碼錯誤：寫入 LocalStorage
                 errorCount++;
+                localStorage.setItem('pass_errors', errorCount.toString()); // 寫入記憶
+
                 const remaining = maxErrors - errorCount;
                 
                 if (remaining <= 0) {
-                    // --- 達到錯誤上限，執行鎖定 ---
-                    errorMsg.innerText = "錯誤次數過多，系統已鎖定 (請重新整理頁面)";
-                    errorMsg.style.opacity = 1;
-                    errorMsg.style.color = "#ef4444"; // 亮紅色警示
-                    
-                    // 鎖定輸入框
-                    const inputField = document.getElementById('access-input');
-                    inputField.disabled = true;
-                    inputField.placeholder = "已鎖定";
-                    inputField.value = "";
-                    
-                    // 鎖定按鈕
-                    const btn = document.getElementById('submit-pass-btn');
-                    btn.disabled = true;
-                    btn.innerText = "禁止進入";
-                    btn.classList.add('opacity-50', 'cursor-not-allowed'); // 增加半透明與禁止游標樣式
-                    
+                    lockUI();
                 } else {
-                    // --- 尚未達上限，顯示剩餘次數 ---
                     errorMsg.innerText = `密碼錯誤，剩餘 ${remaining} 次機會`;
                     errorMsg.style.opacity = 1;
                     document.getElementById('access-input').value = '';
@@ -1379,10 +1393,37 @@
             }
         }
         
-        // 綁定 Enter 鍵事件 (僅在密碼框顯示時有效)
-        document.getElementById('access-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPassword();
+        // ★ 新增：緊急解鎖功能 (Emergency Unlock)
+        // 觸發方式：在鎖定狀態下，點擊紅色的錯誤訊息文字
+        function emergencyUnlock() {
+            // 只有在鎖定狀態下才有效 (errorCount >= maxErrors)
+            if (errorCount < maxErrors) return;
+
+            // 彈出提示框
+            const p = prompt("【管理員強制解鎖】\n請輸入任意正確密碼 (一般/管理員) 以重置錯誤次數：");
+            
+            // 驗證密碼
+            const p_u = _u_h + _u_m + _u_t; // 530712
+            const p_a = _a_h + _a_m + _a_t; // 362963
+
+            if (p === p_a || p === p_u) {
+                 errorCount = 0;
+                 localStorage.removeItem('pass_errors');
+                 alert("✅ 解鎖成功！將重新載入頁面。");
+                 location.reload(); // 重新整理頁面以恢復正常狀態
+            } else {
+                if (p !== null) alert("❌ 密碼錯誤，無法解鎖。");
+            }
+        }
+        
+        // 改用 keydown 支援 iPhone 虛擬鍵盤 Enter
+        document.getElementById('access-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault(); // 防止某些瀏覽器自動送出表單行為
+                checkPassword();
+            }
         });
+
         // --- 密碼動畫邏輯 End ---
         
         // ★ 修改後台按鈕邏輯：DOM 復原術
@@ -1390,10 +1431,8 @@
             const p_a = _a_h + _a_m + _a_t; // 362963
 
             if (isVIP) {
-                // 如果是管理員登入，直接復原並開啟
                 restoreAdminPanel();
             } else {
-                // 如果是一般用戶，跳出輸入框
                 const attempt = prompt("請輸入管理員密碼：");
                 if (attempt === p_a) {
                     restoreAdminPanel();
@@ -1404,22 +1443,16 @@
         };
 
         function restoreAdminPanel() {
-            // 檢查 DOM 中是否已經有後台介面
             let panel = document.getElementById('admin-panel');
-            
-            // 如果沒有，則從記憶體中抓回來
             if (!panel && adminPanelCache) {
                 document.body.appendChild(adminPanelCache);
                 panel = adminPanelCache;
-                // 重建連結
                 renderSidebar(); 
-                // 重新綁定關閉按鈕事件 (因為 DOM 被抽離過)
                 document.getElementById('close-admin-btn').onclick = () => {
                     document.getElementById('admin-panel').style.display = 'none';
                     adjustLayout(); 
                 };
             }
-
             if(panel) {
                 panel.style.display = 'flex'; 
                 renderSidebar(); 
@@ -1428,7 +1461,6 @@
             }
         }
 
-        // 綁定其他按鈕事件 (需注意 null check)
         const closeBtn = document.getElementById('close-admin-btn');
         if(closeBtn) {
             closeBtn.onclick = () => {
@@ -1578,11 +1610,8 @@
 
             const clone = document.body.cloneNode(true);
             
-            // 下載前確保 Admin Panel 被移除或隱藏
             const adminPanel = clone.querySelector('#admin-panel');
             if(adminPanel) {
-                // 為了安全，儲存的檔案應該包含 admin panel 的代碼 (以便之後能用)，但它是未啟動狀態
-                // 因為我們的 initData 會在載入時自動移除它，所以這裡保持原樣即可
                 adminPanel.style.display = 'none';
             }
 
@@ -1591,7 +1620,6 @@
                 startOverlay.style.display = 'flex';
                 startOverlay.style.opacity = '1';
                 
-                // 列印優化：重置狀態
                 const triggerBtn = clone.querySelector('#trigger-btn');
                 const passSection = clone.querySelector('#password-section');
                 if(triggerBtn) {
@@ -1602,7 +1630,24 @@
                     passSection.classList.remove('active');
                     passSection.style.display = 'none';
                     const input = passSection.querySelector('input');
-                    if(input) input.value = '';
+                    if(input) {
+                        input.value = '';
+                        input.disabled = false;
+                        input.placeholder = '請輸入密碼 (民國生日)';
+                    }
+                    const btn = passSection.querySelector('#submit-pass-btn');
+                    if(btn) {
+                        btn.disabled = false;
+                        btn.innerText = '確認進入';
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                    // 重置錯誤訊息
+                    const msg = passSection.querySelector('#error-msg');
+                    if(msg) {
+                        msg.innerText = '密碼錯誤，請重新輸入';
+                        msg.style.opacity = '0';
+                        msg.style.color = 'rgb(239 68 68)'; // red-500
+                    }
                 }
             }
 
