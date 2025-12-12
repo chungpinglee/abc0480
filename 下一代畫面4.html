@@ -2,18 +2,17 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>李麗琴全家-保單資產管理系統</title>
     <style>
         /* =========================================
            1. 核心色彩系統
            ========================================= */
         :root {
-            --bg-deep: #24355A;       /* 背景深藍 */
+            --bg-deep: #24355A;
             --bg-modal: #FFFFFF;
             --text-dark: #1F2937;
             --text-white: #FFFFFF;
-
             --radius-card: 24px;
             --radius-btn: 18px;
             --shadow-card: 0 8px 16px rgba(0,0,0,0.08);
@@ -31,30 +30,30 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent; /* 移除 iOS 點擊高亮藍色區塊 */
         }
 
         /* 頁首 */
         header {
-            padding: 30px 5%;
+            padding: 20px 5%; /* 手機版縮小一點 */
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(0,0,0,0.15);
             backdrop-filter: blur(5px);
         }
-        header h1 { color: white; margin: 0; font-size: 1.8rem; letter-spacing: 1px; font-weight: 800; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        header h1 { color: white; margin: 0; font-size: 1.5rem; letter-spacing: 1px; font-weight: 800; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .admin-btn {
             background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.5);
-            padding: 10px 20px; border-radius: 30px; cursor: pointer; transition: 0.2s; font-weight: bold;
+            padding: 8px 15px; border-radius: 30px; cursor: pointer; transition: 0.2s; font-weight: bold; font-size: 0.9rem;
         }
-        .admin-btn:hover { background: white; color: var(--bg-deep); border-color: white; }
 
         /* =========================================
            2. 主分類 (Level 1)
            ========================================= */
         .main-container {
             flex: 1;
-            padding: 40px 5%;
+            padding: 20px 5%;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -62,39 +61,32 @@
         .grid-level-1 {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 20px;
             width: 100%;
             max-width: 1400px;
         }
 
         .main-card {
             border-radius: var(--radius-card);
-            padding: 40px 30px;
+            padding: 30px 25px;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            min-height: 260px;
+            min-height: 220px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             color: white; 
             box-shadow: var(--shadow-card);
             border: none;
         }
 
-        .main-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            z-index: 5;
-        }
-
-        .main-card .icon-large { font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
-        .main-card h2 { font-size: 1.8rem; margin: 0; font-weight: 800; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .main-card p { opacity: 0.95; margin-top: 10px; font-size: 1.1rem; font-weight: 600; }
+        .main-card .icon-large { font-size: 4rem; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
+        .main-card h2 { font-size: 1.6rem; margin: 0; font-weight: 800; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .main-card p { opacity: 0.95; margin-top: 5px; font-size: 1rem; font-weight: 600; }
         
         .deco-circle {
-            position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
+            position: absolute; top: -50px; right: -50px; width: 180px; height: 180px;
             background: rgba(255,255,255,0.15); border-radius: 50%; pointer-events: none;
         }
 
@@ -112,7 +104,7 @@
 
         .modal-content {
             background: var(--bg-modal);
-            width: 90%; max-width: 1200px; height: 85vh;
+            width: 95%; max-width: 1200px; height: 90vh; /* 手機版佔滿更多空間 */
             border-radius: var(--radius-card);
             display: flex; flex-direction: column;
             box-shadow: 0 25px 60px rgba(0,0,0,0.5);
@@ -123,19 +115,19 @@
         .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
 
         .modal-header {
-            padding: 25px 40px; background: white; border-bottom: 2px solid #f0f0f0;
+            padding: 20px 25px; background: white; border-bottom: 2px solid #f0f0f0;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .modal-title { font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 15px; color: var(--bg-deep); }
+        .modal-title { font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--bg-deep); }
         .close-btn {
-            background: #f3f4f6; border: none; width: 50px; height: 50px; border-radius: 50%;
-            font-size: 1.8rem; cursor: pointer; transition: 0.2s; color: #666;
+            background: #f3f4f6; border: none; width: 40px; height: 40px; border-radius: 50%;
+            font-size: 1.5rem; cursor: pointer; transition: 0.2s; color: #666;
             display: flex; align-items: center; justify-content: center;
         }
-        .close-btn:hover { background: #ff5f57; color: white; transform: rotate(90deg); }
 
         .modal-body {
-            flex: 1; padding: 40px; overflow-y: auto; background-color: #FAFAFA;
+            flex: 1; padding: 25px; overflow-y: auto; background-color: #FAFAFA;
+            -webkit-overflow-scrolling: touch; /* 讓 iOS 捲動更順暢 */
         }
 
         /* =========================================
@@ -143,38 +135,24 @@
            ========================================= */
         .level-2-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .sub-btn {
             border-radius: var(--radius-btn);
-            padding: 30px 20px;
+            padding: 25px 15px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: transform 0.2s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 160px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            height: 140px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             color: white; 
             position: relative;
             overflow: hidden;
             border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        @keyframes bounceEmoji {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px) scale(1.2); }
-        }
-
-        .sub-btn:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            filter: brightness(1.1);
-        }
-        .sub-btn:hover .emoji {
-            animation: bounceEmoji 0.6s ease infinite;
         }
 
         .sub-btn.active {
@@ -183,28 +161,28 @@
         }
 
         .sub-btn .emoji { 
-            font-size: 4.5rem; margin-bottom: 15px; display: inline-block; 
+            font-size: 3.5rem; margin-bottom: 10px; display: inline-block; 
             filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
         }
-        .sub-btn .text { font-size: 1.3rem; font-weight: 800; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .sub-btn .text { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         /* =========================================
-           5. 卡片式選單 (Level 3)
+           5. 卡片式選單 (Level 3) - 修正手機版色彩
            ========================================= */
         .level-3-section {
             display: none; 
             border-top: 3px dashed #ddd;
-            padding-top: 40px;
+            padding-top: 30px;
             animation: fadeIn 0.5s ease;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .section-title { font-size: 1.4rem; margin-bottom: 25px; color: var(--bg-deep); font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .section-title { font-size: 1.3rem; margin-bottom: 20px; color: var(--bg-deep); font-weight: 800; display: flex; align-items: center; gap: 10px; }
 
         .level-3-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
 
         @keyframes slideInUp {
@@ -214,60 +192,78 @@
 
         .link-card {
             border-radius: var(--radius-btn);
-            padding: 25px;
+            padding: 20px;
             display: flex; align-items: center;
             text-decoration: none; 
             color: var(--text-dark); 
             box-shadow: var(--shadow-card);
             border: 2px solid transparent; 
-            
             opacity: 0; 
             animation: slideInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            transition: all 0.3s ease;
-        }
-
-        .link-card:hover {
-            transform: translateY(-10px); 
-            box-shadow: var(--shadow-hover);
-            background: white !important; /* Hover時變白底，強調邊框 */
+            transition: transform 0.3s ease;
+            
+            /* 關鍵：強制使用 JS 設定的背景色，不讓預設樣式覆蓋 */
+            background-color: #f5f5f5; /* 預設灰底，會被 JS 覆蓋 */
         }
 
         .link-card .card-icon {
-            font-size: 2.5rem; margin-right: 20px;
-            width: 65px; height: 65px; 
+            font-size: 2.2rem; margin-right: 15px;
+            width: 55px; height: 55px; 
             background: white; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
-        .link-card strong { display: block; font-size: 1.2rem; margin-bottom: 5px; color: #000; font-weight: 800; }
-        .link-card span { font-size: 1rem; color: #444; line-height: 1.4; font-weight: 500; }
+        .link-card strong { display: block; font-size: 1.1rem; margin-bottom: 5px; color: #000; font-weight: 800; }
+        .link-card span { font-size: 0.95rem; color: #444; line-height: 1.4; font-weight: 500; }
 
-        /* Highlight 樣式 */
         .link-card.highlight { border: 2px solid rgba(0,0,0,0.1); }
+
+        /* ========================================================
+           🔥 關鍵修正：只在有滑鼠的裝置 (Desktop) 啟用 Hover 變白效果
+           這樣手機上就不會因為點擊而卡在白色背景
+           ======================================================== */
+        @media (hover: hover) {
+            .main-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px rgba(0,0,0,0.3); z-index: 5; }
+            .sub-btn:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.2); filter: brightness(1.1); }
+            
+            .link-card:hover {
+                transform: translateY(-5px); 
+                box-shadow: var(--shadow-hover);
+                background-color: white !important; /* 電腦版 Hover 時才變白 */
+            }
+        }
 
         /* 編輯器 */
         #editor-modal .modal-content { height: 70vh; max-width: 800px; }
         #json-editor { width: 100%; height: 100%; padding: 20px; font-family: monospace; border: none; resize: none; background: #f8f9fa; font-size: 14px; }
         
-        /* 手機版 */
+        /* 手機版排版優化 */
         @media (max-width: 768px) {
             .grid-level-1 { grid-template-columns: 1fr; }
-            .modal-content { width: 95%; height: 90vh; }
             .level-3-grid { grid-template-columns: 1fr; }
-            .sub-btn { height: 140px; flex-direction: row; justify-content: flex-start; gap: 20px; padding: 20px; text-align: left; }
-            .sub-btn .emoji { font-size: 3rem; margin-bottom: 0; }
+            
+            /* Level 2 手機版樣式：橫向排列但保持色塊 */
+            .sub-btn { 
+                height: 100px; 
+                flex-direction: row; 
+                justify-content: flex-start; 
+                gap: 20px; 
+                padding: 15px 25px; 
+                text-align: left; 
+            }
+            .sub-btn .emoji { font-size: 2.5rem; margin-bottom: 0; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🛡️ 李麗琴全家-保單資產管理系統</h1>
+        <h1>🛡️ 李麗琴全家-保單系統</h1>
         <div>
-            <button class="admin-btn" onclick="openEditor()">⚙️ 編輯資料</button>
-            <button class="admin-btn" onclick="saveAndDownload()">💾 儲存新檔</button>
+            <button class="admin-btn" onclick="openEditor()">⚙️ 編輯</button>
+            <button class="admin-btn" onclick="saveAndDownload()">💾 儲存</button>
         </div>
     </header>
 
@@ -302,14 +298,14 @@
                 <textarea id="json-editor"></textarea>
             </div>
             <div style="padding:20px; text-align:right; background:#f0f0f0;">
-                <button class="admin-btn" style="background:var(--c-teal); color:white; border:none;" onclick="updateData()">更新並預覽</button>
+                <button class="admin-btn" style="background:#46B3E6; color:white; border:none;" onclick="updateData()">更新並預覽</button>
             </div>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // 🎨 色彩配置庫 (擴充多一點顏色)
+        // 🎨 色彩配置庫
         // ==========================================
         const colorPalette = [
             { main: "#FF6B6B", light: "#FFF0F0" }, // 珊瑚紅
@@ -572,7 +568,8 @@
                 
                 // Level 2 按鈕顏色分配
                 const colorObj = colorPalette[subIndex % colorPalette.length];
-                btn.style.backgroundColor = colorObj.main; 
+                // 為了防止手機上無效，我們直接操作 DOM 樣式，並加上 important (雖然JS inline 權重很高，但保險起見)
+                btn.style.setProperty('background-color', colorObj.main, 'important');
                 
                 btn.innerHTML = `
                     <div class="emoji">${sub.emoji}</div>
@@ -581,7 +578,6 @@
                 btn.onclick = () => {
                     document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    // 傳遞 category 顏色給 title 用
                     renderLevel3(sub, colorObj);
                 };
                 level2Container.appendChild(btn);
@@ -594,7 +590,6 @@
             level3Section.style.display = 'block';
             level3Title.innerHTML = `<span style="font-size:1.5rem;">${subCategory.emoji}</span> ${subCategory.name} - 詳細資料`;
             
-            // 標題顏色跟隨該區塊的主色
             level3Title.style.color = parentColorObj.main; 
             level3Grid.innerHTML = '';
 
@@ -605,9 +600,11 @@
                 card.target = '_blank';
                 card.style.animationDelay = `${index * 0.08}s`; 
                 
-                // 🔥 核心修改：每一張卡片依序分配不同的淺色背景
+                // 每一張卡片依序分配不同的淺色背景
                 const specificColor = colorPalette[index % colorPalette.length];
-                card.style.backgroundColor = specificColor.light; 
+                
+                // 🔥 強制設定背景色，確保手機版不會變白
+                card.style.setProperty('background-color', specificColor.light, 'important');
 
                 card.innerHTML = `
                     <div class="card-icon">${item.icon}</div>
@@ -617,12 +614,17 @@
                     </div>
                 `;
                 
-                // Hover effect: 邊框使用對應的深色系
+                // Hover effect: 邊框使用對應的深色系 (僅在電腦版透過 CSS hover 生效)
                 card.addEventListener('mouseenter', () => {
-                    card.style.borderColor = specificColor.main;
+                    // 電腦版才執行這個
+                    if (window.matchMedia('(hover: hover)').matches) {
+                        card.style.borderColor = specificColor.main;
+                    }
                 });
                 card.addEventListener('mouseleave', () => {
-                    card.style.borderColor = 'transparent';
+                    if (window.matchMedia('(hover: hover)').matches) {
+                        card.style.borderColor = 'transparent';
+                    }
                 });
 
                 level3Grid.appendChild(card);
