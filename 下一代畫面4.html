@@ -6,27 +6,19 @@
     <title>李麗琴全家-保單資產管理系統</title>
     <style>
         /* =========================================
-           1. 核心色彩與 SafetyWing 風格變數
+           1. 核心色彩系統
            ========================================= */
         :root {
-            --bg-deep: #24355A;       /* 深藍背景 */
-            --bg-modal: #FFFFFF;      /* 模態框白底 */
+            --bg-deep: #24355A;       /* 背景深藍 */
+            --bg-modal: #FFFFFF;
             --text-dark: #1F2937;
             --text-white: #FFFFFF;
 
-            /* SafetyWing 高亮度活潑色系 */
-            --c-teal: #46B3E6;    /* 亮藍色 (主色) */
-            --c-yellow: #F4D35E;  /* 暖黃色 */
-            --c-pink: #E86A92;    /* 亮粉紅 */
-            --c-purple: #8D72E1;  /* 亮紫色 */
-            --c-orange: #F0A261;  /* 活力橘 */
-            --c-green: #5ABF9A;   /* 嫩綠色 */
-
             --radius-card: 24px;
-            --radius-btn: 16px;
-            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* 彈跳感過渡 */
+            --radius-btn: 18px;
+            --shadow-card: 0 8px 16px rgba(0,0,0,0.08);
+            --shadow-hover: 0 20px 30px rgba(0,0,0,0.15);
+            --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body {
@@ -47,17 +39,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.15);
+            backdrop-filter: blur(5px);
         }
-        header h1 { color: white; margin: 0; font-size: 1.8rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        header h1 { color: white; margin: 0; font-size: 1.8rem; letter-spacing: 1px; font-weight: 800; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .admin-btn {
-            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.5);
             padding: 10px 20px; border-radius: 30px; cursor: pointer; transition: 0.2s; font-weight: bold;
         }
-        .admin-btn:hover { background: white; color: var(--bg-deep); }
+        .admin-btn:hover { background: white; color: var(--bg-deep); border-color: white; }
 
         /* =========================================
-           2. 主分類 (Level 1) - 大色塊卡片
+           2. 主分類 (Level 1)
            ========================================= */
         .main-container {
             flex: 1;
@@ -68,8 +61,8 @@
         }
         .grid-level-1 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 35px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
             width: 100%;
             max-width: 1400px;
         }
@@ -80,30 +73,28 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            min-height: 250px;
+            min-height: 260px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             color: white; 
             box-shadow: var(--shadow-card);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: none;
         }
 
-        /* Hover: 整張卡片稍微放大上浮 */
         .main-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             z-index: 5;
         }
 
-        .main-card .icon-large { font-size: 4.5rem; margin-bottom: 20px; }
-        .main-card h2 { font-size: 1.8rem; margin: 0; font-weight: 800; line-height: 1.2; }
-        .main-card p { opacity: 0.95; margin-top: 10px; font-size: 1.05rem; font-weight: 500; }
+        .main-card .icon-large { font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
+        .main-card h2 { font-size: 1.8rem; margin: 0; font-weight: 800; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .main-card p { opacity: 0.95; margin-top: 10px; font-size: 1.1rem; font-weight: 600; }
         
-        /* 裝飾背景圓圈 */
         .deco-circle {
-            position: absolute; top: -40px; right: -40px; width: 180px; height: 180px;
+            position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
             background: rgba(255,255,255,0.15); border-radius: 50%; pointer-events: none;
         }
 
@@ -121,10 +112,10 @@
 
         .modal-content {
             background: var(--bg-modal);
-            width: 90%; max-width: 1100px; height: 85vh;
+            width: 90%; max-width: 1200px; height: 85vh;
             border-radius: var(--radius-card);
             display: flex; flex-direction: column;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
             transform: scale(0.9); opacity: 0;
             transition: var(--transition);
             overflow: hidden;
@@ -132,13 +123,13 @@
         .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
 
         .modal-header {
-            padding: 25px 40px; background: white; border-bottom: 1px solid #f0f0f0;
+            padding: 25px 40px; background: white; border-bottom: 2px solid #f0f0f0;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .modal-title { font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; gap: 15px; color: var(--bg-deep); }
+        .modal-title { font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 15px; color: var(--bg-deep); }
         .close-btn {
-            background: #f3f4f6; border: none; width: 45px; height: 45px; border-radius: 50%;
-            font-size: 1.5rem; cursor: pointer; transition: 0.2s; color: #666;
+            background: #f3f4f6; border: none; width: 50px; height: 50px; border-radius: 50%;
+            font-size: 1.8rem; cursor: pointer; transition: 0.2s; color: #666;
             display: flex; align-items: center; justify-content: center;
         }
         .close-btn:hover { background: #ff5f57; color: white; transform: rotate(90deg); }
@@ -148,7 +139,7 @@
         }
 
         /* =========================================
-           4. 次分類選單 (Level 2) - Emoji 跳動按鈕
+           4. 次分類選單 (Level 2)
            ========================================= */
         .level-2-grid {
             display: grid;
@@ -158,54 +149,57 @@
         }
 
         .sub-btn {
-            background: white;
-            border: 2px solid transparent;
             border-radius: var(--radius-btn);
             padding: 30px 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 160px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            color: white; 
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
-        /* --- 互動特效：Emoji 跳動動畫 --- */
         @keyframes bounceEmoji {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px) scale(1.1); }
+            50% { transform: translateY(-15px) scale(1.2); }
         }
 
         .sub-btn:hover {
-            border-color: var(--c-teal);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            filter: brightness(1.1);
         }
         .sub-btn:hover .emoji {
-            animation: bounceEmoji 0.6s ease infinite; /* 滑鼠滑過時跳動 */
+            animation: bounceEmoji 0.6s ease infinite;
         }
 
         .sub-btn.active {
-            background-color: #F0F9FF;
-            border-color: var(--c-teal);
-            box-shadow: inset 0 0 0 2px var(--c-teal);
+            box-shadow: inset 0 0 0 5px rgba(255,255,255,0.6);
+            transform: scale(0.98);
         }
 
-        .sub-btn .emoji { font-size: 4rem; margin-bottom: 15px; display: inline-block; transition: transform 0.2s; }
-        .sub-btn .text { font-size: 1.2rem; font-weight: bold; color: var(--text-dark); }
+        .sub-btn .emoji { 
+            font-size: 4.5rem; margin-bottom: 15px; display: inline-block; 
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
+        }
+        .sub-btn .text { font-size: 1.3rem; font-weight: 800; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         /* =========================================
-           5. 卡片式選單 (Level 3) - 上浮卡片
+           5. 卡片式選單 (Level 3)
            ========================================= */
         .level-3-section {
-            display: none; /* 預設隱藏 */
-            border-top: 2px dashed #ddd;
+            display: none; 
+            border-top: 3px dashed #ddd;
             padding-top: 40px;
             animation: fadeIn 0.5s ease;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .section-title { font-size: 1.3rem; margin-bottom: 25px; color: var(--bg-deep); font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .section-title { font-size: 1.4rem; margin-bottom: 25px; color: var(--bg-deep); font-weight: 800; display: flex; align-items: center; gap: 10px; }
 
         .level-3-grid {
             display: grid;
@@ -213,52 +207,45 @@
             gap: 25px;
         }
 
-        /* --- 進場動畫：由左向右依序展開 --- */
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .link-card {
-            background: white;
             border-radius: var(--radius-btn);
             padding: 25px;
             display: flex; align-items: center;
-            text-decoration: none; color: var(--text-dark);
-            border: 1px solid #eee;
+            text-decoration: none; 
+            color: var(--text-dark); 
             box-shadow: var(--shadow-card);
+            border: 2px solid transparent; 
             
-            /* 動畫初始狀態 */
             opacity: 0; 
-            animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            
-            /* Hover 過渡 */
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
-            position: relative;
-            overflow: hidden;
+            animation: slideInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transition: all 0.3s ease;
         }
 
-        /* --- 互動特效：卡片向上移動 --- */
         .link-card:hover {
-            transform: translateY(-10px); /* 向上移動 */
+            transform: translateY(-10px); 
             box-shadow: var(--shadow-hover);
-            border-color: var(--c-teal);
+            background: white !important; /* Hover時變白底，強調邊框 */
         }
 
         .link-card .card-icon {
-            font-size: 2.2rem; margin-right: 20px;
-            width: 60px; height: 60px; background: #F3F4F6;
+            font-size: 2.5rem; margin-right: 20px;
+            width: 65px; height: 65px; 
+            background: white; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
-            transition: background 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
-        .link-card:hover .card-icon { background: #E0F2FE; }
 
-        .link-card strong { display: block; font-size: 1.15rem; margin-bottom: 5px; color: var(--bg-deep); }
-        .link-card span { font-size: 0.95rem; color: #666; line-height: 1.4; }
+        .link-card strong { display: block; font-size: 1.2rem; margin-bottom: 5px; color: #000; font-weight: 800; }
+        .link-card span { font-size: 1rem; color: #444; line-height: 1.4; font-weight: 500; }
 
-        /* 重點項目樣式 (Highlight) */
-        .link-card.highlight { border-left: 6px solid var(--c-pink); background: linear-gradient(to right, #fff, #FFF5F7); }
+        /* Highlight 樣式 */
+        .link-card.highlight { border: 2px solid rgba(0,0,0,0.1); }
 
         /* 編輯器 */
         #editor-modal .modal-content { height: 70vh; max-width: 800px; }
@@ -269,8 +256,8 @@
             .grid-level-1 { grid-template-columns: 1fr; }
             .modal-content { width: 95%; height: 90vh; }
             .level-3-grid { grid-template-columns: 1fr; }
-            .sub-btn { height: 140px; flex-direction: row; justify-content: flex-start; gap: 20px; padding: 20px; }
-            .sub-btn .emoji { font-size: 2.5rem; margin-bottom: 0; }
+            .sub-btn { height: 140px; flex-direction: row; justify-content: flex-start; gap: 20px; padding: 20px; text-align: left; }
+            .sub-btn .emoji { font-size: 3rem; margin-bottom: 0; }
         }
     </style>
 </head>
@@ -322,7 +309,24 @@
 
     <script>
         // ==========================================
-        // 🔧 資料核心 (可自由編輯)
+        // 🎨 色彩配置庫 (擴充多一點顏色)
+        // ==========================================
+        const colorPalette = [
+            { main: "#FF6B6B", light: "#FFF0F0" }, // 珊瑚紅
+            { main: "#4ECDC4", light: "#E0F7FA" }, // 綠松石
+            { main: "#F9C74F", light: "#FFFDE7" }, // 鮮黃
+            { main: "#1A535C", light: "#E0F2F1" }, // 深青
+            { main: "#9B5DE5", light: "#F3E5F5" }, // 紫羅蘭
+            { main: "#F15BB5", light: "#FCE4EC" }, // 桃紅
+            { main: "#00BBF9", light: "#E1F5FE" }, // 亮藍
+            { main: "#00F5D4", light: "#E0F2F1" }, // 薄荷綠
+            { main: "#FB5607", light: "#FFF3E0" }, // 橘紅
+            { main: "#8338EC", light: "#EDE7F6" }, // 深紫
+            { main: "#3A86FF", light: "#E3F2FD" }  // 皇家藍
+        ];
+
+        // ==========================================
+        // 🔧 資料核心
         // ==========================================
         let pageData = {
             categories: [
@@ -330,12 +334,10 @@
                     title: "家庭成員及保單各項健檢分析",
                     desc: "整合全家語音分析、校正報告與個人保單詳情",
                     icon: "👨‍👩‍👧‍👦",
-                    color: "var(--c-teal)", // 亮藍色
-                    textColor: "white",
+                    color: "#E86A92", 
                     subCategories: [
                         {
-                            name: "李素碧",
-                            emoji: "👩‍🦰",
+                            name: "李素碧", emoji: "👩‍🦰",
                             items: [
                                 { title: "保單校正圖表分析", desc: "視覺化缺口分析 (HTML網頁)", url: "保單圖表分析.html", icon: "📊", highlight: true },
                                 { title: "保單校正分析報告", desc: "詳細列表與說明 (HTML網頁)", url: "保單分析報告.html", icon: "📑", highlight: true },
@@ -349,8 +351,7 @@
                             ]
                         },
                         {
-                            name: "李麗琴",
-                            emoji: "👩",
+                            name: "李麗琴", emoji: "👩",
                             items: [
                                 { title: "個人語音分析", desc: "專屬保單解說", url: "https://drive.google.com/file/d/1ePhQ-1JX9qf9sJQhcN-I2kkguYzMu9Bw/view?usp=drive_link", icon: "🗣️", highlight: true },
                                 { title: "個人保單分析", desc: "詳細條款校正", url: "#", icon: "🔍", highlight: true },
@@ -361,8 +362,7 @@
                             ]
                         },
                         {
-                            name: "吳進財",
-                            emoji: "👨",
+                            name: "吳進財", emoji: "👨",
                             items: [
                                 { title: "個人語音分析", desc: "專屬保單解說", url: "https://drive.google.com/file/d/1ioya4qOrhGwIHytNb_FOaKhtquGZnu51/view?usp=drive_link", icon: "🗣️", highlight: true },
                                 { title: "個人保單分析", desc: "詳細條款校正", url: "https://drive.google.com/file/d/1aVURO8DNYEqqZizVIetULev93qPTc6YY/view?usp=drive_link", icon: "🔍", highlight: true },
@@ -373,8 +373,7 @@
                             ]
                         },
                         {
-                            name: "吳霽航",
-                            emoji: "👦",
+                            name: "吳霽航", emoji: "👦",
                             items: [
                                 { title: "個人語音分析", desc: "專屬保單解說", url: "https://drive.google.com/file/d/1sVTAcEmax7YyWJJvqJuJ7VzrS5OLC1Bk/view?usp=drive_link", icon: "🗣️", highlight: true },
                                 { title: "個人保單分析", desc: "詳細條款校正", url: "https://drive.google.com/file/d/1HsDnUmOdntk6t-F29rI45dOBIUcwnvTd/view?usp=drive_link", icon: "🔍", highlight: true },
@@ -385,8 +384,7 @@
                             ]
                         },
                         {
-                            name: "李徐素珍",
-                            emoji: "👵",
+                            name: "李徐素珍", emoji: "👵",
                             items: [
                                 { title: "投保紀錄", desc: "Evernote", url: "https://share.evernote.com/note/23430a1a-8ff5-4b3b-8352-61aed5567e2c", icon: "🗂️" },
                                 { title: "服務紀錄", desc: "Evernote", url: "#", icon: "🤝" },
@@ -396,15 +394,29 @@
                     ]
                 },
                 {
+                    title: "投資型保險專區",
+                    desc: "加值給付、價值分析與BVA報表",
+                    icon: "💹",
+                    color: "#6366F1", 
+                    subCategories: [
+                        {
+                            name: "分析與報表", emoji: "📈",
+                            items: [
+                                { title: "語音解說", desc: "分析導覽", url: "https://drive.google.com/file/d/1ZLp1kj6cZj7DXrmwwNOJwKETfo5Y7OFd/view?usp=drive_link", icon: "🎧" },
+                                { title: "投資型保單分析", desc: "加值給付與價值(PDF)", url: "https://drive.google.com/file/d/1e5V79mzGUd01i2iDFp_77ntB0786SGey/view?usp=drive_link", icon: "📑" },
+                                { title: "BVA報表", desc: "Evernote", url: "https://share.evernote.com/note/ecb649b3-54b9-482c-0de3-8baf19520f31", icon: "📉" }
+                            ]
+                        }
+                    ]
+                },
+                {
                     title: "全家資產統計",
                     desc: "保障、價值、還本金三表合一",
                     icon: "💰",
-                    color: "var(--c-purple)", // 亮紫色
-                    textColor: "white",
+                    color: "#8D72E1", 
                     subCategories: [
                         {
-                            name: "三大統計表",
-                            emoji: "📈",
+                            name: "三大統計表", emoji: "📊",
                             items: [
                                 { title: "全家保障統計表", desc: "人生保證金", url: "../全家保障統計表/全家保障統計表.html", icon: "🛡️" },
                                 { title: "全家保單價值", desc: "家庭資產", url: "../全家保單價值統計表/全家保單價值統計表.html", icon: "💎" },
@@ -412,8 +424,7 @@
                             ]
                         },
                         {
-                            name: "系統導航",
-                            emoji: "🧭",
+                            name: "系統導航", emoji: "🧭",
                             items: [
                                 { title: "回系統首頁", desc: "李麗琴全家首頁", url: "file:///C:/Users/%E6%9D%8E%E4%BB%B2%E5%B9%B3/Desktop/%E6%88%91%E7%9A%84HTML%E7%B3%BB%E7%B5%B1/%E5%AE%A2%E6%88%B6%E7%AE%A1%E7%90%86/%E6%9D%8E%E9%BA%97%E7%90%B4%E5%85%A8%E5%AE%B6/%E6%9D%8E%E9%BA%97%E7%90%B4%E5%85%A8%E5%AE%B6%E9%A6%96%E9%A0%81.html", icon: "🔙" }
                             ]
@@ -424,21 +435,10 @@
                     title: "財富管理專區",
                     desc: "稅務分析、傳承規劃與投資",
                     icon: "🏦",
-                    color: "var(--c-yellow)", // 暖黃色
-                    textColor: "#333", // 黃色背景搭配深色字
+                    color: "#FDB940", 
                     subCategories: [
                         {
-                            name: "投資型保險",
-                            emoji: "💹",
-                            items: [
-                                { title: "投資型保單分析", desc: "加值給付與價值", url: "https://drive.google.com/file/d/1e5V79mzGUd01i2iDFp_77ntB0786SGey/view?usp=drive_link", icon: "📑" },
-                                { title: "語音解說", desc: "分析導覽", url: "https://drive.google.com/file/d/1ZLp1kj6cZj7DXrmwwNOJwKETfo5Y7OFd/view?usp=drive_link", icon: "🎧" },
-                                { title: "BVA報表", desc: "Evernote", url: "https://share.evernote.com/note/ecb649b3-54b9-482c-0de3-8baf19520f31", icon: "📉" }
-                            ]
-                        },
-                        {
-                            name: "稅務與傳承",
-                            emoji: "⚖️",
+                            name: "稅務與傳承", emoji: "⚖️",
                             items: [
                                 { title: "財富傳承分析", desc: "語音版", url: "https://drive.google.com/file/d/1oREACA7iiXogsUXFhpUlM2UEpxYOvFON/view?usp=sharing", icon: "🗣️" },
                                 { title: "全家稅務分析", desc: "PDF", url: "https://drive.google.com/file/d/1HP2e5SIP3uAcJm8Lyu5CE3RiHyuiqe6J/view?usp=drive_link", icon: "🧾" },
@@ -451,12 +451,10 @@
                     title: "產物保險",
                     desc: "汽機車、住宅火險與責任險",
                     icon: "🚗",
-                    color: "var(--c-orange)", // 活力橘
-                    textColor: "#333",
+                    color: "#F0A261", 
                     subCategories: [
                         {
-                            name: "車輛保險",
-                            emoji: "🚘",
+                            name: "車輛保險", emoji: "🚘",
                             items: [
                                 { title: "汽車險-季通實業", desc: "7986-L8", url: "https://lite.evernote.com/note/659f5c0d-43b9-448c-a6c3-0370fcdd8c13", icon: "🚙" },
                                 { title: "汽車險-李麗琴", desc: "6986-YQ (丙式)", url: "https://lite.evernote.com/note/158484e9-8c19-4fae-bfd9-95bcf031f763", icon: "🚙" },
@@ -467,8 +465,7 @@
                             ]
                         },
                         {
-                            name: "住宅火險",
-                            emoji: "🏠",
+                            name: "住宅火險", emoji: "🏠",
                             items: [
                                 { title: "基隆暖暖335巷", desc: "吳進財 (改建中)", url: "https://lite.evernote.com/note/10a77216-a590-40a1-94e5-9f7912bb48a3", icon: "🧱" },
                                 { title: "基隆暖暖街495號", desc: "李麗琴", url: "https://lite.evernote.com/note/5b9e0fb2-6685-4509-9d98-b07622f92191", icon: "🏡" },
@@ -476,8 +473,7 @@
                             ]
                         },
                         {
-                            name: "南山產物總表",
-                            emoji: "📑",
+                            name: "南山產物總表", emoji: "📑",
                             items: [
                                 { title: "南山產物總表", desc: "總覽", url: "#", icon: "📂" }
                             ]
@@ -488,12 +484,10 @@
                     title: "企業保單專區",
                     desc: "季通實業、登御實業",
                     icon: "🏢",
-                    color: "var(--c-green)", // 嫩綠色
-                    textColor: "white",
+                    color: "#5ABF9A",
                     subCategories: [
                         {
-                            name: "季通實業",
-                            emoji: "🏗️",
+                            name: "季通實業", emoji: "🏗️",
                             items: [
                                 { title: "投保紀錄", desc: "", url: "https://share.evernote.com/note/a4c99a9f-27b3-4ab6-9c3d-b80fc1adee97", icon: "🗂️" },
                                 { title: "吳進財名下企業保單", desc: "", url: "https://share.evernote.com/note/1773f410-9cf6-e438-0e2d-157bc34305eb", icon: "👔" },
@@ -502,8 +496,7 @@
                             ]
                         },
                         {
-                            name: "登御實業",
-                            emoji: "🏭",
+                            name: "登御實業", emoji: "🏭",
                             items: [
                                 { title: "投保紀錄", desc: "", url: "https://share.evernote.com/note/6cfef888-08ef-4633-9c42-381dc41b5ebc", icon: "🗂️" },
                                 { title: "李麗琴名下企業保單", desc: "", url: "https://share.evernote.com/note/4fc241c2-de99-7c48-4ef4-d62e990870a7", icon: "👔" },
@@ -516,12 +509,10 @@
                     title: "售後服務資源",
                     desc: "表單下載與聯絡資訊",
                     icon: "🤝",
-                    color: "#6B7280", // 灰色
-                    textColor: "white",
+                    color: "#46B3E6", 
                     subCategories: [
                         {
-                            name: "常用資源",
-                            emoji: "🌐",
+                            name: "常用資源", emoji: "🌐",
                             items: [
                                 { title: "售後服務資源一覽表", desc: "Github Page", url: "https://chungpinglee.github.io/abc0480//%E5%94%AE%E5%BE%8C%E6%9C%8D%E5%8B%99%E8%B3%87%E6%BA%90.html", icon: "🔗" }
                             ]
@@ -546,21 +537,19 @@
             renderLevel1();
         }
 
-        // 渲染 Level 1 (主選單)
         function renderLevel1() {
             mainGrid.innerHTML = '';
             pageData.categories.forEach((cat, index) => {
                 const card = document.createElement('div');
                 card.className = 'main-card';
                 card.style.backgroundColor = cat.color;
-                card.style.color = cat.textColor;
                 
                 card.innerHTML = `
                     <div class="deco-circle"></div>
                     <div class="icon-large">${cat.icon}</div>
                     <div>
                         <h2>${cat.title}</h2>
-                        <p style="color: ${cat.textColor === 'white' ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)'}">${cat.desc}</p>
+                        <p>${cat.desc}</p>
                     </div>
                 `;
                 card.onclick = () => openModal(index);
@@ -568,29 +557,32 @@
             });
         }
 
-        // 開啟 Modal (Level 2)
         function openModal(catIndex) {
             const category = pageData.categories[catIndex];
             modalTitle.innerHTML = `<span style="margin-right:15px; font-size: 2rem;">${category.icon}</span> ${category.title}`;
-            modalTitle.style.color = category.color === 'white' ? 'var(--text-dark)' : category.color;
+            modalTitle.style.color = category.color;
             
             level2Container.innerHTML = '';
-            level3Section.style.display = 'none'; // 隱藏 Level 3
+            level3Section.style.display = 'none'; 
             level3Grid.innerHTML = '';
 
             category.subCategories.forEach((sub, subIndex) => {
                 const btn = document.createElement('div');
                 btn.className = 'sub-btn';
+                
+                // Level 2 按鈕顏色分配
+                const colorObj = colorPalette[subIndex % colorPalette.length];
+                btn.style.backgroundColor = colorObj.main; 
+                
                 btn.innerHTML = `
                     <div class="emoji">${sub.emoji}</div>
                     <div class="text">${sub.name}</div>
                 `;
                 btn.onclick = () => {
-                    // 移除其他按鈕的 active
                     document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    // 顯示 Level 3
-                    renderLevel3(sub);
+                    // 傳遞 category 顏色給 title 用
+                    renderLevel3(sub, colorObj);
                 };
                 level2Container.appendChild(btn);
             });
@@ -598,10 +590,12 @@
             viewModal.classList.add('active');
         }
 
-        // 渲染 Level 3 (卡片展開)
-        function renderLevel3(subCategory) {
+        function renderLevel3(subCategory, parentColorObj) {
             level3Section.style.display = 'block';
             level3Title.innerHTML = `<span style="font-size:1.5rem;">${subCategory.emoji}</span> ${subCategory.name} - 詳細資料`;
+            
+            // 標題顏色跟隨該區塊的主色
+            level3Title.style.color = parentColorObj.main; 
             level3Grid.innerHTML = '';
 
             subCategory.items.forEach((item, index) => {
@@ -609,7 +603,11 @@
                 card.className = `link-card ${item.highlight ? 'highlight' : ''}`;
                 card.href = item.url || '#';
                 card.target = '_blank';
-                card.style.animationDelay = `${index * 0.08}s`; // 依序出現的延遲
+                card.style.animationDelay = `${index * 0.08}s`; 
+                
+                // 🔥 核心修改：每一張卡片依序分配不同的淺色背景
+                const specificColor = colorPalette[index % colorPalette.length];
+                card.style.backgroundColor = specificColor.light; 
 
                 card.innerHTML = `
                     <div class="card-icon">${item.icon}</div>
@@ -618,10 +616,18 @@
                         <span>${item.desc}</span>
                     </div>
                 `;
+                
+                // Hover effect: 邊框使用對應的深色系
+                card.addEventListener('mouseenter', () => {
+                    card.style.borderColor = specificColor.main;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.borderColor = 'transparent';
+                });
+
                 level3Grid.appendChild(card);
             });
             
-            // 自動捲動
             setTimeout(() => {
                 level3Section.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
@@ -635,7 +641,6 @@
             if(e.target === viewModal) closeViewModal();
         });
 
-        // 編輯器與存檔
         const editorModal = document.getElementById('editor-modal');
         const jsonEditor = document.getElementById('json-editor');
 
