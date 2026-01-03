@@ -76,7 +76,7 @@
             font-size: 18px; 
             background-color: var(--deep-green); 
             color: #ffffff; 
-            padding: 12px 20px; 
+            padding: 15px 25px; 
             border-radius: 10px; 
             display: inline-block; 
             margin-bottom: 15px; 
@@ -85,13 +85,13 @@
             font-weight: bold;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        .premium-val { font-size: 38px; font-weight: bold; color: #ffeb3b; text-shadow: 0 2px 4px rgba(0,0,0,0.3); vertical-align: middle; }
+        .premium-val-inline { color: #ffeb3b; font-size: 24px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
         /* 按鈕樣式 */
-        .catalog-btn, .line-btn {
+        .catalog-btn, .line-btn, .sos-btn {
             display: inline-flex;
             align-items: center;
-            margin-left: 10px;
+            margin: 5px;
             padding: 8px 18px;
             border-radius: 30px;
             font-size: 16px;
@@ -105,7 +105,9 @@
 
         .catalog-btn { background-color: #ffeb3b; color: var(--ns-blue) !important; }
         .line-btn { background-color: var(--line-green); color: white !important; }
-        .catalog-btn:hover, .line-btn:hover { background-color: var(--hover-red) !important; color: white !important; transform: scale(1.05); }
+        .sos-btn { background-color: var(--ns-red); color: white !important; }
+
+        .catalog-btn:hover, .line-btn:hover, .sos-btn:hover { background-color: var(--hover-red) !important; color: white !important; transform: scale(1.05); }
 
         /* 表格樣式 */
         table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--ns-border); margin-bottom: 20px; table-layout: fixed; }
@@ -133,7 +135,7 @@
         @media print {
             body { background: white; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .container { box-shadow: none; width: 100%; max-width: none; border: none; }
-            .nav-tabs, .control-panel, .btn-container, #page-edit, #page-rates, #modalOverlay, #infoModal, .catalog-btn, .line-btn { display: none !important; }
+            .nav-tabs, .control-panel, .btn-container, #page-edit, #page-rates, #modalOverlay, #infoModal, .catalog-btn, .line-btn, .sos-btn { display: none !important; }
             #page-prop { display: block !important; }
             .premium-summary { border: 1px solid #ddd; }
             .premium-summary .plan-info { background-color: #1B5E20 !important; -webkit-print-color-adjust: exact; }
@@ -190,11 +192,9 @@
                 請選擇計畫以試算保障...
             </div>
             <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <span class="premium-val">保費 : <span id="totalPremium">0</span> 元</span>
                 <a href="https://drive.google.com/file/d/17GvNAkHKRtgHM1aIvNao8jQwnBgdvF7B/view?usp=sharing" target="_blank" class="catalog-btn">金平安PRO5目錄</a>
-                <a href="https://line.me/R/ti/p/~0932218851" target="_blank" class="line-btn">
-                    LINE 諮詢仲平
-                </a>
+                <a href="https://line.me/R/ti/p/~0932218851" target="_blank" class="line-btn">LINE 諮詢仲平</a>
+                <a href="https://www.nanshangeneral.com.tw/service-119?tabTitle=%E8%A1%8C%E6%94%BF%E5%8F%8A%E6%97%85%E9%81%8A%E8%B3%87%E8%A8%8A%E5%8D%94%E5%8A%A9" target="_blank" class="sos-btn">海外緊急救援專線</a>
             </div>
         </div>
 
@@ -276,18 +276,18 @@ const DESCRIPTIONS = {
     "突發門診": "1. 範圍：在海外因突發疾病需接受醫院或診所門診診療之實際醫療費用。\n2. 每次限額：每次門診給付上限為「海外突發疾病醫療限額」乘上調整係數之 1%。\n3. 診治限制：必須在海外當地領有開業執照之醫院或診所由醫師診治者。\n4. 排除行為：不包含美容手術、外科整型(功能重建除外)及牙科非必要手術。\n5. 門急診定義：門診與急診分別計算其每次最高給付限額。",
     "突發急診": "1. 範圍：在海外因突發疾病需接受急診診療時所發生之實際費用。\n2. 每次限額：每次急診給付上限為「海外突發疾病醫療限額」乘上調整係數之 1%。\n3. 急診定義：需即時診療始能避免生命危險、肢體嚴重受損 or 功能嚴重喪失者。\n4. 計算邏輯：與門診限額相同，皆受地區係數 (如 100%、200%、300%) 倍率影響。\n5. 應檢文件：需檢具醫療證明、費用明細 or 收據及身分證明文件。",
     "食物中毒": "1. 定義：二人以上攝取相同食物發生相似症狀，且檢體分離出相同致病原因。\n2. 特殊情況：若屬細菌性毒素 or 急性化學性食物中毒，即使一人亦視為食物中毒。\n3. 給付方式：採定額保險金給付。每次意外事故按計畫約定金額理賠。\n4. 次數限制：保險期間內最高以給付二次食物中毒保險金為限。\n5. 合格診治：必須在登記合格之醫院或診所接受醫師診療者。",
-    "旅程取消": "1. 時間窗口：預定海外旅程開始前 7 日至海外旅行期間開始前事故。\n2. 觸發原因：包含本人、配偶或三親等身故病危、擔任證人、罷工、天災及暴動。\n3. 理賠範圍：補償無法取回之預繳團費、交通、住宿及活動票券之費用。\n4. 比例原則：住宿費若有他人同宿，則依被保額與同住人數比例計算保險金。\n5. 排除項目：可由旅行社退還之點數、哩程數或代金券等非貨幣形式補償。",
+    "旅程取消": "1. 時間窗口：預定海外旅程開始前 7 日至海外旅行期間開始前事故。\n2. 觸發原因：包含本人、配偶 or 三親等身故病危、擔任證人、罷工、天災及暴動。\n3. 理賠範圍：補償無法取回之預繳團費、交通、住宿及活動票券之費用。\n4. 比例原則：住宿費若有他人同宿，則依被保額與同住人數比例計算保險金。\n5. 排除項目：可由旅行社退還之點數、哩程數或代金券等非貨幣形式補償。",
     "取消傳染病": "1. 適用事故：本人受強制檢疫、前往地警示達第三級、目的地政府關閉邊境禁入。\n2. 補償範圍：無法取回之預繳團費、交通、住宿及預定活動費用。\n3. 限制條款：若目的地政府發布命令時被保險人已完成入境，則不適用此條款。\n4. 金額共用：本項補償金額與「旅程取消保險」額度共用，上限依計畫定之。\n5. 應備文件：強制檢疫證明或我國/前往地政府機關出具之事故證明文件。",
-    "班機延誤": "1. 門檻標準：定期航班較預定出發時間延誤達 4 小時以上。\n2. 理賠次數：採定額給付，保險期間內以給付二次事故為限。\n3. 延誤計算：自預定班機出發起，至實際出發或第一班替代班機出發時止。\n4. 同一事故：因前班延誤致錯過轉接班機，視為同一次延誤事故處理。\n5. 應備證明：需航空公司出具載有班機延誤期間及原訂班機資訊之文件。",
+    "班機延誤": "1. 門檻標準：定期航班較預定出發時間延誤達 4 小時以上。\n2. 理賠次數：採定額給付，保險期間內以給付二次事故為限。\n3. 延誤計算：自預定班機出發起，至實際出發 or 第一班替代班機出發時止。\n4. 同一事故：因前班延誤致錯過轉接班機，視為同一次延誤事故處理。\n5. 應備證明：需航空公司出具載有班機延誤期間及原訂班機資訊之文件。",
     "旅程更改": "1. 原因列表：罷工、戰爭、天災、三親等身故、護照遺失或交通意外致更改旅程。\n2. 理賠項目：補償所增加之交通或住宿費用，以原訂同等級費用為限。\n3. 扣除條款：需扣除可由旅館或交通業者獲得之退款或非貨幣形式償還金額。\n4. 排除原因：航空公司破產、清算或債務不履行所致之損失不予承保。\n5. 額度限制：總賠償金額以保險單所記載之該項限額為最高上限。",
     "行李延誤": "1. 標準定義：託運行李因業者處理失當，抵達目的地 6 小時後仍未領得。\n2. 排除範圍：返回中華民國境內機場或返回出發地之行李延誤不予理賠。\n3. 理賠方式：採定額給付保險金，不因延誤時間長短而改變金額。\n4. 排除物品：事先運送之行李、分開郵寄之物品不在保障範圍內。\n5. 應檢文件：公共交通業者出具之行李延誤證明、託運單據證明。",
     "行李損失": "1. 事故原因：置於行李箱內個人物品因竊盜、強盜、搶奪或業者失當致損毀滅失。\n2. 不保項目：現金、手機、筆電、珠寶、旅行文件、信用卡及行李箱本身毀損。\n3. 報案要求：竊盜強盜類事故需於 24 小時內向當地警察單位報案並取得證明。\n4. 給付次數：保險期間內最高以給付二次為限，每次皆為定額補償性質。\n5. 業者補償：若可由交通業者全額補償之損失，則本保險不重複賠付金額。",
-    "文件損失": "1. 範圍：旅行護照、簽證或其他必要通行文件被強奪、搶奪、竊盜或遺失。\n2. 費用包含：重置文件之規費以及為領取新文件所需之必要合理交通費用。\n3. 時效限制：必須於事故發生後 24 小時內向警方報案並取得正式報案證明。\n4. 排除範圍：因文件遺失導致旅程延誤之住宿費用 (該部分另由旅程更改補償)。\n5. 核銷依據：申請時需提供所有規費收據及重置過程之交通票根正本。",
+    "文件損失": "1. 範圍：旅行護照、簽證或其他必要通行文件被強奪、搶奪、竊盜或遺失。\n2. 賠償限額：每一保險期間最高賠償限額為 5,000 元。\n3. 費用包含：重置文件之規費以及為領取新文件所需之必要合理交通費用。\n4. 時效限制：必須於事故發生後 24 小時內向警方報案並取得正式報案證明。\n5. 核銷依據：申請時需提供所有規費收據及重置過程之交通票根正本。",
     "緊急救援": "1. 啟動條件：經救援公司判定當地醫療不足需運送至他處或返回國內之費用。\n2. 包含項目：緊急醫療運送、遺體運返、子女看護、探病費用四大範疇。\n3. 共用額度：緊急醫療運送與遺體運返費用共用保險單所載之保額上限。\n4. 安排程序：必須經與本公司簽約之救援公司判定及安排，私自安排恕不理賠。\n5. 理賠上限：依各計畫別定額(如300萬)，包含醫療器材及醫護隨行費用。",
-    "子女看護": "1. 觸發門檻：被保險人因重大傷病於海外連續住院達 5 日以上。\n2. 補償對象：安排一名親友前往照顧隨行 15 歲以下子女並陪同返國之費用。\n3. 補償內容：支付該親友之交通(來回機票)及合理住宿費用。\n4. 限制條件：隨行子女必須亦為本保險契約之被保險人始能獲得此補償。\n5. 定義：重大傷病指醫師診斷若繼續旅行將危及生命之傷害 or 疾病。",
-    "探病費用": "1. 觸發門檻：被保險人身故或因重大傷病於海外連續住院達 5 日以上。\n2. 補償內容：一名親友前往事故地探視或處理後事之合理交通及住宿費用。\n3. 報支方式：採實支實付方式核銷，最高給付不超過計畫記載之限額。\n4. 排除範圍：不含親友在當地之伙食、通訊、雜費等私人性消費開支。\n5. 應備文件：醫師診斷證明或死亡證明、所有交通住宿費用收據正本。",
+    "子女看護": "1. 觸發門檻：被保險人因重大傷病於海外連續住院達 5 日以上。\n2. 賠償限額：每一保險期間最高賠償限額為 12 萬元。\n3. 補償對象：安排一名親友前往照顧隨行 15 歲以下子女並陪同返國之費用。\n4. 補償內容：支付該親友之交通(來回機票)及合理住宿費用。\n5. 限制條件：隨行子女必須亦為本保險契約之被保險人始能獲得此補償。",
+    "探病費用": "1. 觸發門檻：被保險人身故或因重大傷病於海外連續住院達 5 日以上。\n2. 賠償限額：每一保險期間最高賠償限額為 20 萬元。\n3. 補償內容：一名親友前往事故地探視或處理後事之合理交通及住宿費用。\n4. 報支方式：採實支實付方式核銷，最高給付不超過計畫記載之限額。\n5. 應備文件：醫師診斷證明 or 死亡證明、所有交通住宿費用收據正本。",
     "責任險": "1. 承保範圍：旅行期間因行為致第三人死亡、體傷或財物受損，依法應負之責任。\n2. 費用給付：包含賠償金額及事前經公司書面同意之民事訴訟必要費用。\n3. 排除範圍：親屬間之損害賠償、執行專業職務、管理汽機車或航空器之責任。\n4. 報案義務：知悉事故 5 日內需通知本公司，30 日內需提交詳細書面報告。\n5. 和解限制：未經公司同意參與之和解，公司不受其拘束 (除必要急救費)。",
-    "信用卡盜刷": "1. 賠付範圍：信用卡遭竊搶搶遺失後，掛失止前 24 小時內之未授權盜刷損失。\n2. 費用包含：含括掛失止付手續費及申請重置新卡之行政規費。\n3. 不保對象：被保險人之配偶、家屬、受僱人或同住者所冒用之損失。\n4. 義務條款：知悉盜刷後需立即報警，並取得發卡機構核發之補償狀況證明。\n5. 賠付計算：需扣除發卡機構依約(如持卡人自負額)應承擔之部分損失。",
+    "信用卡盜刷": "1. 賠付範圍：信用卡遭竊搶搶遺失後，掛失止前 24 小時內之未授權盜刷損失。\n2. 費用包含：含括掛失止付手續費及申請重置新卡之行政規費。\n3. 不保對象：被保險人之配偶、家屬、受僱人 or 同住者所冒用之損失。\n4. 義務條款：知悉盜刷後需立即報警，並取得發卡機構核發之補償狀況證明。\n5. 賠付計算：需扣除發卡機構依約(如持卡人自負額)應承擔之部分損失。",
     "現金竊盜": "1. 保障事故：隨身攜帶或置於鎖妥之旅館房間內之現金遭竊盜、強盜之損失。\n2. 現金定義：係指現行通用之紙幣、硬幣、支票、匯票或旅行支票。\n3. 安全限制：旅館房間門窗未予鎖妥時所發生之竊盜損失，保險不予理賠。\n4. 時效報案：發生事故 24 小時內需向當地警察單位報案並取得報案證明文件。\n5. 賠付限額：保險期間累計最高理賠金額以計畫記載之金額(如5000元)為限。",
     "更改傳染病": "1. 適用原因：海外旅程中因前往地點發生傳染病或因檢疫規定致需更改行程。\n2. 補償範圍：補償增加之交通或住宿同等級費用 (需扣除原可退還金額)。\n3. 給付限制：被保險人違反檢疫規定或應採行作為而未採行時不負理賠責任。\n4. 額度機制：本項補償金額與「旅程更改保險」共用額度上限。\n5. 證明文件：海關、警方或各國衛生檢疫單位所核發之書面證明文件。",
     "班機改降": "1. 標準：定期航班起飛後因受天氣或機械故障影響改降非原定機場。\n2. 例外：回原起飛機場不適用。改降海外其他機場給付 100% 定額保險金。\n3. 國內降落：若改降中華民國境內其他機場，則按計畫保額之 50% 給付。\n4. 次數限制：每一保險期間內最高以給付二次改降補償保險金為限。\n5. 理賠依據：需航空公司出具班機改降證明、機票證根及登機證影本。",
@@ -420,20 +420,15 @@ function calculateAll() {
     const planInfoElem = document.getElementById('planSummaryInfo');
     if (planInfoElem) {
         planInfoElem.innerHTML = `
-            【${p.name}】 | 投保保額：${fmt(p.death)} | 投保天數：${days}天 | 海外突發疾病調整：${mPercent}
+            【${p.name}】 | 投保保額：${fmt(p.death)} | 投保天數：${days}天 | 海外突發疾病保額調整%：${mPercent} | <span class="premium-val-inline">保費：${premium.toLocaleString()} 元</span>
         `;
-    }
-
-    const totalPremiumElem = document.getElementById('totalPremium');
-    if (totalPremiumElem) {
-        totalPremiumElem.innerText = premium.toLocaleString();
     }
 
     if (body) {
         body.innerHTML = `
             <tr>
                 <td class="category-cell"><a href="${getC('童遊標題').url}" target="_blank" class="category-tooltip" style="color:white; border:none;">${getC('童遊標題').name}</a></td>
-                <td colspan="2"><a onclick="openModal('意外傷害')">${getC('童遊傷害').name}</a> <span class="red-text">(實際費用最高額)</span></td>
+                <td colspan="2"><a onclick="openModal('意外傷害')">${getC('童遊傷害').name}</a> <span class="red-text">(實際費用且最高以保險金額為限)</span></td>
                 <td class="calc-cell">${fmt(p.death===0?p.inj:0)}</td>
             </tr>
             <tr>
@@ -479,7 +474,7 @@ function calculateAll() {
             <tr><td colspan="2"><a onclick="openModal('班機改降')">${getC('班機改降').name}</a></td><td class="calc-cell">${fmt(p.divert)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('信用卡盜刷')">${getC('信用卡盜刷').name}</a></td><td class="calc-cell">${fmt(p.credit)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('現金竊盜')">${getC('現金竊盜').name}</a></td><td class="calc-cell">${fmt(p.cash)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('取消傳傳病')">${getC('取消傳傳病').name}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('取消傳染病')">${getC('取消傳染病').name}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('更改傳染病')">${getC('更改傳染病').name}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
             <tr><td colspan="4" class="footer-cell"><a onclick="openModal('恐怖主義')" style="color:white; border:none;">${getC('恐怖主義').name}</a></td></tr>
         `;
