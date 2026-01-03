@@ -21,7 +21,7 @@
 
         /* 滑鼠滑過效果 */
         a:hover { background-color: var(--hover-red) !important; color: white !important; border-radius: 4px; padding: 2px 4px; transition: 0.2s; }
-        .nav-btn:hover, .save-btn:hover, .print-btn:hover { background-color: var(--hover-red) !important; color: white !important; transform: scale(1.02); transition: 0.2s; }
+        .nav-btn:hover, .save-btn:hover { background-color: var(--hover-red) !important; color: white !important; transform: scale(1.02); transition: 0.2s; }
 
         /* 懸浮提示框 (Tooltip) */
         .category-tooltip { position: relative; display: inline-block; cursor: help; }
@@ -71,7 +71,7 @@
         .premium-summary { background: linear-gradient(135deg, var(--ns-blue), var(--ns-light-blue)); color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .premium-summary .user-greeting { font-size: 18px; margin-bottom: 12px; font-weight: bold; }
         
-        /* 計畫資訊框架樣式 (深綠色、放大字體、白色文字) */
+        /* 計畫資訊框架樣式 */
         .premium-summary .plan-info { 
             font-size: 18px; 
             background-color: var(--deep-green); 
@@ -87,7 +87,7 @@
         }
         .premium-val { font-size: 38px; font-weight: bold; color: #ffeb3b; text-shadow: 0 2px 4px rgba(0,0,0,0.3); vertical-align: middle; }
 
-        /* 超連結按鈕通用樣式 */
+        /* 按鈕樣式 */
         .catalog-btn, .line-btn {
             display: inline-flex;
             align-items: center;
@@ -103,28 +103,9 @@
             text-decoration: none !important;
         }
 
-        .catalog-btn {
-            background-color: #ffeb3b;
-            color: var(--ns-blue) !important;
-        }
-
-        .line-btn {
-            background-color: var(--line-green);
-            color: white !important;
-        }
-
-        .catalog-btn:hover, .line-btn:hover {
-            background-color: var(--hover-red) !important;
-            color: white !important;
-            transform: scale(1.05);
-        }
-
-        .btn-icon {
-            height: 24px;
-            width: auto;
-            margin-right: 8px;
-            border-radius: 4px;
-        }
+        .catalog-btn { background-color: #ffeb3b; color: var(--ns-blue) !important; }
+        .line-btn { background-color: var(--line-green); color: white !important; }
+        .catalog-btn:hover, .line-btn:hover { background-color: var(--hover-red) !important; color: white !important; transform: scale(1.05); }
 
         /* 表格樣式 */
         table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--ns-border); margin-bottom: 20px; table-layout: fixed; }
@@ -144,7 +125,6 @@
         
         .btn-container { text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
         .save-btn { background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; }
-        .print-btn { background: #2980b9; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; }
 
         .page-section { display: none; }
         .page-section.active { display: block; animation: fadeIn 0.4s ease; }
@@ -196,14 +176,11 @@
                 <select id="planSelect" onchange="calculateAll()">
                     <option value="1">計畫一 (2000萬)</option>
                     <option value="2">計畫二 (1000萬)</option>
-                    <option value="3">計畫三 (500萬)</option>
+                    <option value="3" selected>計畫三 (500萬)</option>
                     <option value="4">計畫四 (300萬)</option>
                     <option value="5">計畫五 (69萬)</option>
                     <option value="6">計畫六 (童遊專案)</option>
                 </select>
-            </div>
-            <div class="input-group" style="justify-content: flex-end;">
-                <button class="print-btn" onclick="window.print()">🖨️ 快速列印</button>
             </div>
         </div>
 
@@ -216,7 +193,7 @@
                 <span class="premium-val">保費 : <span id="totalPremium">0</span> 元</span>
                 <a href="https://drive.google.com/file/d/17GvNAkHKRtgHM1aIvNao8jQwnBgdvF7B/view?usp=sharing" target="_blank" class="catalog-btn">金平安PRO5目錄</a>
                 <a href="https://line.me/R/ti/p/~0932218851" target="_blank" class="line-btn">
-                    <img src="image_763ab0.jpg" class="btn-icon" alt="LINE">LINE 諮詢仲平
+                    LINE 諮詢仲平
                 </a>
             </div>
         </div>
@@ -290,7 +267,6 @@ const URL_CONFIG = {
 };
 /*CONFIG_END*/
 
-// 以下 JS 邏輯不變
 const DESCRIPTIONS = {
     "身故失能": "1. 意外傷害定義：指非由疾病引起之外來突發事故致成身故或失能。\n2. 給付時限：自意外事故發生之日起 180 日以內死亡或成失能者。\n3. 給付標準：失能保險金按失能程度比例 (5% 至 100%) 計算給付。\n4. 未成年限制：未滿 15 足歲者僅給付喪葬費用保險金 (上限 61.5 萬)。\n5. 累計給付：同一事故致成失能後身故，合計給付最高以保額為限。",
     "意外傷害": "1. 承保範圍：意外事故日起 180 日內，合格醫院診療之實際醫療費用。\n2. 理賠標準：超過全民健康保險給付部分之費用。\n3. 非健保就醫：若不以健保身分診療，仍依實際支付費用之 100% 給付。\n4. 給付限額：每次事故給付總額以保險單記載之「實支實付限額」為準。\n5. 合格定義：指領有載客執照之交通工具或經政府登記之合格醫院診所。",
@@ -299,7 +275,7 @@ const DESCRIPTIONS = {
     "返國住院": "1. 啟動條件：海外住院後返國前一日內出院，並於入境後一日內因同一疾病住院者。\n2. 給付上限：保險金總額以「海外突發疾病醫療保險金基礎限額」之 10% 為限。\n3. 計算基礎：本項限額亦受到海外地區調整係數 (如美加 300%) 影響之基數計算。\n4. 期間限制：返國繼續住院部分若於保險期間屆滿後出院，公司對再次住院不予給付。\n5. 應檢文件：需提供護照影本、海外診斷證明及國內醫院住院證明文件。",
     "突發門診": "1. 範圍：在海外因突發疾病需接受醫院或診所門診診療之實際醫療費用。\n2. 每次限額：每次門診給付上限為「海外突發疾病醫療限額」乘上調整係數之 1%。\n3. 診治限制：必須在海外當地領有開業執照之醫院或診所由醫師診治者。\n4. 排除行為：不包含美容手術、外科整型(功能重建除外)及牙科非必要手術。\n5. 門急診定義：門診與急診分別計算其每次最高給付限額。",
     "突發急診": "1. 範圍：在海外因突發疾病需接受急診診療時所發生之實際費用。\n2. 每次限額：每次急診給付上限為「海外突發疾病醫療限額」乘上調整係數之 1%。\n3. 急診定義：需即時診療始能避免生命危險、肢體嚴重受損 or 功能嚴重喪失者。\n4. 計算邏輯：與門診限額相同，皆受地區係數 (如 100%、200%、300%) 倍率影響。\n5. 應檢文件：需檢具醫療證明、費用明細 or 收據及身分證明文件。",
-    "食物中毒": "1. 定義：二人以上攝取相同食物發生相似症狀，且檢體分離出相同致病原因。\n2. 特殊情況：若屬細菌性毒素或急性化學性食物中毒，即使一人亦視為食物中毒。\n3. 給付方式：採定額保險金給付。每次意外事故按計畫約定金額理賠。\n4. 次數限制：保險期間內最高以給付二次食物中毒保險金為限。\n5. 合格診治：必須在登記合格之醫院或診所接受醫師診療者。",
+    "食物中毒": "1. 定義：二人以上攝取相同食物發生相似症狀，且檢體分離出相同致病原因。\n2. 特殊情況：若屬細菌性毒素 or 急性化學性食物中毒，即使一人亦視為食物中毒。\n3. 給付方式：採定額保險金給付。每次意外事故按計畫約定金額理賠。\n4. 次數限制：保險期間內最高以給付二次食物中毒保險金為限。\n5. 合格診治：必須在登記合格之醫院或診所接受醫師診療者。",
     "旅程取消": "1. 時間窗口：預定海外旅程開始前 7 日至海外旅行期間開始前事故。\n2. 觸發原因：包含本人、配偶或三親等身故病危、擔任證人、罷工、天災及暴動。\n3. 理賠範圍：補償無法取回之預繳團費、交通、住宿及活動票券之費用。\n4. 比例原則：住宿費若有他人同宿，則依被保額與同住人數比例計算保險金。\n5. 排除項目：可由旅行社退還之點數、哩程數或代金券等非貨幣形式補償。",
     "取消傳染病": "1. 適用事故：本人受強制檢疫、前往地警示達第三級、目的地政府關閉邊境禁入。\n2. 補償範圍：無法取回之預繳團費、交通、住宿及預定活動費用。\n3. 限制條款：若目的地政府發布命令時被保險人已完成入境，則不適用此條款。\n4. 金額共用：本項補償金額與「旅程取消保險」額度共用，上限依計畫定之。\n5. 應備文件：強制檢疫證明或我國/前往地政府機關出具之事故證明文件。",
     "班機延誤": "1. 門檻標準：定期航班較預定出發時間延誤達 4 小時以上。\n2. 理賠次數：採定額給付，保險期間內以給付二次事故為限。\n3. 延誤計算：自預定班機出發起，至實際出發或第一班替代班機出發時止。\n4. 同一事故：因前班延誤致錯過轉接班機，視為同一次延誤事故處理。\n5. 應備證明：需航空公司出具載有班機延誤期間及原訂班機資訊之文件。",
@@ -441,7 +417,6 @@ function calculateAll() {
     let premium = rates[pId][days];
     let regionSuffix = reg === "2" ? " (日本/紐澳)" : (reg === "3" ? " (美加/歐洲)" : "");
 
-    // 1. 更新上方藍色框架資訊
     const planInfoElem = document.getElementById('planSummaryInfo');
     if (planInfoElem) {
         planInfoElem.innerHTML = `
@@ -504,7 +479,7 @@ function calculateAll() {
             <tr><td colspan="2"><a onclick="openModal('班機改降')">${getC('班機改降').name}</a></td><td class="calc-cell">${fmt(p.divert)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('信用卡盜刷')">${getC('信用卡盜刷').name}</a></td><td class="calc-cell">${fmt(p.credit)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('現金竊盜')">${getC('現金竊盜').name}</a></td><td class="calc-cell">${fmt(p.cash)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('取消傳傳病')">${getC('取消傳染病').name}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('取消傳傳病')">${getC('取消傳傳病').name}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('更改傳染病')">${getC('更改傳染病').name}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
             <tr><td colspan="4" class="footer-cell"><a onclick="openModal('恐怖主義')" style="color:white; border:none;">${getC('恐怖主義').name}</a></td></tr>
         `;
