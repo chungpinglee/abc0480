@@ -2,9 +2,10 @@
 <html lang="zh-Hant"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>保險商品導覽系統 (iOS 穩定修復版)</title>
+    <!-- 標題已更改，用於驗證上傳成功 -->
+    <title>保險導覽系統 (GitHub 修復驗證版 v6.0)</title>
     <style>
-        /* --- 原有基礎樣式 (禁止更動) --- */
+        /* --- 基礎樣式 (禁止更動邏輯) --- */
         :root {
             --level-0-bg: #28a745;
             --level-0-text: #ffffff;
@@ -20,7 +21,7 @@
         body { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, "PingFang TC", "Microsoft JhengHei", sans-serif; background-color: var(--mobile-bg); margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         .view { display: none; flex-direction: column; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: var(--mobile-bg); }
         .view.active { display: flex; z-index: 10; }
-        .header { background: var(--mobile-header-bg); color: white; padding: 15px; text-align: center; position: relative; flex-shrink: 0; }
+        .header { background: var(--mobile-header-bg); color: white; padding: 15px; text-align: center; position: relative; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .back-btn { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
         .content { flex: 1; overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; }
 
@@ -29,48 +30,48 @@
         .center-circle { position: absolute; width: 100px; height: 100px; left: 100px; top: 100px; border-radius: 50%; background: var(--level-0-bg); color: white; display: flex; align-items: center; text-align: center; justify-content: center; font-weight: bold; }
         .sub-circle { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: white; border: 2px solid #ddd; display: flex; align-items: center; text-align: center; justify-content: center; font-size: 0.9em; cursor: pointer; }
 
-        /* --- 修正版：列印專用 CSS --- */
+        /* --- 核心修正：iOS 連結保留專用列印樣式 --- */
         @media print {
-            /* 1. 徹底打破所有容器限制，iOS 連結才不會失效 */
+            /* 1. 移除所有導致 iOS 判定為「截圖模式」的容器限制 */
             html, body { 
                 height: auto !important; 
                 overflow: visible !important; 
                 background: white !important; 
-                position: relative !important;
+                position: static !important;
             }
 
-            /* 2. 隱藏不必要的 UI，包括其他視窗與導覽列 */
-            .no-print, .header, .back-btn, #main-menu-view, #suggested-main-menu-view, #traditional-list-view { 
+            /* 2. 隱藏導覽與非列印元件 */
+            .no-print, .header, .back-btn, #main-menu-view, #suggested-main-menu-view { 
                 display: none !important; 
             }
 
-            /* 3. 強制讓目前要列印的列表視窗「平鋪」展開 */
+            /* 3. 強制讓產品列表展開為標準文件流 (Static 佈局是保留連結的關鍵) */
             #suggested-product-list-view { 
                 display: block !important; 
                 position: static !important; 
                 height: auto !important; 
-                overflow: visible !important; 
-                opacity: 1 !important;
+                overflow: visible !important;
                 visibility: visible !important;
             }
             #suggested-product-list-content { 
                 display: block !important;
                 overflow: visible !important; 
-                height: auto !important; 
+                height: auto !important;
                 padding: 0 !important;
             }
 
-            /* 4. 關鍵：超連結必須是塊級或行內塊級，並取消絕對定位 */
+            /* 4. 強化 A 標籤偵測量：將 A 標籤設為塊狀元素填充整個區域 */
             .list-item { 
-                display: block !important; 
                 page-break-inside: avoid; 
                 border: 1px solid #ddd !important;
-                margin-bottom: 10px !important;
-                box-shadow: none !important;
+                margin-bottom: 15px !important;
+                padding: 0 !important; /* 讓內部的 A 標籤可以撐滿 */
             }
             a { 
                 display: block !important; 
-                text-decoration: underline !important; 
+                width: 100% !important;
+                padding: 15px !important;
+                text-decoration: none !important; 
                 color: #007bff !important; 
                 pointer-events: auto !important;
             }
@@ -81,7 +82,7 @@
 
     <!-- 主選單視窗 -->
     <div id="main-menu-view" class="view active">
-        <div class="header">保險導覽系統</div>
+        <div class="header">保險導覽系統 (驗證版 v6.0)</div>
         <div class="content">
             <div class="circle-container">
                 <div class="center-circle">保險<br>規劃</div>
@@ -94,11 +95,11 @@
     <div id="suggested-main-menu-view" class="view">
         <div class="header">
             <button class="back-btn" onclick="showView('#main-menu-view')">返回</button>
-            建議組合
+            驗證上傳專用
         </div>
         <div class="content">
-            <div class="list-item" onclick="showProductList('建議方案 A')">
-                <span class="item-text">建議方案 A</span><span class="item-arrow">❯</span>
+            <div class="list-item" onclick="showProductList('建議方案 (已驗證版本)')">
+                <span class="item-text">測試方案：點擊進入列印頁</span><span class="item-arrow">❯</span>
             </div>
         </div>
     </div>
@@ -108,23 +109,27 @@
         <div class="header">
             <button class="back-btn no-print" onclick="showView('#suggested-main-menu-view')">返回</button>
             <span id="suggested-list-title">產品列表</span>
-            <!-- 穩定版列印按鈕 -->
-            <button id="print-suggested-view-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #28a745; border: none; color: white; padding: 5px 12px; border-radius: 4px; cursor: pointer;" class="no-print">
-                PDF 轉存
+            <!-- 更改按鈕文字用於驗證 -->
+            <button id="print-suggested-view-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #28a745; border: none; color: white; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;" class="no-print">
+                點擊產生 PDF (驗證版)
             </button>
         </div>
         <div id="suggested-product-list-content" class="content">
-            <!-- 產品條目 -->
+            <!-- 測試連結 -->
             <div class="list-item">
-                <a href="https://www.google.com" target="_blank" style="width:100%; display:flex; justify-content:space-between; text-decoration:none; color:inherit;">
-                    <span class="item-text">醫療險條款 (測試連結)</span>
-                    <span class="item-arrow">點擊 ❯</span>
+                <a href="https://www.google.com" target="_blank">
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <span class="item-text">醫療保險條款 (PDF連結測試 1)</span>
+                        <span class="item-arrow">❯</span>
+                    </div>
                 </a>
             </div>
             <div class="list-item">
-                <a href="https://www.github.com" target="_blank" style="width:100%; display:flex; justify-content:space-between; text-decoration:none; color:inherit;">
-                    <span class="item-text">意外險費率 (測試連結)</span>
-                    <span class="item-arrow">點擊 ❯</span>
+                <a href="https://github.com" target="_blank">
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <span class="item-text">意外傷害險率 (PDF連結測試 2)</span>
+                        <span class="item-arrow">❯</span>
+                    </div>
                 </a>
             </div>
         </div>
@@ -141,20 +146,20 @@
             showView('#suggested-product-list-view');
         }
 
-        // --- 穩定修復版：點擊按鈕執行邏輯 ---
-        document.getElementById('print-suggested-view-btn').addEventListener('click', function(e) {
-            e.preventDefault(); // 防止預設觸發
+        // --- 修復 GitHub 環境下的觸發機制 ---
+        const printBtn = document.getElementById('print-suggested-view-btn');
+        if (printBtn) {
+            printBtn.onclick = function(e) {
+                // 1. 強制讓內容回到最上方，避免截斷
+                document.getElementById('suggested-product-list-content').scrollTop = 0;
 
-            // 1. 取得內容區塊並將滾動條拉回最上方 (確保 iOS 抓到完整內容)
-            const contentArea = document.getElementById('suggested-product-list-content');
-            contentArea.scrollTop = 0;
-
-            // 2. 針對 iOS 延遲觸發列印
-            // 延遲是為了讓 iOS 確認使用者觸發動作已完成，並給予 UI 渲染反應時間
-            setTimeout(() => {
-                window.print();
-            }, 300);
-        });
+                // 2. iOS 觸發優化：直接調用 window.print
+                // 這裡使用 setTimeout 確保點擊震動/回饋完成後才跳出系統視窗
+                setTimeout(function() {
+                    window.print();
+                }, 150);
+            };
+        }
     </script>
 </body>
 </html>
