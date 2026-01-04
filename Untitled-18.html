@@ -2,9 +2,9 @@
 <html lang="zh-Hant"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>保險商品導覽系統 (GitHub & iOS 修復版)</title>
+    <title>保險商品導覽系統 (iOS 穩定修復版)</title>
     <style>
-        /* --- 原有 CSS 變數與基礎樣式 (禁止更動) --- */
+        /* --- 原有基礎樣式 (禁止更動) --- */
         :root {
             --level-0-bg: #28a745;
             --level-0-text: #ffffff;
@@ -15,59 +15,65 @@
             --product-text: #333333;
             --mobile-bg: #f2f4f8;
             --mobile-header-bg: linear-gradient(90deg, #005a9c, #007bff);
-            --hover-red: #dc3545; 
-            --hover-text: #ffffff; 
-            --dynamic-level-color: #8E44AD; 
         }
 
         body { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, "PingFang TC", "Microsoft JhengHei", sans-serif; background-color: var(--mobile-bg); margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         .view { display: none; flex-direction: column; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: var(--mobile-bg); }
         .view.active { display: flex; z-index: 10; }
-        .header { background: var(--mobile-header-bg); color: white; padding: 15px; text-align: center; position: relative; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .back-btn { position: absolute; left: 10px; top: 50%; transform: translateY( -50% ); background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
+        .header { background: var(--mobile-header-bg); color: white; padding: 15px; text-align: center; position: relative; flex-shrink: 0; }
+        .back-btn { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px 12px; border-radius: 4px; cursor: pointer; }
         .content { flex: 1; overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; }
 
         .list-item { background: white; margin-bottom: 10px; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .circle-container { position: relative; width: 300px; height: 300px; margin: 50px auto; }
-        .center-circle { position: absolute; width: 100px; height: 100px; left: 100px; top: 100px; border-radius: 50%; background: var(--level-0-bg); color: white; display: flex; align-items: center; text-align: center; justify-content: center; font-weight: bold; font-size: 1.1em; z-index: 2; }
-        .sub-circle { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: white; border: 2px solid #ddd; display: flex; align-items: center; text-align: center; justify-content: center; font-size: 0.9em; font-weight: 500; cursor: pointer; z-index: 1; }
+        .center-circle { position: absolute; width: 100px; height: 100px; left: 100px; top: 100px; border-radius: 50%; background: var(--level-0-bg); color: white; display: flex; align-items: center; text-align: center; justify-content: center; font-weight: bold; }
+        .sub-circle { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: white; border: 2px solid #ddd; display: flex; align-items: center; text-align: center; justify-content: center; font-size: 0.9em; cursor: pointer; }
 
-        /* --- 關鍵修改：列印與 PDF 轉存優化樣式 --- */
+        /* --- 修正版：列印專用 CSS --- */
         @media print {
-            /* 1. 強制讓 body 變回自然高度，取消滾動限制，這是保留連結的關鍵 */
-            html, body { height: auto !important; overflow: visible !important; background: white !important; }
-            
-            /* 2. 隱藏所有非列印元素 */
-            .no-print, .header, .back-btn, #main-menu-view, #suggested-main-menu-view, #traditional-list-view { display: none !important; }
-            
-            /* 3. 將產品列表視窗設為靜態佈局，iOS 才能正確讀取連結 */
+            /* 1. 徹底打破所有容器限制，iOS 連結才不會失效 */
+            html, body { 
+                height: auto !important; 
+                overflow: visible !important; 
+                background: white !important; 
+                position: relative !important;
+            }
+
+            /* 2. 隱藏不必要的 UI，包括其他視窗與導覽列 */
+            .no-print, .header, .back-btn, #main-menu-view, #suggested-main-menu-view, #traditional-list-view { 
+                display: none !important; 
+            }
+
+            /* 3. 強制讓目前要列印的列表視窗「平鋪」展開 */
             #suggested-product-list-view { 
                 display: block !important; 
                 position: static !important; 
                 height: auto !important; 
                 overflow: visible !important; 
-                background: white !important;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
-            #suggested-product-list-content { overflow: visible !important; height: auto !important; }
+            #suggested-product-list-content { 
+                display: block !important;
+                overflow: visible !important; 
+                height: auto !important; 
+                padding: 0 !important;
+            }
 
-            /* 4. 強化超連結外觀，引導 PDF 引擎辨識 */
+            /* 4. 關鍵：超連結必須是塊級或行內塊級，並取消絕對定位 */
+            .list-item { 
+                display: block !important; 
+                page-break-inside: avoid; 
+                border: 1px solid #ddd !important;
+                margin-bottom: 10px !important;
+                box-shadow: none !important;
+            }
             a { 
+                display: block !important; 
                 text-decoration: underline !important; 
                 color: #007bff !important; 
-                display: inline-block !important;
-                -webkit-print-color-adjust: exact !important; 
                 pointer-events: auto !important;
             }
-            .list-item { page-break-inside: avoid; border: 1px solid #eee !important; box-shadow: none !important; }
-        }
-
-        /* 輔助 Class：當 JS 觸發列印時暫時改變 DOM 狀態 */
-        body.printing-mode .view { display: none !important; }
-        body.printing-mode #suggested-product-list-view { 
-            display: flex !important; 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: auto; 
-            z-index: 9999; background: white; 
         }
     </style>
 </head>
@@ -80,7 +86,6 @@
             <div class="circle-container">
                 <div class="center-circle">保險<br>規劃</div>
                 <div class="sub-circle" style="top: 0; left: 110px;" onclick="showView('#suggested-main-menu-view')">建議組合</div>
-                <div class="sub-circle" style="top: 110px; right: 0;" onclick="showView('#traditional-list-view')">傳統壽險</div>
             </div>
         </div>
     </div>
@@ -103,31 +108,26 @@
         <div class="header">
             <button class="back-btn no-print" onclick="showView('#suggested-main-menu-view')">返回</button>
             <span id="suggested-list-title">產品列表</span>
-            <!-- 修改後的列印按鈕 -->
+            <!-- 穩定版列印按鈕 -->
             <button id="print-suggested-view-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #28a745; border: none; color: white; padding: 5px 12px; border-radius: 4px; cursor: pointer;" class="no-print">
                 PDF 轉存
             </button>
         </div>
-        <div class="content" id="suggested-product-list-content">
-            <!-- 產品內容 -->
+        <div id="suggested-product-list-content" class="content">
+            <!-- 產品條目 -->
             <div class="list-item">
                 <a href="https://www.google.com" target="_blank" style="width:100%; display:flex; justify-content:space-between; text-decoration:none; color:inherit;">
-                    <span class="item-text">醫療保險條款 (測試連結)</span>
-                    <span class="item-arrow">查看 ❯</span>
+                    <span class="item-text">醫療險條款 (測試連結)</span>
+                    <span class="item-arrow">點擊 ❯</span>
                 </a>
             </div>
             <div class="list-item">
                 <a href="https://www.github.com" target="_blank" style="width:100%; display:flex; justify-content:space-between; text-decoration:none; color:inherit;">
-                    <span class="item-text">意外險費率表 (測試連結)</span>
-                    <span class="item-arrow">查看 ❯</span>
+                    <span class="item-text">意外險費率 (測試連結)</span>
+                    <span class="item-arrow">點擊 ❯</span>
                 </a>
             </div>
         </div>
-    </div>
-
-    <!-- 傳統列表視窗 -->
-    <div id="traditional-list-view" class="view">
-        <div class="header"><button class="back-btn" onclick="showView('#main-menu-view')">返回</button>傳統壽險</div>
     </div>
 
     <script>
@@ -141,32 +141,20 @@
             showView('#suggested-product-list-view');
         }
 
-        // --- 分析與修正邏輯 ---
-        
-        document.getElementById('print-suggested-view-btn').onclick = function() {
-            // 不使用 window.open，避免 GitHub 安全限制與彈出攔截
-            // 直接利用 CSS Media Query 來控制列印行為
-            
-            // 1. 先將捲動條移至最上方，確保 iOS 截取完整內容
-            const content = document.getElementById('suggested-product-list-content');
-            const originalScrollPos = content.scrollTop;
-            content.scrollTop = 0;
+        // --- 穩定修復版：點擊按鈕執行邏輯 ---
+        document.getElementById('print-suggested-view-btn').addEventListener('click', function(e) {
+            e.preventDefault(); // 防止預設觸發
 
-            // 2. 針對 iOS 的特殊處理：暫時移除讓 iOS 判定為「App」的 CSS 限制
-            document.body.classList.add('printing-mode');
+            // 1. 取得內容區塊並將滾動條拉回最上方 (確保 iOS 抓到完整內容)
+            const contentArea = document.getElementById('suggested-product-list-content');
+            contentArea.scrollTop = 0;
 
-            // 3. 呼叫列印
-            // 延遲一點點確保 DOM 狀態更新
+            // 2. 針對 iOS 延遲觸發列印
+            // 延遲是為了讓 iOS 確認使用者觸發動作已完成，並給予 UI 渲染反應時間
             setTimeout(() => {
                 window.print();
-                
-                // 4. 列印結束後還原狀態
-                setTimeout(() => {
-                    document.body.classList.remove('printing-mode');
-                    content.scrollTop = originalScrollPos;
-                }, 500);
-            }, 100);
-        };
+            }, 300);
+        });
     </script>
 </body>
 </html>
