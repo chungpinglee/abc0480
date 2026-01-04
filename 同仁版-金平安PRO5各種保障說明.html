@@ -14,16 +14,13 @@
         body { font-family: "Microsoft JhengHei", sans-serif; background: #e0e5ec; margin: 0; padding: 10px; color: #333; position: relative; }
         .container { max-width: 1000px; margin: 0 auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
-        /* 導覽列 */
         .nav-tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 3px solid var(--ns-blue); padding-bottom: 10px; overflow-x: auto; }
         .nav-btn { padding: 10px 15px; border: none; background: #d1d9e6; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; color: var(--ns-blue); white-space: nowrap; }
         .nav-btn.active { background: var(--ns-blue); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        /* 滑鼠滑過效果 */
         a:hover { background-color: var(--hover-red) !important; color: white !important; border-radius: 4px; padding: 2px 4px; transition: 0.2s; }
         .nav-btn:hover, .save-btn:hover { background-color: var(--hover-red) !important; color: white !important; transform: scale(1.02); transition: 0.2s; }
 
-        /* 懸浮提示框 (Tooltip) */
         .category-tooltip { position: relative; display: inline-block; cursor: help; }
         .category-tooltip::after {
             content: "以保單條款說明";
@@ -47,7 +44,6 @@
         }
         .category-tooltip:hover::after { opacity: 1; visibility: visible; }
 
-        /* 彈出式說明視窗 */
         #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; }
         #infoModal { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
@@ -61,17 +57,14 @@
         #infoModal .calc-box { margin-top: 20px; padding: 15px; background: #f0f4f8; border-left: 6px solid var(--ns-accent); border-radius: 4px; font-weight: bold; color: var(--ns-blue); font-size: 14px; white-space: pre-wrap; }
         #infoModal .close-hint { text-align: center; color: #999; font-size: 12px; margin-top: 20px; }
 
-        /* 控制面板 */
         .control-panel { background: var(--ns-gray); padding: 15px; border-radius: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; border-left: 6px solid var(--ns-blue); }
         .input-group { display: flex; flex-direction: column; gap: 5px; }
         .input-group label { font-weight: bold; color: var(--ns-blue); font-size: 13px; }
         .input-group input, .input-group select { padding: 8px; border: 1px solid #bdc3c7; border-radius: 6px; font-size: 14px; }
 
-        /* 保費顯示框架 */
         .premium-summary { background: linear-gradient(135deg, var(--ns-blue), var(--ns-light-blue)); color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .premium-summary .user-greeting { font-size: 18px; margin-bottom: 12px; font-weight: bold; }
         
-        /* 計畫資訊框架樣式 */
         .premium-summary .plan-info { 
             font-size: 18px; 
             background-color: var(--deep-green); 
@@ -87,8 +80,7 @@
         }
         .premium-val-inline { color: #ffeb3b; font-size: 24px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
-        /* 按鈕樣式 */
-        .catalog-btn, .line-btn, .sos-btn {
+        .catalog-btn, .sos-btn {
             display: inline-flex;
             align-items: center;
             margin: 5px;
@@ -104,12 +96,8 @@
         }
 
         .catalog-btn { background-color: #ffeb3b; color: var(--ns-blue) !important; }
-        .line-btn { background-color: var(--line-green); color: white !important; }
         .sos-btn { background-color: var(--ns-red); color: white !important; }
 
-        .catalog-btn:hover, .line-btn:hover, .sos-btn:hover { background-color: var(--hover-red) !important; color: white !important; transform: scale(1.05); }
-
-        /* 表格樣式 */
         table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--ns-border); margin-bottom: 20px; table-layout: fixed; }
         th { background-color: var(--ns-light-blue); color: white; padding: 12px 5px; font-weight: bold; border: 1px solid var(--ns-border); }
         td { border: 1px solid var(--ns-border); padding: 8px 5px; background-color: #f2f2f2; word-break: break-word; overflow-wrap: break-word; }
@@ -135,7 +123,7 @@
         @media print {
             body { background: white; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .container { box-shadow: none; width: 100%; max-width: none; border: none; }
-            .nav-tabs, .control-panel, .btn-container, #page-edit, #page-rates, #modalOverlay, #infoModal, .catalog-btn, .line-btn, .sos-btn { display: none !important; }
+            .nav-tabs, .control-panel, .btn-container, #page-edit, #page-rates, #modalOverlay, #infoModal, .catalog-btn, .sos-btn { display: none !important; }
             #page-prop { display: block !important; }
             .premium-summary { border: 1px solid #ddd; }
             .premium-summary .plan-info { background-color: #1B5E20 !important; -webkit-print-color-adjust: exact; }
@@ -179,7 +167,7 @@
                     <option value="1">計畫一 (2000萬)</option>
                     <option value="2">計畫二 (1000萬)</option>
                     <option value="3" selected>計畫三 (500萬)</option>
-                    <option value="4">計畫五 (300萬)</option>
+                    <option value="4">計畫四 (300萬)</option>
                     <option value="5">計畫五 (69萬)</option>
                     <option value="6">計畫六 (童遊專案)</option>
                 </select>
@@ -278,9 +266,9 @@ const DESCRIPTIONS = {
     "旅程取消": "1. 時間窗口：預定海外旅程開始前 7 日至海外旅行期間開始前事故。\n2. 觸發原因：包含本人、配偶 or 三親等身故病危、擔任證人、罷工、天災及暴動。\n3. 理賠範圍：補償無法取回之預繳團費、交通、住宿及活動票券之費用。\n4. 比例原則：住宿費若有他人同宿，則依被保額與同住人數比例計算保險金。\n5. 排除項目：可由旅行社退還之點數、哩程數 or 代金券等非貨幣形式補償。",
     "取消傳染病": "1. 適用事故：本人受強制檢疫、前往地警示達第三級、目的地政府關閉邊境禁入。\n2. 補償範圍：無法取回之預繳團費、交通、住宿及預定活動費用。\n3. 限制條款：若目的地政府發布命令時被保險人已完成入境，則不適用此條款。\n4. 金額共用：本項補償金額與「旅程取消保險」額度共用，上限依計畫定之。\n5. 應備文件：強制檢疫證明或我國/前往地政府機關出具之事故證明文件。",
     "班機延誤": "1. 門檻標準：定期航班較預定出發時間延誤達 4 小時以上。\n2. 理賠次數：採定額給付，保險期間內以給付二次事故為限。\n3. 延誤計算：自預定班機出發起，至實際出發 or 第一班替代班機出發時止。\n4. 同一事故：因前班延誤致錯過轉接班機，視為同一次延誤事故處理。\n5. 應備證明：需航空公司出具載有班機延誤期間及原訂班機資訊之文件。",
-    "旅程更改": "1. 原因列表：罷工、戰爭、天災、三親等身故、護照遺失或交通意外致更改旅程。\n2. 理賠項目：補償所增加之交通或住宿費用，以原訂同等級費用為限。\n3. 扣除條款：需扣除可由旅館或交通業者獲得之退款或非貨幣形式償還金額。\n4. 排除原因：航空公司破產、清算或債務不履行所致之損失不予承保。\n5. 額度限制：總賠償金額以保險單所記載之該項限額為最高上限。",
+    "旅程更改": "1. 原因列表：罷工、戰爭、天災、三親等身故、護照遺失或交通意外致更改旅程。\n2. 理賠項目：補償所增加之交通或住宿費用，以原訂同等級費用為限。\n3. 扣除條款：需扣除可由旅館或交通業者獲得之退款或非貨幣形式償還金額。\n4. 排除原因：航空公司破產、清算 or 債務不履行所致之損失不予承保。\n5. 額度限制：總賠償金額以保險單所記載之該項限額為最高上限。",
     "行李延誤": "1. 標準定義：託運行李因業者處理失當，抵達目的地 6 小時後仍未領得。\n2. 排除範圍：返回中華民國境內機場 or 返回出發地之行李延誤不予理賠。\n3. 理賠方式：採定額給付保險金，不因延誤時間長選而改變金額。\n4. 排除物品：事先運送之行李、分開郵寄之物品不在保障範圍內。\n5. 應檢文件：公共交通業者出具之行李延誤證明、託運單據證明。",
-    "行李損失": "1. 事故原因：置於行李箱內個人物品因竊盜、強盜、搶奪或業者失當致損毀滅失。\n2. 不保項目：現金、手機、筆電、珠寶、旅行文件、信用卡及行李箱本身毀毀損。\n3. 報案要求：竊盜強盜類事故需於 24 小時內向當地警察單位報案並取得證明。\n4. 給付次數：保險期間內最高以給付二次為限，每次皆為定額補償性質。\n5. 業者補償：若可由交通業者全額補償之損失，則本保險不重複賠付金額。",
+    "行李損失": "1. 事故原因：置於行李箱內個人物品因竊盜、強盜、搶奪或業者失當致損毀滅失。\n2. 不保項目：現金、手機、筆電、珠寶、旅行文件、信用卡及行李箱本身毀損。\n3. 報案要求：竊盜強盜類事故需於 24 小時內向當地警察單位報案並取得證明。\n4. 給付次數：保險期間內最高以給付二次為限，每次皆為定額補償性質。\n5. 業者補償：若可由交通業者全額補償之損失，則本保險不重複賠付金額。",
     "文件損失": "1. 範圍：旅行護照、簽證或其他必要通行文件被強奪、搶奪、竊盜或遺失。\n2. 賠償限額：每一保險期間最高賠償限額為 5,000 元。\n3. 費用包含：重置文件之規費以及為領取新文件所需之必要合理交通費用。\n4. 時效限制：必須於事故發生後 24 小時內向警方報案並取得正式報案證明。\n5. 核銷依據：申請時需提供所有規費收據及重置過程之交通票根正本。",
     "緊急救援": "1. 啟動條件：經救援公司判定當地醫療不足需運送至他處或返回國內之費用。\n2. 包含項目：緊急醫療運送、遺體運返、子女看護、探病費用四大範疇。\n3. 共用額度：緊急醫療運送與遺體運返費用共用保險單所載之保額上限。\n4. 安排程序：必須經與本公司簽約之救援公司判定及安排，私自安排恕不理賠。\n5. 理賠上限：依各計畫別定額(如300萬)，包含醫療器材及醫護隨行費用。",
     "子女看護": "1. 觸發門檻：被保險人因重大傷病於海外連續住院達 5 日以上。\n2. 賠償限額：每一保險期間最高賠償限額為 12 萬元。\n3. 補償對象：安排一名親友前往照顧隨行 15 歲以下子女並陪同返國之費用。\n4. 補償內容：支付該親友之交通(來回機票)及合理住宿費用。\n5. 限制條件：隨行子女必須亦為本保險契約之被保險人始能獲得此補償。",
@@ -288,7 +276,7 @@ const DESCRIPTIONS = {
     "責任險": "1. 承保範圍：旅行期間因行為致第三人死亡、體傷或財物受損，依法應負之責任。\n2. 費用給付：包含賠償金額及事前經公司書面同意之民事訴訟必要費用。\n3. 排除範圍：親屬間之損害賠償、執行專業職務、管理汽機車 or 航空器之責任。\n4. 報案義務：知悉事故 5 日內需通知本公司，30 日內需提交詳細書面報告。\n5. 和解限制：未經公司同意參與之和解，公司不受其拘束 (除必要急救費)。",
     "信用卡盜刷": "1. 賠付範圍：信用卡遭竊搶搶遺失後，掛失止前 24 小時內之未授權盜刷損失。\n2. 費用包含：含括掛失止付手續費及申請重置新卡之行政規費。\n3. 不保對象：被保險人之配偶、家屬、受僱人 or 同住者所冒用之損失。\n4. 義務條款：知悉盜刷後需立即報警，並取得發卡機構核發之補償狀況證明。\n5. 賠付計算：需扣除發卡機構依約(如持卡人自負額)應承擔之部分損失。",
     "現金竊盜": "1. 保障事故：隨身攜帶或置於鎖妥之旅館房間內之現金遭竊盜、強盜之損失。\n2. 現金定義：係指現行通用之紙幣、硬幣、支票、匯票 or 旅行支票。\n3. 安全限制：旅館房間門窗未予鎖妥時所發生之竊盜損失，保險不予理賠。\n4. 時效報案：發生事故 24 小時內需向當地警察單位報案並取得報案證明文件。\n5. 賠付限額：保險期間累計最高理賠金額以計畫記載之金額(如5000元)為限。",
-    "更改傳傳病": "1. 適用原因：海外旅程中因前往地點發生傳傳病或因檢疫規定致需更改行程。\n2. 補償範圍：補償增加之交通或住宿同等級費用 (需扣除原可退還金額)。\n3. 給付限制：被保險人違反檢疫規定或應採行作為而未採行時不負理賠責任。\n4. 額度機制：本項補償金額與「旅程更改保險」共用額度上限。\n5. 證明文件：海關、警方或各國衛生檢疫單位所核發之書面證明文件。",
+    "更改傳染病": "1. 適用原因：海外旅程中因前往地點發生傳染病或因檢疫規定致需更改行程。\n2. 補償範圍：補償增加之交通或住宿同等級費用 (需扣除原可退還金額)。\n3. 給付限制：被保險人違反檢疫規定或應採行作為而未採行時不負理賠責任。\n4. 額度機制：本項補償金額與「旅程更改保險」共用額度上限。\n5. 證明文件：海關、警方或各國衛生檢疫單位所核發之書面證明文件。",
     "班機改降": "1. 標準：定期航班起飛後因受天氣 or 機械故障影響改降非原定機場。\n2. 例外：回原起飛機場不適用。改降海外其他機場給付 100% 定額保險金。\n3. 國內降落：若改降中華民國境內其他機場，則按計畫保額之 50% 給付。\n4. 次數限制：每一保險期間內最高以給付二次改降補償保險金為限。\n5. 理賠依據：需航空公司出具班機改降證明、機票證根及登機證影本。",
     "恐怖主義行為": "1. 保障事故：直接或間接因恐怖主義行為致被保險人身故或失能之賠償。\n2. 身故限額：死亡保險金超過新台幣 200 萬元者，最高給付 200 萬元為限。\n3. 失能限額：失能保險金最高以 200 萬元乘以失能等級比例 (5%~100%)。\n4. 法定規定：未滿 15 歲之未成年人給付，依保險法第 107 條規定辦理。\n5. 共保性質：此條款適用於傷害保險恐怖主義行為保險共保組織之規範。"
 };
@@ -329,7 +317,8 @@ function fmt(n) { return (n === 0 || !n) ? "-" : (n >= 10000 ? (n/10000).toLocal
 function openModal(key) {
     if (!DESCRIPTIONS[key]) return;
     
-    let title = key;
+    // 改為讀取 URL_CONFIG 的名稱作為標題
+    let title = getC(key).name;
     const lines = DESCRIPTIONS[key].split('\n');
     let listHtml = "";
     lines.forEach(line => { listHtml += `<li>${line}</li>`; });
@@ -357,14 +346,14 @@ function openModal(key) {
         calcText = `【保額詳細計算明細】\n傷害醫療保險限額：${fmt(p.inj)}\n給付方式：於限額內實支實付理賠`;
     } else if (key === "恐怖主義") {
         calcText = `【給付限制說明】\n不分計畫，合併上開給付最高以 200 萬元為限。`;
-    } else if (key === "取消傳傳病") {
+    } else if (key === "取消傳染病") {
         calcText = `【保額詳細計算明細】\n本項補償與旅程取消共用計畫額度：${fmt(p.cancel)}`;
     } else {
         const map = {
             "旅程取消": "cancel", "班機延誤": "delay", "旅程更改": "change",
             "行李延誤": "lug_d", "行李損失": "lug_l", "責任險": "liab",
             "信用卡盜刷": "credit", "現金竊盜": "cash", "食物中毒": "food", "班機改降": "divert",
-            "更改傳傳病": "change"
+            "更改傳染病": "change"
         };
         const pKey = map[key];
         if (pKey && p[pKey]) {
@@ -499,8 +488,8 @@ function calculateAll() {
             <tr><td colspan="2"><a onclick="openModal('班機改降')">${getC('班機改降').name}</a></td><td class="calc-cell">${fmt(p.divert)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('信用卡盜刷')">${getC('信用卡盜刷').name}</a></td><td class="calc-cell">${fmt(p.credit)}</td></tr>
             <tr><td colspan="2"><a onclick="openModal('現金竊盜')">${getC('現金竊盜').name}</a></td><td class="calc-cell">${fmt(p.cash)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('取消傳傳病')">${getC('取消傳傳病').name}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('更改傳傳病')">${getC('更改傳傳病').name}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('取消傳染病')">${getC('取消傳染病').name}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('更改傳染病')">${getC('更改傳染病').name}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
             <tr><td colspan="4" class="footer-cell"><a onclick="openModal('恐怖主義行為')" style="color:white; border:none;">${getC('恐怖主義行為').name}</a></td></tr>
         `;
     }
