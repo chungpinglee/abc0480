@@ -2,8 +2,8 @@
 <html lang="zh-Hant"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- 標題更改為 v7.0 用於確認 GitHub 上傳成功 -->
-    <title>保險導覽系統 (GitHub 修復驗證版 v7.0)</title>
+    <!-- 標題更改為 v8.0 用於確認 GitHub 上傳成功 -->
+    <title>保險導覽系統 (GitHub 修復驗證版 v8.0)</title>
     <style>
         /* --- 基礎樣式 (禁止更動邏輯) --- */
         :root {
@@ -30,7 +30,7 @@
         .center-circle { position: absolute; width: 100px; height: 100px; left: 100px; top: 100px; border-radius: 50%; background: var(--level-0-bg); color: white; display: flex; align-items: center; text-align: center; justify-content: center; font-weight: bold; }
         .sub-circle { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: white; border: 2px solid #ddd; display: flex; align-items: center; text-align: center; justify-content: center; font-size: 0.9em; cursor: pointer; }
 
-        /* --- 關鍵：iOS 連結保留與按鈕執行專用列印樣式 --- */
+        /* --- 核心：iOS 連結保留與按鈕執行專用列印樣式 --- */
         @media print {
             /* 1. 解除所有捲動限制，讓內容完全平鋪 */
             html, body { 
@@ -45,7 +45,7 @@
                 display: none !important; 
             }
 
-            /* 3. 產品列表區域平坦化 (Static 是 iOS 向量列印的關鍵) */
+            /* 3. 產品列表區域平坦化 */
             #suggested-product-list-view { 
                 display: block !important; 
                 position: static !important; 
@@ -59,7 +59,7 @@
                 padding: 0 !important;
             }
 
-            /* 4. 確保連結佔滿整個區塊，提高 iOS 偵測成功率 */
+            /* 4. PDF 連結強化：必須讓 a 標籤有明確的邊界區域 */
             .list-item { 
                 page-break-inside: avoid; 
                 border: 1px solid #ddd !important;
@@ -80,12 +80,13 @@
 
     <!-- 主選單視窗 -->
     <div id="main-menu-view" class="view active">
-        <div class="header">保險導覽系統 (驗證 v7.0)</div>
+        <div class="header">保險導覽系統 (驗證 v8.0)</div>
         <div class="content">
             <div class="circle-container">
                 <div class="center-circle">保險<br>規劃</div>
                 <div class="sub-circle" style="top: 0; left: 110px;" onclick="showView('#suggested-main-menu-view')">建議組合</div>
             </div>
+            <p style="text-align:center; margin-top:30px; color:#888;">請確認標題為 v8.0</p>
         </div>
     </div>
 
@@ -93,11 +94,11 @@
     <div id="suggested-main-menu-view" class="view">
         <div class="header">
             <button class="back-btn" onclick="showView('#main-menu-view')">返回</button>
-            GitHub v7.0 測試
+            GitHub v8.0 穩定版
         </div>
         <div class="content">
-            <div class="list-item" onclick="showProductList('建議方案 (修復驗證版)')">
-                <span class="item-text">測試方案 A：點擊進入</span><span class="item-arrow">❯</span>
+            <div class="list-item" onclick="showProductList('建議方案 (v8.0 修復版)')">
+                <span class="item-text">測試方案：進入列表</span><span class="item-arrow">❯</span>
             </div>
         </div>
     </div>
@@ -107,25 +108,25 @@
         <div class="header">
             <button class="back-btn no-print" onclick="showView('#suggested-main-menu-view')">返回</button>
             <span id="suggested-list-title">產品列表</span>
-            <!-- 強化觸發點 -->
-            <button id="print-suggested-view-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #28a745; border: none; color: white; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; -webkit-appearance: none; pointer-events: auto;" class="no-print">
-                點擊產生 PDF (驗證 v7.0)
+            <!-- v8.0 立即執行按鈕 -->
+            <button id="print-suggested-view-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #28a745; border: none; color: white; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; -webkit-appearance: none;" class="no-print">
+                啟動 PDF 轉存 (v8.0)
             </button>
         </div>
         <div id="suggested-product-list-content" class="content">
             <div class="list-item">
                 <a href="https://www.google.com" target="_blank">
                     <div style="display:flex; justify-content:space-between; width:100%;">
-                        <span class="item-text">測試連結 1 (Google)</span>
-                        <span class="item-arrow">點擊測試 ❯</span>
+                        <span class="item-text">連結測試 1 (Google)</span>
+                        <span class="item-arrow">測試 ❯</span>
                     </div>
                 </a>
             </div>
             <div class="list-item">
                 <a href="https://github.com" target="_blank">
                     <div style="display:flex; justify-content:space-between; width:100%;">
-                        <span class="item-text">測試連結 2 (GitHub)</span>
-                        <span class="item-arrow">點擊測試 ❯</span>
+                        <span class="item-text">連結測試 2 (GitHub)</span>
+                        <span class="item-arrow">測試 ❯</span>
                     </div>
                 </a>
             </div>
@@ -143,36 +144,23 @@
             showView('#suggested-product-list-view');
         }
 
-        // --- v7.0 強化列印觸發邏輯 ---
+        // --- v8.0 核心修正：立即觸發邏輯 ---
         window.onload = function() {
             const printBtn = document.getElementById('print-suggested-view-btn');
             
             if (printBtn) {
-                // 使用多重監聽確保 iOS 捕捉到動作
-                const triggerPrint = function(e) {
+                printBtn.addEventListener('click', function(e) {
+                    // 禁止預設行為但「不使用延遲」
                     if(e) e.preventDefault();
                     
-                    // 1. 視覺回饋：變換顏色確認點擊成功
-                    printBtn.style.background = "#1e7e34";
-                    printBtn.innerText = "處理中...";
-
-                    // 2. 核心：強制內容回頂部 (iOS 渲染需要)
+                    // 1. 同步處理佈局準備 (回到頂部)
                     const contentContainer = document.getElementById('suggested-product-list-content');
                     if(contentContainer) contentContainer.scrollTop = 0;
 
-                    // 3. 延遲 500ms 調用系統視窗 (iOS 穩定關鍵)
-                    setTimeout(function() {
-                        window.print();
-                        
-                        // 恢復按鈕狀態
-                        setTimeout(function(){
-                            printBtn.style.background = "#28a745";
-                            printBtn.innerText = "點擊產生 PDF (驗證 v7.0)";
-                        }, 1000);
-                    }, 500);
-                };
-
-                printBtn.addEventListener('click', triggerPrint);
+                    // 2. 立即執行 (不使用 setTimeout)
+                    // 這樣 iOS 才會認定這是直接的使用者手勢，從而開啟列印視窗
+                    window.print();
+                });
             }
         };
     </script>
