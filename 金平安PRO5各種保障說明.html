@@ -82,14 +82,14 @@
         }
         .premium-val-inline { color: #ffeb3b; font-size: 24px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
-        /* 功能按鈕樣式：改為方形、增加 Hover 20% 放大效果 */
+        /* 功能按鈕樣式 */
         .catalog-btn, .line-btn, .sos-btn, .claim-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin: 5px;
             padding: 10px 20px;
-            border-radius: 4px; /* 方形微圓角 */
+            border-radius: 4px;
             font-size: 16px;
             font-weight: bold;
             vertical-align: middle;
@@ -99,18 +99,17 @@
             text-decoration: none !important;
         }
 
-        /* 當滑鼠滑過時放大 20% */
         .catalog-btn:hover, .line-btn:hover, .sos-btn:hover, .claim-btn:hover {
             transform: scale(1.2);
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             z-index: 5;
-            background-color: inherit; /* 保持原色，僅放大 */
+            background-color: inherit;
         }
 
         .catalog-btn { background-color: #ffeb3b; color: var(--ns-blue) !important; }
         .line-btn { background-color: var(--line-green); color: white !important; }
         .sos-btn { background-color: var(--ns-red); color: white !important; }
-        .claim-btn { background-color: #f39c12; color: white !important; } /* 理賠按鈕設為橘色 */
+        .claim-btn { background-color: #f39c12; color: white !important; }
 
         table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--ns-border); margin-bottom: 20px; table-layout: fixed; }
         th { background-color: var(--ns-light-blue); color: white; padding: 12px 5px; font-weight: bold; border: 1px solid var(--ns-border); }
@@ -120,7 +119,14 @@
         .sub-category-cell { vertical-align: middle; width: 28%; text-align: center; background-color: #eef2f7; color: var(--ns-blue); }
         .calc-cell { background-color: #e8eef7; width: 25%; text-align: center; font-family: "Consolas", monospace; font-weight: bold; color: var(--ns-blue); font-size: 15px; }
         
-        .red-text { color: var(--ns-red); font-weight: bold; }
+        /* 文字標色與懸停特效 */
+        .red-text { color: var(--ns-red); font-weight: bold; transition: color 0.2s; }
+        .green-text { color: var(--deep-green); font-weight: bold; transition: color 0.2s; }
+        
+        /* 當滑鼠滑過這些標籤或其所在的 A 連結時，文字變為白色 */
+        a:hover .red-text, .red-text:hover,
+        a:hover .green-text, .green-text:hover { color: white !important; }
+
         .yellow-note { color: #ffeb3b; font-size: 12px; margin-top: 8px; display: block; }
         .footer-cell { background-color: var(--ns-light-blue); color: white; text-align: center; padding: 10px; font-weight: bold; }
         
@@ -197,7 +203,6 @@
                 <a href="https://drive.google.com/file/d/17GvNAkHKRtgHM1aIvNao8jQwnBgdvF7B/view?usp=sharing" target="_blank" class="catalog-btn">金平安PRO5目錄</a>
                 <a href="https://line.me/R/ti/p/~0932218851" target="_blank" class="line-btn">LINE 諮詢仲平</a>
                 <a href="https://www.nanshangeneral.com.tw/service-119?tabTitle=%E8%A1%8C%E6%94%BF%E5%8F%8A%E6%97%85%E9%81%8A%E8%B3%87%E8%A8%8A%E5%8D%94%E5%8A%A9" target="_blank" class="sos-btn">海外緊急救援專線</a>
-                <!-- 新增：理賠應準備文件按鈕 -->
                 <a href="https://www.nanshangeneral.com.tw/claims-personal?tabTitle=%E6%97%85%E9%81%8A%E9%9A%AA" target="_blank" class="claim-btn">理賠應準備文件</a>
             </div>
         </div>
@@ -241,29 +246,29 @@ const URL_CONFIG = {
     "身故失能": { "name": "身故 (喪葬費用) 及失能保險金", "url": "https://drive.google.com/file/d/1rcreSca-n3WNyuvOVmYptAqgJ9IRYEyZ/view?usp=drive_link" },
     "意外傷害": { "name": "傷害醫療保險 (實支實付最高額)", "url": "https://drive.google.com/file/d/1Gml2iToowRCA_WTClBEe3A56iWR0CAgh/view?usp=drive_link" },
     "童遊傷害": { "name": "傷害醫療保險 (實際費用且最高以保險金額為限)", "url": "https://drive.google.com/file/d/1wt2J5UesMaoUv9Z51UQ7YPcgqU1DuNts/view?usp=drive_link" },
-    "新海外突發疾病": { "name": "新海外突發疾病 (實際費用最高額)", "url": "https://drive.google.com/file/d/1adZB-Uc7-K_LNSyWPreoWHiUMtpg_I3G/view?usp=drive_link" },
+    "新海外突發疾病": { "name": "新海外突發疾病 (實際費用最高額)", "url": "https://drive.google.com/file/d/1adZB-Uc7-L_LNSyWPreoWHiUMtpg_I3G/view?usp=drive_link" },
     "突發住院": { "name": "住院醫療保險金", "url": "https://drive.google.com/file/d/1cDe9cJEh_XuY1msZWajOcDVgWNPyE10Q/view?usp=drive_link" },
     "返國住院": { "name": "返國住院醫療保險金", "url": "https://drive.google.com/file/d/1c-rxAbCO61Tsvj6tuMwldMzt8yAo-33d/view?usp=drive_link" },
     "突發門診": { "name": "門診醫療保險金", "url": "https://drive.google.com/file/d/1bGb7ERnBIURWTkHPv2LKQ8s9-8WhzYkz/view?usp=drive_link" },
     "突發急診": { "name": "急診醫療保險金", "url": "https://drive.google.com/file/d/1UgzexIONHFyAxr0Up7XBrFvTi6mCSF3k/view?usp=drive_link" },
-    "食物中毒": { "name": "食物中毒保險金附加條款", "url": "https://drive.google.com/file/d/1GeBM4AZUm4FG4HDOd5WVCoztePlI9IBa/view?usp=drive_link" },
+    "食物中毒": { "name": "食物中毒保險金附加條款(定額)", "url": "https://drive.google.com/file/d/1GeBM4AZUm4FG4HDOd5WVCoztePlI9IBa/view?usp=drive_link" },
     "新個人旅行不便": { "name": "新個人旅行不便綜合保險", "url": "https://drive.google.com/file/d/1v_Picce4WsXfGjSKMokD2S311w3bLWN_/view?usp=drive_link" },
-    "旅程取消": { "name": "旅程取消保險", "url": "https://drive.google.com/file/d/1Bsr3fdZ7d7FsyVGWJ5VLKbmmfiK44UL9/view?usp=drive_link" },
-    "班機延誤": { "name": "班機延誤保險", "url": "https://drive.google.com/file/d/11byMOv7NqZWlVQrFDAc9P8WO2I8QnP8D/view?usp=drive_link" },
-    "旅程更改": { "name": "旅程更改保險", "url": "https://drive.google.com/file/d/11XzWV-txgFd6ZgIp86y7ILcCKV0AgYXB/view?usp=fixed" },
-    "行李延誤": { "name": "行李延誤保險", "url": "https://drive.google.com/file/d/1-lqoLaG-MZqtoKM9MYlquw_YNe8aVzL-/view?usp=drive_link" },
-    "行李損失": { "name": "行李損失保險", "url": "https://drive.google.com/file/d/1y-reBKdcUsoiIDsYZi2qFxJb1vt3GY7x/view?usp=drive_link" },
-    "文件損失": { "name": "旅行文件損失保險", "url": "https://drive.google.com/file/d/1VRCtpM-T12UkGy0_7ybeqRks4W_CF09N/view?usp=drive_link" },
-    "緊急醫療運送": { "name": "緊急醫療運送費用保險 (300萬)", "url": "https://drive.google.com/file/d/1Pnk9rgJW9-PPECjeFQS6GAK1xQLIV_SY/view?usp=drive_link" },
-    "遺體運返": { "name": "遺體運返費用保險", "url": "https://drive.google.com/file/d/1GOlT7P-_rf5EftbqdXiwhBLunRsg1alu/view?usp=drive_link" },
-    "子女看護": { "name": "子女看護費用保險", "url": "https://drive.google.com/file/d/16EJZ1gHm2iAFTXLAy_I1AjA3WIJbTjgT/view?usp=drive_link" },
-    "探病費用": { "name": "探病費用保險", "url": "https://drive.google.com/file/d/1L2pzR9qR6JYOwCItEG1zyfLEPvVw4qP3/view?usp=drive_link" },
-    "責任險": { "name": "第三人責任保險", "url": "https://drive.google.com/file/d/1sI1V22IYJ6GbTzDEMMcmgXuvj9TBAH6Y/view?usp=drive_link" },
-    "信用卡盜刷": { "name": "信用卡盜刷損失附加條款", "url": "https://drive.google.com/file/d/1UXdZu2eXd8zztAikSP55Vpjb-a8-3Ba2/view?usp=drive_link" },
-    "現金竊盜": { "name": "現金竊盜損失附加條款", "url": "https://drive.google.com/file/d/1QjM_E_MCQ3S2DQJkRlyUKqm0vEV-OIrD/view?usp=drive_link" },
-    "取消傳染病": { "name": "旅程取消費用傳傳病及檢疫給付", "url": "https://drive.google.com/file/d/1b5zNLZIOVhWSPaprvIjrYqAvNkDe3E3n/view?usp=drive_link" },
-    "更改傳染病": { "name": "旅程更改費用傳傳病及檢疫給付", "url": "https://drive.google.com/file/d/1mn5So84-j_omBU99ZktbYj8d-Zf7s90K/view?usp=drive_link" },
-    "班機改降": { "name": "班機改降補償附加條款", "url": "https://drive.google.com/file/d/1e5U7MfYrcm546g39WwYatfQsPSsPz9CO/view?usp=drive_link" },
+    "旅程取消": { "name": "旅程取消保險(限額)", "url": "https://drive.google.com/file/d/1Bsr3fdZ7d7FsyVGWJ5VLKbmmfiK44UL9/view?usp=drive_link" },
+    "班機延誤": { "name": "班機延誤保險 (達4小時/2次為限)(定額)", "url": "https://drive.google.com/file/d/11byMOv7NqZWlVQrFDAc9P8WO2I8QnP8D/view?usp=drive_link" },
+    "旅程更改": { "name": "旅程更改保險(限額)", "url": "https://drive.google.com/file/d/11XzWV-txgFd6ZgIp86y7ILcCKV0AgYXB/view?usp=fixed" },
+    "行李延誤": { "name": "行李延誤保險 (達6小時以上)(定額)", "url": "https://drive.google.com/file/d/1-lqoLaG-MZqtoKM9MYlquw_YNe8aVzL-/view?usp=drive_link" },
+    "行李損失": { "name": "行李損失保險 (2次為限)(定額)", "url": "https://drive.google.com/file/d/1y-reBKdcUsoiIDsYZi2qFxJb1vt3GY7x/view?usp=drive_link" },
+    "文件損失": { "name": "旅行文件損失保險(定額)", "url": "https://drive.google.com/file/d/1VRCtpM-T12UkGy0_7ybeqRks4W_CF09N/view?usp=drive_link" },
+    "緊急醫療運送": { "name": "緊急醫療運送費用保險 (限額)", "url": "https://drive.google.com/file/d/1Pnk9rgJW9-PPECjeFQS6GAK1xQLIV_SY/view?usp=drive_link" },
+    "遺體運返": { "name": "遺體運返費用保險(限額)", "url": "https://drive.google.com/file/d/1GOlT7P-_rf5EftbqdXiwhBLunRsg1alu/view?usp=drive_link" },
+    "子女看護": { "name": "子女看護費用保險(限額)", "url": "https://drive.google.com/file/d/16EJZ1gHm2iAFTXLAy_I1AjA3WIJbTjgT/view?usp=drive_link" },
+    "探病費用": { "name": "探病費用保險(限額)", "url": "https://drive.google.com/file/d/1L2pzR9qR6JYOwCItEG1zyfLEPvVw4qP3/view?usp=drive_link" },
+    "責任險": { "name": "第三人責任保險(限額)", "url": "https://drive.google.com/file/d/1sI1V22IYJ6GbTzDEMMcmgXuvj9TBAH6Y/view?usp=drive_link" },
+    "信用卡盜刷": { "name": "信用卡盜刷損失附加條款(限額)", "url": "https://drive.google.com/file/d/1UXdZu2eXd8zztAikSP55Vpjb-a8-3Ba2/view?usp=drive_link" },
+    "現金竊盜": { "name": "現金竊盜損失附加條款(限額)", "url": "https://drive.google.com/file/d/1QjM_E_MCQ3S2DQJkRlyUKqm0vEV-OIrD/view?usp=drive_link" },
+    "取消傳染病": { "name": "旅程取消費用傳傳病及檢疫給付(限額)", "url": "https://drive.google.com/file/d/1b5zNLZIOVhWSPaprvIjrYqAvNkDe3E3n/view?usp=drive_link" },
+    "更改傳染病": { "name": "旅程更改費用傳傳病及檢疫給付(限額)", "url": "https://drive.google.com/file/d/1mn5So84-j_omBU99ZktbYj8d-Zf7s90K/view?usp=drive_link" },
+    "班機改降": { "name": "班機改降補償附加條款(定額)", "url": "https://drive.google.com/file/d/1e5U7MfYrcm546g39WwYatfQsPSsPz9CO/view?usp=drive_link" },
     "恐怖主義": { "name": "恐怖主義行為保險限額給付附加條款", "url": "https://drive.google.com/file/d/1rcreSca-n3WNyuvOVmYptAqgJ9IRYEyZ/view?usp=drive_link" },
     "童遊標題": { "name": "童遊旅行傷害醫療保險", "url": "https://drive.google.com/file/d/1wt2J5UesMaoUv9Z51UQ7YPcgqU1DuNts/view?usp=drive_link" },
     "旅平標題": { "name": "個人旅行平安保險", "url": "https://drive.google.com/file/d/1rcreSca-n3WNyuvOVmYptAqgJ9IRYEyZ/view?usp=sharing" },
@@ -274,7 +279,7 @@ const URL_CONFIG = {
 const DESCRIPTIONS = {
     "身故失能": "1. 意外傷害定義：指非由疾病引起之外來突發事故致成身故或失能。\n2. 給付時限：自意外事故發生之日起 180 日以內死亡或成失能者。\n3. 給付標準：失能保險金按失能程度比例 (5% 至 100%) 計算給付。\n4. 未成年限制：未滿 15 足歲者僅給付喪葬費用保險金 (上限 61.5 萬)。\n5. 累計給付：同一事故致成失能後身故，合計給付最高以保額為限。",
     "意外傷害": "1. 承保範圍：意外事故日起 180 日內，合格醫院診療之實際醫療費用。\n2. 理賠標準：超過全民健康保險給付部分之費用。\n3. 非健保就醫：若不以健保身分診療，仍依實際支付費用之 100% 給付。\n4. 給付限額：每次事故給付總額以保險單記載之「實支實付限額」為準。\n5. 合格定義：指領有載客執照之交通工具或經政府登記之合格醫院診所。",
-    "新海外突發疾病": "1. 突發定義：需即時醫院診治始能避免損及健康，且生效前 180 日內未曾接受該病診療者。\n2. 地區加倍：美加歐洲 300%、日本紐澳 200%、其餘地區 100% 計算保額。\n3. 保障範圍：涵蓋海外住院、門診、急診及返國後 1 日內之繼續住院治療。\n4. 排除項目：不含日間住院、健康檢查、療養或以出國醫療為目的之行為。\n5. 匯率計算：依據國外收據開立日之臺灣銀行現金賣出即期匯價換算新台幣。",
+    "新海外突發疾病": "1. 突發定義：需即時醫院診治始能避免損及健康，且生效前 180 日內未曾接受該病診療者。\n2. 地區加倍：美加歐洲 300%、日本紐澳 200%、其餘地區 100% 計算保額。\n3. 保障範圍：涵蓋海外住院、門診、急診及返國後 1 日內之繼續住院治療。\n4. 排除項目：不含日間住院、健康檢查、療養 or 以出國醫療為目的之行為。\n5. 匯率計算：依據國外收據開立日之臺灣銀行現金賣出即期匯價換算新台幣。",
     "突發住院": "1. 給付期間：支付海外住院第一日至第一百八十日止所發生之實際醫療費用。\n2. 費用包含：包含病房費、膳食費、特別護理費、醫師指示用藥、掛號費及手術費等。\n3. 再次住院：同一疾病出院後 14 日內於同一醫院再次住院，視為同一次住院事故處理。\n4. 地區調整：總給付額受特定地區調整係數 (1.0~3.0) 影響倍數計算。\n5. 給付上限：同一突發疾病住院給付總額不得超過本計畫調整後之限額。",
     "返國住院": "1. 啟動條件：海外住院後返國前一日內出院，並於入境後一日內因同一疾病住院者。\n2. 給付上限：保險金總額以「海外突發疾病醫療保險金基礎限額」之 10% 為限。\n3. 計算基礎：本項限額亦受到海外地區調整係數 (如美加 300%) 影響之基數計算。\n4. 期間限制：返國繼續住院部分若於保險期間屆滿後出院，公司對再次住院不予給付。\n5. 應檢文件：需提供護照影本、海外診斷證明及國內醫院住院證明文件。",
     "突發門診": "1. 範圍：在海外因突發疾病需接受醫院或診所門診診療之實際醫療費用。\n2. 每次限額：每次門診給付上限為「海外突發疾病醫療限額」乘上調整係數之 1%。\n3. 診治限制：必須在海外當地領有開業執照之醫院或診所由醫師診治者。\n4. 排除行為：不包含美容手術、外科整型(功能重建除外)及牙科非必要手術。\n5. 門急診定義：門診與急診分別計算其每次最高給付限額。",
@@ -283,28 +288,28 @@ const DESCRIPTIONS = {
     "旅程取消": "1. 時間窗口：預定海外旅程開始前 7 日至海外旅行期間開始前事故。\n2. 觸發原因：包含本人、配偶 or 三親等身故病危、擔任證人、罷工、天災及暴動。\n3. 理賠範圍：補償無法取回之預繳團費、交通、住宿及活動票券之費用。\n4. 比例原則：住宿費若有他人同宿，則依被保額與同住人數比例計算保險金。\n5. 排除項目：可由旅行社退還之點數、哩程數 or 代金券等非貨幣形式補償。",
     "取消傳染病": "1. 適用事故：本人受強制檢疫、前往地警示達第三級、目的地政府關閉邊境禁入。\n2. 補償範圍：無法取回之預繳團費、交通、住宿及預定活動費用。\n3. 限制條款：若目的地政府發布命令時被保險人已完成入境，則不適用此條款。\n4. 金額共用：本項補償金額與「旅程取消保險」額度共用，上限依計畫定之。\n5. 應備文件：強制檢疫證明或我國/前往地政府機關出具之事故證明文件。",
     "班機延誤": "1. 門檻標準：定期航班較預定出發時間延誤達 4 小時以上。\n2. 理賠次數：採定額給付，保險期間內以給付二次事故為限。\n3. 延誤計算：自預定班機出發起，至實際出發 or 第一班替代班機出發時止。\n4. 同一事故：因前班延誤致錯過轉接班機，視為同一次延誤事故處理。\n5. 應備證明：需航空公司出具載有班機延誤期間及原訂班機資訊之文件。",
-    "旅程更改": "1. 原因列表：罷工、戰爭、天災、三親等身故、護照遺失或交通意外致更改旅程。\n2. 理賠項目：補償所增加之交通或住宿費用，以原訂同等級費用為限。\n3. 扣除條款：需扣除可由旅館或交通業者獲得之退款或非貨幣形式償還金額。\n4. 排除原因：航空公司破產、清算或債務不履行所致之損失不予承保。\n5. 額度限制：總賠償金額以保險單所記載之該項限額為最高上限。",
+    "旅程更改": "1. 原因列表：罷工、戰爭、天災、三親等身故、護照遺失或交通意外致更改旅程。\n2. 理賠項目：補償所增加之交通或住宿費用，以原訂同等級費用為限。\n3. 扣除條款：需扣除可由旅館或交通業者獲得之退款 or 非貨幣形式償還金額。\n4. 排除原因：航空公司破產、清算或債務不履行所致之損失不予承保。\n5. 額度限制：總賠償金額以保險單所記載之該項限額為最高上限。",
     "行李延誤": "1. 標準定義：託運行李因業者處理失當，抵達目的地 6 小時後仍未領得。\n2. 排除範圍：返回中華民國境內機場 or 返回出發地之行李延誤不予理賠。\n3. 理賠方式：採定額給付保險金，不因延誤時間長選而改變金額。\n4. 排除物品：事先運送之行李、分開郵寄之物品不在保障範圍內。\n5. 應檢文件：公共交通業者出具之行李延誤證明、託運單據證明。",
     "行李損失": "1. 事故原因：置於行李箱內個人物品因竊盜、強盜、搶奪或業者失當致損毀滅失。\n2. 不保項目：現金、手機、筆電、珠寶、旅行文件、信用卡及行李箱本身毀損。\n3. 報案要求：竊盜強盜類事故需於 24 小時內向當地警察單位報案並取得證明。\n4. 給付次數：保險期間內最高以給付二次為限，每次皆為定額補償性質。\n5. 業者補償：若可由交通業者全額補償之損失，則本保險不重複賠付金額。",
     "文件損失": "1. 範圍：旅行護照、簽證或其他必要通行文件被強奪、搶奪、竊盜或遺失。\n2. 賠償限額：每一保險期間最高賠償限額為 5,000 元。\n3. 費用包含：重置文件之規費以及為領取新文件所需之必要合理交通費用。\n4. 時效限制：必須於事故發生後 24 小時內向警方報案並取得正式報案證明。\n5. 核銷依據：申請時需提供所有規費收據及重置過程之交通票根正本。",
     "緊急救援": "1. 啟動條件：經救援公司判定當地醫療不足需運送至他處或返回國內之費用。\n2. 包含項目：緊急醫療運送、遺體運返、子女看護、探病費用四大範疇。\n3. 共用額度：緊急醫療運送與遺體運返費用共用保險單所載之保額上限。\n4. 安排程序：必須經與本公司簽約之救援公司判定及安排，私自安排恕不理賠。\n5. 理賠上限：依各計畫別定額(如300萬)，包含醫療器材及醫護隨行費用。",
     "子女看護": "1. 觸發門檻：被保險人因重大傷病於海外連續住院達 5 日以上。\n2. 賠償限額：每一保險期間最高賠償限額為 12 萬元。\n3. 補償對象：安排一名親友前往照顧隨行 15 歲以下子女並陪同返國之費用。\n4. 補償內容：支付該親友之交通(來回機票)及合理住宿費用。\n5. 限制條件：隨行子女必須亦為本保險契約之被保險人始能獲得此補償。",
     "探病費用": "1. 觸發門檻：被保險人身故或因重大傷病於海外連續住院達 5 日以上。\n2. 賠償限額：每一保險期間最高賠償限額為 20 萬元。\n3. 補償內容：一名親友前往事故地探視或處理後事之合理交通及住宿費用。\n4. 報支方式：採實支實付方式核銷，最高給付不超過計畫記載之限額。\n5. 應備文件：醫師診斷證明 or 死亡證明、所有交通住宿費用收據正本。",
-    "責任險": "1. 承保範圍：旅行期間因行為致第三人死亡、體傷或財物受損，依法應負之責任。\n2. 費用給付：包含賠償金額及事前經公司書面同意之民事訴訟必要費用。\n3. 排除範圍：親屬間之損害賠償、執行專業職務、管理汽機車 or 航空器之責任。\n4. 報案義務：知悉事故 5 日內需通知本公司，30 日內需提交詳細書面報告。\n5. 和解限制：未經公司同意參與之和解，公司不受其拘束 (除必要急救費)。",
+    "責任險": "1. 承保範圍：旅行期間因行為致第三人死亡、體傷 or 財物受損，依法應負之責任。\n2. 費用給付：包含賠償金額及事前經公司書面同意之民事訴訟必要費用。\n3. 排除範圍：親屬間之損害賠償、執行專業職務、管理汽機車 or 航空器之責任。\n4. 報案義務：知悉事故 5 日內需通知本公司，30 日內需提交詳細書面報告。\n5. 和解限制：未經公司同意參與之和解，公司不受其拘束 (除必要急救費)。",
     "信用卡盜刷": "1. 賠付範圍：信用卡遭竊搶搶遺失後，掛失止前 24 小時內之未授權盜刷損失。\n2. 費用包含：含括掛失止付手續費及申請重置新卡之行政規費。\n3. 不保對象：被保險人之配偶、家屬、受僱人 or 同住者所冒用之損失。\n4. 義務條款：知悉盜刷後需立即報警，並取得發卡機構核發之補償狀況證明。\n5. 賠付計算：需扣除發卡機構依約(如持卡人自負額)應承擔之部分損失。",
     "現金竊盜": "1. 保障事故：隨身攜帶或置於鎖妥之旅館房間內之現金遭竊盜、強盜之損失。\n2. 現量定義：係指現行通用之紙幣、硬幣、支票、匯票 or 旅行支票。\n3. 安全限制：旅館房間門窗未予鎖妥時所發生之竊盜損失，保險不予理賠。\n4. 時效報案：發生事故 24 小時內需向當地警察單位報案並取得報案證明文件。\n5. 賠付限額：保險期間累計最高理賠金額以計畫記載之金額(如5000元)為限。",
     "更改傳染病": "1. 適用原因：海外旅程中因前往地點發生傳染病或因檢疫規定致需更改行程。\n2. 補償範圍：補償增加之交通或住宿同等級費用 (需扣除原可退還金額)。\n3. 給付限制：被保險人違反檢疫規定或應採行作為而未採行時不負理賠責任。\n4. 額度機制：本項補償金額與「旅程更改保險」共用額度上限。\n5. 證明文件：海關、警方或各國衛生檢疫單位所核發之書面證明文件。",
     "班機改降": "1. 標準：定期航班起飛後因受天氣 or 機械故障影響改降非原定機場。\n2. 例外：回原起飛機場不適用。改降海外其他機場給付 100% 定額保險金。\n3. 國內降落：若改降中華民國境內其他機場，則按計畫保額之 50% 給付。\n4. 次數限制：每一保險期間內最高以給付二次改降補償保險金為限。\n5. 理賠依據：需航空公司出具班機改降證明、機票證根及登機證影本。",
-    "恐怖主義行為": "1. 保障事故：直接或間接因恐怖主義行為致被保險人身故或失能之賠償。\n2. 身故限額：死亡保險金超過新台幣 200 萬元者，最高給付 200 萬元為限。\n3. 失能限額：失能保險金最高以 200 萬元乘以失能等級比例 (5%~100%)。\n4. 法定規定：未滿 15 歲之未成年人給付，依保險法第 107 條規定辦理。\n5. 共保性質：此條款適用於傷害保險恐怖主義行為保險共保組織之規範。"
+    "恐怖主義行為": "1. 保障事故：直接或間接因恐怖主義行為致被保險人身故或失能之賠償。\n2. 身故限額：死亡保險金超過新台幣 200 萬元者，最高給付 200 萬元為限。\n3. 失能限額：失能保險金最高以 200 萬元乘以失能等級比例 (5%~100%)。\n4. 法定規定：未滿 15 歲之未成年人給付，依保險法第 107 條規定辦理。\n5. 共共性質：此條款適用於傷害保險恐怖主義行為保險共保組織之規範。"
 };
 
 const plans = {
-    "1": { name: "計畫一 (2000萬)", death: 20000000, inj: 1000000, med: 1000000, cancel: 120000, change: 50000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 10000, liab: 5000000, rescue: 3000000, credit: 50000, cash: 5000, food: 2000 },
-    "2": { name: "計畫二 (1000萬)", death: 10000000, inj: 1000000, med: 1000000, cancel: 120000, change: 50000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 10000, liab: 5000000, rescue: 3000000, credit: 50000, cash: 5000, food: 2000 },
-    "3": { name: "計畫三 (500萬)", death: 5000000, inj: 500000, med: 500000, cancel: 120000, change: 50000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 10000, liab: 5000000, rescue: 3000000, credit: 50000, cash: 5000, food: 2000 },
-    "4": { name: "計畫四 (300萬)", death: 3000000, inj: 200000, med: 200000, cancel: 120000, change: 50000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 10000, liab: 5000000, rescue: 3000000, credit: 50000, cash: 5000, food: 2000 },
-    "5": { name: "計畫五 (69萬)", death: 690000, inj: 100000, med: 100000, cancel: 120000, change: 50000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 10000, liab: 5000000, rescue: 3000000, credit: 0, cash: 0, food: 2000 },
-    "6": { name: "計畫六 (童遊)", death: 0, inj: 100000, med: 100000, cancel: 120000, change: 50000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 10000, liab: 5000000, rescue: 3000000, credit: 0, cash: 0, food: 2000 }
+    "1": { name: "計畫一 (2000萬)", death: 20000000, inj: 1000000, med: 1000000, cancel: 120000, change: 120000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 5000, liab: 5000000, rescue: 3000000, credit: 20000, cash: 5000, food: 2000 },
+    "2": { name: "計畫二 (1000萬)", death: 10000000, inj: 1000000, med: 1000000, cancel: 120000, change: 120000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 5000, liab: 5000000, rescue: 3000000, credit: 20000, cash: 5000, food: 2000 },
+    "3": { name: "計畫三 (500萬)", death: 5000000, inj: 500000, med: 500000, cancel: 120000, change: 120000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 5000, liab: 5000000, rescue: 3000000, credit: 20000, cash: 5000, food: 2000 },
+    "4": { name: "計畫四 (300萬)", death: 3000000, inj: 200000, med: 200000, cancel: 120000, change: 120000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 5000, liab: 5000000, rescue: 3000000, credit: 20000, cash: 5000, food: 2000 },
+    "5": { name: "計畫五 (69萬)", death: 690000, inj: 100000, med: 100000, cancel: 120000, change: 120000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 5000, liab: 5000000, rescue: 3000000, credit: 0, cash: 0, food: 2000 },
+    "6": { name: "計畫六 (童遊)", death: 0, inj: 100000, med: 100000, cancel: 120000, change: 120000, delay: 5000, divert: 5000, lug_d: 5000, lug_l: 5000, liab: 5000000, rescue: 3000000, credit: 0, cash: 0, food: 2000 }
 };
 
 const rates = { "1": [0,1036,1202,1360,1774,2258,2519,2713,2799,2881,2967,3052,3140,3223,3309,3402,3501,3595,3688,3783,3875,3974,4041,4104,4171,4236,4300,4372,4436,4501,4567], "2": [0,752,892,1024,1338,1721,1941,2093,2158,2221,2286,2352,2419,2482,2548,2616,2689,2758,2827,2896,2963,3036,3087,3133,3183,3232,3279,3334,3380,3429,3478], "3": [0,450,561,666,872,1144,1323,1429,1471,1513,1554,1597,1639,1678,1721,1762,1801,1843,1884,1926,1964,2007,2036,2064,2094,2125,2157,2186,2214,2246,2278], "4": [0,296,392,488,635,852,1011,1093,1121,1146,1174,1199,1226,1251,1279,1302,1329,1356,1383,1410,1432,1459,1479,1497,1516,1538,1556,1575,1594,1614,1634], "5": [0,188,278,363,475,656,797,870,888,902,918,933,949,964,981,995,1012,1028,1042,1059,1074,1091,1104,1116,1125,1140,1153,1164,1177,1189,1205], "6": [0,169,257,339,445,620,757,827,842,853,867,879,892,904,918,929,944,957,969,983,996,1010,1021,1031,1039,1052,1063,1072,1083,1093,1107] };
@@ -330,6 +335,13 @@ function switchPage(p) {
 }
 
 function fmt(n) { return (n === 0 || !n) ? "-" : (n >= 10000 ? (n/10000).toLocaleString()+"萬" : n.toLocaleString()); }
+
+function fmtName(key) {
+    let name = getC(key).name;
+    // 使用正則表達式自動替換標籤顏色
+    return name.replace(/\(限額\)/g, '<span class="red-text">(限額)</span>')
+               .replace(/\(定額\)/g, '<span class="green-text">(定額)</span>');
+}
 
 function openModal(key) {
     if (!DESCRIPTIONS[key]) return;
@@ -379,7 +391,8 @@ function openModal(key) {
         }
     }
 
-    document.getElementById('infoTitle').innerText = title;
+    // 條款說明的標題也套用顏色格式
+    document.getElementById('infoTitle').innerHTML = title.replace(/\(限額\)/g, '<span class="red-text">(限額)</span>').replace(/\(定額\)/g, '<span class="green-text">(定額)</span>');
     document.getElementById('infoContent').innerHTML = listHtml;
     document.getElementById('infoCalc').innerText = calcText ? calcText : "請參閱南山產物正式保單條款之規定。";
     
@@ -457,56 +470,56 @@ function calculateAll() {
     if (body) {
         body.innerHTML = `
             <tr>
-                <td class="category-cell"><a href="${getC('童遊標題').url}" target="_blank" class="category-tooltip" style="color:white; border:none;">${getC('童遊標題').name}</a></td>
-                <td colspan="2"><a onclick="openModal('意外傷害')">${getC('童遊傷害').name}</a> <span class="red-text">(實際費用且最高以保險金額為限)</span></td>
+                <td class="category-cell"><a href="${getC('童遊標題').url}" target="_blank" class="category-tooltip" style="color:white; border:none;">${fmtName('童遊標題')}</a></td>
+                <td colspan="2"><a onclick="openModal('意外傷害')">${fmtName('童遊傷害')}</a> <span class="red-text">(實際費用且最高以保險金額為限)</span></td>
                 <td class="calc-cell">${fmt(p.death===0?p.inj:0)}</td>
             </tr>
             <tr>
-                <td rowspan="7" class="category-cell"><a href="${getC('旅平標題').url}" target="_blank" class="category-tooltip" style="color:white; border:none;">${getC('旅平標題').name}</a></td>
-                <td colspan="2"><a onclick="openModal('身故失能')">${getC('身故失能').name}</a></td>
+                <td rowspan="7" class="category-cell"><a href="${getC('旅平標題').url}" target="_blank" class="category-tooltip" style="color:white; border:none;">${fmtName('旅平標題')}</a></td>
+                <td colspan="2"><a onclick="openModal('身故失能')">${fmtName('身故失能')}</a></td>
                 <td class="calc-cell">${fmt(p.death)}</td>
             </tr>
             <tr>
-                <td colspan="2"><a onclick="openModal('意外傷害')">${getC('意外傷害').name}</a> <span class="red-text">(實支實付最高額)</span></td>
+                <td colspan="2"><a onclick="openModal('意外傷害')">${fmtName('意外傷害')}</a> <span class="red-text">(實支實付最高額)</span></td>
                 <td class="calc-cell">${fmt(p.inj)}</td>
             </tr>
             <tr>
-                <td rowspan="4" class="sub-category-cell"><a href="${getC('新海外突發疾病').url}" target="_blank" class="category-tooltip">${getC('新海外突發疾病').name}${regionSuffix}</a> <span style="background:red; color:white; padding:1px 4px; border-radius:3px;">${m*100}%</span><br><span class="red-text">(實際費用最高額)</span></td>
-                <td><a onclick="openModal('突發住院')">${getC('突發住院').name}</a></td>
+                <td rowspan="4" class="sub-category-cell"><a href="${getC('新海外突發疾病').url}" target="_blank" class="category-tooltip">${fmtName('新海外突發疾病')}${regionSuffix}</a> <span style="background:red; color:white; padding:1px 4px; border-radius:3px;">${m*100}%</span><br><span class="red-text">(實際費用最高額)</span></td>
+                <td><a onclick="openModal('突發住院')">${fmtName('突發住院')}</a></td>
                 <td class="calc-cell">${fmt(p.med*m) || "-"}</td>
             </tr>
-            <tr><td><a onclick="openModal('返國住院')">${getC('返國住院').name}</a></td><td class="calc-cell">${fmt(p.med*0.1*m) || "-"}</td></tr>
-            <tr><td><a onclick="openModal('突發門診')">${getC('突發門診').name}</a></td><td class="calc-cell">${fmt(p.med*0.01*m) || "-"}</td></tr>
-            <tr><td><a onclick="openModal('突發急診')">${getC('突發急診').name}</a></td><td class="calc-cell">${fmt(p.med*0.01*m) || "-"}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('食物中毒')">${getC('食物中毒').name}</a></td><td class="calc-cell">${fmt(p.food)}</td></tr>
+            <tr><td><a onclick="openModal('返國住院')">${fmtName('返國住院')}</a></td><td class="calc-cell">${fmt(p.med*0.1*m) || "-"}</td></tr>
+            <tr><td><a onclick="openModal('突發門診')">${fmtName('突發門診')}</a></td><td class="calc-cell">${fmt(p.med*0.01*m) || "-"}</td></tr>
+            <tr><td><a onclick="openModal('突發急診')">${fmtName('突發急診')}</a></td><td class="calc-cell">${fmt(p.med*0.01*m) || "-"}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('食物中毒')">${fmtName('食物中毒')}</a></td><td class="calc-cell">${fmt(p.food)}</td></tr>
             
             <tr>
-                <td rowspan="16" class="category-cell"><a href="${getC('新個人旅行不便').url}" target="_blank" class="category-tooltip">${getC('新個人旅行不便').name}</a><br><br><span class="yellow-note">※限額給付係指實際費用且最高以保險金額為限。</span></td>
-                <td colspan="2"><a onclick="openModal('旅程取消')">${getC('旅程取消').name}</a></td>
+                <td rowspan="16" class="category-cell"><a href="${getC('新個人旅行不便').url}" target="_blank" class="category-tooltip">${fmtName('新個人旅行不便')}</a><br><br><span class="yellow-note">※限額給付係指實際費用且最高以保險金額為限。</span></td>
+                <td colspan="2"><a onclick="openModal('旅程取消')">${fmtName('旅程取消')}</a></td>
                 <td class="calc-cell">${fmt(p.cancel)}</td>
             </tr>
-            <tr><td colspan="2"><a onclick="openModal('班機延誤')">${getC('班機延誤').name}</a> <span class="red-text">(達4小時/2次為限)</span></td><td class="calc-cell">${fmt(p.delay)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('旅程更改')">${getC('旅程更改').name}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('行李延誤')">${getC('行李延誤').name}</a> <span class="red-text">(達6小時以上)</span></td><td class="calc-cell">${fmt(p.lug_d)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('行李損失')">${getC('行李損失').name}</a> <span class="red-text">(2次為限)</span></td><td class="calc-cell">${fmt(p.lug_l)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('文件損失')">${getC('文件損失').name}</a></td><td class="calc-cell">${p.cancel > 0 ? "5,000" : "-"}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('班機延誤')">${fmtName('班機延誤')}</a></td><td class="calc-cell">${fmt(p.delay)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('旅程更改')">${fmtName('旅程更改')}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('行李延誤')">${fmtName('行李延誤')}</a></td><td class="calc-cell">${fmt(p.lug_d)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('行李損失')">${fmtName('行李損失')}</a></td><td class="calc-cell">${fmt(p.lug_l)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('文件損失')">${fmtName('文件損失')}</a></td><td class="calc-cell">${p.cancel > 0 ? "5,000" : "-"}</td></tr>
             
             <tr>
-                <td rowspan="4" class="sub-category-cell"><a href="${getC('救援標題').url}" target="_blank" class="category-tooltip" style="color:inherit; border:none;">${getC('救援標題').name}</a></td>
-                <td><a onclick="openModal('緊急救援')">${getC('緊急醫療運送').name}</a></td>
+                <td rowspan="4" class="sub-category-cell"><a href="${getC('救援標題').url}" target="_blank" class="category-tooltip" style="color:inherit; border:none;">${fmtName('救援標題')}</a></td>
+                <td><a onclick="openModal('緊急救援')">${fmtName('緊急醫療運送')}</a></td>
                 <td rowspan="2" class="calc-cell">${fmt(p.rescue)}</td>
             </tr>
-            <tr><td><a onclick="openModal('緊急救援')">${getC('遺體運返').name}</a></td></tr>
-            <tr><td><a onclick="openModal('子女看護')">${getC('子女看護').name}</a></td><td class="calc-cell">12萬</td></tr>
-            <tr><td><a onclick="openModal('探病費用')">${getC('探病費用').name}</a></td><td class="calc-cell">20萬</td></tr>
+            <tr><td><a onclick="openModal('緊急救援')">${fmtName('遺體運返')}</a></td></tr>
+            <tr><td><a onclick="openModal('子女看護')">${fmtName('子女看護')}</a></td><td class="calc-cell">12萬</td></tr>
+            <tr><td><a onclick="openModal('探病費用')">${fmtName('探病費用')}</a></td><td class="calc-cell">20萬</td></tr>
             
-            <tr><td colspan="2"><a onclick="openModal('責任險')">${getC('責任險').name}</a></td><td class="calc-cell">${fmt(p.liab)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('班機改降')">${getC('班機改降').name}</a></td><td class="calc-cell">${fmt(p.divert)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('信用卡盜刷')">${getC('信用卡盜刷').name}</a></td><td class="calc-cell">${fmt(p.credit)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('現金竊盜')">${getC('現金竊盜').name}</a></td><td class="calc-cell">${fmt(p.cash)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('取消傳染病')">${getC('取消傳染病').name}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
-            <tr><td colspan="2"><a onclick="openModal('更改傳染病')">${getC('更改傳染病').name}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
-            <tr><td colspan="4" class="footer-cell"><a onclick="openModal('恐怖主義行為')" style="color:white; border:none;">${getC('恐怖主義行為').name}</a></td></tr>
+            <tr><td colspan="2"><a onclick="openModal('責任險')">${fmtName('責任險')}</a></td><td class="calc-cell">${fmt(p.liab)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('班機改降')">${fmtName('班機改降')}</a></td><td class="calc-cell">${fmt(p.divert)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('信用卡盜刷')">${fmtName('信用卡盜刷')}</a></td><td class="calc-cell">${fmt(p.credit)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('現金竊盜')">${fmtName('現金竊盜')}</a></td><td class="calc-cell">${fmt(p.cash)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('取消傳染病')">${fmtName('取消傳染病')}</a></td><td class="calc-cell">${fmt(p.cancel)}</td></tr>
+            <tr><td colspan="2"><a onclick="openModal('更改傳染病')">${fmtName('更改傳染病')}</a></td><td class="calc-cell">${fmt(p.change)}</td></tr>
+            <tr><td colspan="4" class="footer-cell"><a onclick="openModal('恐怖主義行為')" style="color:white; border:none;">${fmtName('恐怖主義')}</a></td></tr>
         `;
     }
 }
