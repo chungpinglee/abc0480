@@ -2,10 +2,10 @@
 <html lang="zh-Hant"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- 標題更改為 v9.0 用於確認 GitHub 上傳成功 -->
-    <title>保險導覽系統 (GitHub 終極修正版 v9.0)</title>
+    <!-- 標題更改為 v10.0 用於確認 GitHub 上傳成功 -->
+    <title>保險導覽系統 (GitHub 穩定驗證版 v10.0)</title>
     <style>
-        /* --- 基礎樣式 (維持 App 手感) --- */
+        /* --- 基礎樣式 (禁止更動邏輯) --- */
         :root {
             --level-0-bg: #28a745;
             --level-0-text: #ffffff;
@@ -13,7 +13,7 @@
             --mobile-header-bg: linear-gradient(90deg, #005a9c, #007bff);
         }
 
-        /* 正常顯示狀態：禁止捲動以維持 App 感 */
+        /* 正常顯示狀態：保持 App 手感 */
         html, body { 
             font-family: -apple-system, sans-serif; 
             background-color: var(--mobile-bg); 
@@ -33,45 +33,47 @@
         .center-circle { position: absolute; width: 100px; height: 100px; left: 100px; top: 100px; border-radius: 50%; background: var(--level-0-bg); color: white; display: flex; align-items: center; text-align: center; justify-content: center; font-weight: bold; }
         .sub-circle { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: white; border: 2px solid #ddd; display: flex; align-items: center; text-align: center; justify-content: center; font-size: 0.9em; cursor: pointer; }
 
-        /* --- 核心：iOS 終極列印與連結保留樣式 --- */
+        /* --- v10.0 核心：完全交由 CSS 處理列印，不依賴 JS 樣式切換 --- */
         @media print {
-            /* 1. 徹底摧毀所有限制，這是讓 iOS 彈出視窗的關鍵 */
+            /* 1. 強制解除 iOS 對 body 的高度與捲動限制 */
             html, body { 
                 height: auto !important; 
                 overflow: visible !important; 
                 background: white !important; 
                 position: static !important;
+                -webkit-overflow-scrolling: auto;
             }
 
-            /* 2. 隱藏不必要 UI */
+            /* 2. 隱藏導覽元件 */
             .no-print, .header, .back-btn, #main-menu-view, #suggested-main-menu-view { 
                 display: none !important; 
             }
 
-            /* 3. 列表平坦化 */
+            /* 3. 將當前產品列表攤平為標準網頁流 (這是保留超連結的唯一物理條件) */
             #suggested-product-list-view { 
                 display: block !important; 
                 position: static !important; 
                 height: auto !important; 
                 overflow: visible !important;
+                opacity: 1 !important;
+                visibility: visible !important;
             }
             #suggested-product-list-content { 
                 display: block !important;
                 overflow: visible !important; 
                 height: auto !important;
-                padding: 0 !important;
+                padding: 10px !important;
             }
 
-            /* 4. PDF 連結強化：讓 A 標籤有實體區域 */
+            /* 4. 強制連結維持可偵測狀態 */
             .list-item { 
                 page-break-inside: avoid; 
                 border: 1px solid #ddd !important;
-                margin-bottom: 12px !important;
-                padding: 0 !important;
+                margin-bottom: 15px !important;
+                display: block !important;
             }
             a { 
                 display: block !important; 
-                padding: 15px !important;
                 text-decoration: underline !important; 
                 color: #007bff !important; 
                 pointer-events: auto !important;
@@ -83,13 +85,13 @@
 
     <!-- 主選單視窗 -->
     <div id="main-menu-view" class="view active">
-        <div class="header">保險導覽系統 (終極驗證 v9.0)</div>
+        <div class="header">保險導覽系統 (驗證 v10.0)</div>
         <div class="content">
             <div class="circle-container">
                 <div class="center-circle">保險<br>規劃</div>
                 <div class="sub-circle" style="top: 0; left: 110px;" onclick="showView('#suggested-main-menu-view')">建議組合</div>
             </div>
-            <p style="text-align:center; margin-top:30px; color:#888;">GitHub 終極修正版 v9.0</p>
+            <p style="text-align:center; margin-top:30px; color:#888;">GitHub 穩定驗證版 v10.0</p>
         </div>
     </div>
 
@@ -97,11 +99,11 @@
     <div id="suggested-main-menu-view" class="view">
         <div class="header">
             <button class="back-btn" onclick="showView('#main-menu-view')">返回</button>
-            終極修正版測試
+            GitHub v10.0 測試
         </div>
         <div class="content">
-            <div class="list-item" onclick="showProductList('建議方案 (v9.0)')">
-                <span class="item-text">測試方案 A：點擊進入</span><span class="item-arrow">❯</span>
+            <div class="list-item" onclick="showProductList('建議方案 (v10.0)')">
+                <span class="item-text">測試方案：進入列印頁</span><span class="item-arrow">❯</span>
             </div>
         </div>
     </div>
@@ -111,25 +113,25 @@
         <div class="header">
             <button class="back-btn no-print" onclick="showView('#suggested-main-menu-view')">返回</button>
             <span id="suggested-list-title">產品列表</span>
-            <!-- v9.0 使用直接內聯 onclick 觸發 -->
-            <button onclick="executeFinalPrint(this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #28a745; border: none; color: white; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; -webkit-appearance: none;" class="no-print">
-                立即產生 PDF (v9.0)
+            <!-- v10.0 直接觸發按鈕：不執行任何預處理 JS -->
+            <button id="final-print-btn" onclick="window.print();" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: #28a745; border: none; color: white; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; -webkit-appearance: none; z-index: 999;" class="no-print">
+                立即產生 PDF (v10.0)
             </button>
         </div>
         <div id="suggested-product-list-content" class="content">
             <div class="list-item">
                 <a href="https://www.google.com" target="_blank">
                     <div style="display:flex; justify-content:space-between; width:100%;">
-                        <span class="item-text">超連結測試 1 (Google)</span>
-                        <span class="item-arrow">測試連結 ❯</span>
+                        <span class="item-text">連結驗證 1 (Google)</span>
+                        <span class="item-arrow">❯</span>
                     </div>
                 </a>
             </div>
             <div class="list-item">
                 <a href="https://github.com" target="_blank">
                     <div style="display:flex; justify-content:space-between; width:100%;">
-                        <span class="item-text">超連結測試 2 (GitHub)</span>
-                        <span class="item-arrow">測試連結 ❯</span>
+                        <span class="item-text">連結驗證 2 (GitHub)</span>
+                        <span class="item-arrow">❯</span>
                     </div>
                 </a>
             </div>
@@ -137,35 +139,16 @@
     </div>
 
     <script>
+        // 切換視窗邏輯
         function showView(selector) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelector(selector).classList.add('active');
         }
 
+        // 顯示產品列表
         function showProductList(title) {
             document.getElementById('suggested-list-title').innerText = title;
             showView('#suggested-product-list-view');
-        }
-
-        // --- v9.0 終極修復函式 ---
-        function executeFinalPrint(btn) {
-            // 1. 立即提供觸發反饋
-            btn.style.opacity = "0.5";
-            
-            // 2. 修復 iOS 核心問題：強制將 body 變為可捲動狀態
-            // 如果不這樣做，iOS Safari 會因為抓不到高度而無視 window.print()
-            document.documentElement.style.overflow = 'visible';
-            document.body.style.overflow = 'visible';
-
-            // 3. 立即呼叫
-            window.print();
-
-            // 4. 恢復狀態 (設定較長的延遲，確保列印選單已彈出)
-            setTimeout(function() {
-                document.documentElement.style.overflow = 'hidden';
-                document.body.style.overflow = 'hidden';
-                btn.style.opacity = "1";
-            }, 2000);
         }
     </script>
 </body>
