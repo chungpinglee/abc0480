@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>張吟怡 - 南山人壽保障比較分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f3f4f6;
+            padding-top: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 60;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            cursor: pointer;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 1100px;
+            max-height: 92vh;
+            border-radius: 24px;
+            overflow: hidden;
+            transform: translateY(30px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .table-container::-webkit-scrollbar { width: 4px; }
+        .table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .case-table-wrapper {
+            @apply overflow-hidden rounded-xl border border-slate-200 bg-white mb-6;
+        }
+        
+        .case-header {
+            @apply bg-slate-800 text-white p-4 font-bold flex justify-between items-center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部固定導覽列 -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-glass p-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-center gap-2 md:gap-4">
+            <button onclick="window.open('https://drive.google.com/file/d/1EHKG6tCiBdK9DOet_Eapyk2duJIVH8vm/view?usp=sharing', '_blank')" class="btn-nav bg-[#f59e0b] text-white hover:bg-[#d97706] flex items-center gap-2 shadow-sm">
+                <i class="fas fa-video"></i>
+                影音說明
+            </button>
+            <button onclick="window.open('https://drive.google.com/file/d/1iiGyPJMdXRBKyj1ix9u86f-tLbbeLDf3/view', '_blank')" class="btn-nav bg-[#374151] text-white hover:bg-black shadow-sm">
+                預算版
+            </button>
+            <button onclick="window.open('https://drive.google.com/file/d/1UV3x8tKL_2Z2tdFCczqpTAhmZ8RCktl-/view', '_blank')" class="btn-nav bg-[#2563eb] text-white hover:bg-[#1d4ed8] shadow-sm">
+                完整版
+            </button>
+            <button id="openBenefit" class="btn-nav bg-[#8b5cf6] text-white hover:bg-[#7c3aed] flex items-center gap-2 shadow-sm">
+                <i class="fas fa-list-check"></i>
+                保障比較
+            </button>
+            <button onclick="window.location.href='./建議書商品導覽.html'" class="btn-nav bg-[#6366f1] text-white hover:bg-[#4f46e5] shadow-sm">
+                商品簡介
+            </button>
+            <button id="openCompare" class="btn-nav bg-[#10b981] text-white hover:bg-[#059669] flex items-center gap-2 shadow-sm">
+                <i class="fas fa-balance-scale"></i>
+                保費對照
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主頁面摘要 -->
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-slate-100 transition-all hover:shadow-xl">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-10 text-white text-center">
+                <h1 class="text-3xl font-extrabold">張吟怡 小姐 - 保障規劃報告</h1>
+            </div>
+            <div class="p-8 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-slate-50 rounded-2xl border-2 border-emerald-100 relative shadow-inner text-center transition-all hover:shadow-md">
+                        <p class="text-xs text-emerald-600 font-bold mb-1 tracking-widest uppercase">方案一：【預算版】</p>
+                        <p class="text-3xl font-black text-slate-800">$ 33,391 <span class="text-sm font-normal text-slate-400">/ 年</span></p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl border-2 border-blue-100 relative shadow-inner text-center transition-all hover:shadow-md">
+                        <p class="text-xs text-blue-600 font-bold mb-1 tracking-widest uppercase">方案二：【較完整版】</p>
+                        <p class="text-3xl font-black text-slate-800">$ 48,059 <span class="text-sm font-normal text-slate-400">/ 年</span></p>
+                    </div>
+                </div>
+                <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
+                    <h3 class="font-bold text-slate-800 mb-3 flex items-center text-lg">
+                        <i class="fas fa-shield-alt text-blue-500 mr-2"></i> 規劃核心說明
+                    </h3>
+                    <p class="text-slate-600 leading-relaxed text-base">
+                        本方案均配置「雙實支實付」作為醫療核心，最高可負擔單次住院 30 萬元的自費支出。
+                        <br><span class="font-bold text-indigo-600 mt-2 block border-l-4 border-indigo-500 pl-3">完整版重點強化「長期看護定額金」與「高額骨折保障」，讓您在休養期間有更充裕的經濟後盾。</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保障比較彈窗 -->
+    <div id="benefitModal" class="modal-overlay flex items-center justify-center p-2 md:p-4">
+        <div class="modal-content">
+            <div class="bg-slate-50 border-b border-slate-200 px-6 py-5 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shield-heart"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800">保障內容對照與情境理賠案例</h2>
+                </div>
+                <button class="w-10 h-10 rounded-full hover:bg-slate-200 text-slate-400 flex items-center justify-center">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="table-container overflow-y-auto p-4 md:p-8 space-y-12">
+                <section>
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-indigo-500 rounded-full"></span>
+                        核心保障額度概覽
+                    </h3>
+                    <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="p-4 w-1/3">主要保障項目</th>
+                                    <th class="p-4 text-center text-emerald-700 bg-emerald-50/30 font-black">方案一：預算版</th>
+                                    <th class="p-4 text-center text-blue-700 bg-blue-50/30 font-black">方案二：完整版</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr>
+                                    <td class="p-4 font-bold text-slate-700">終身住院定額 (每日)</td>
+                                    <td class="p-4 text-center text-slate-600">1,000 元</td>
+                                    <td class="p-4 text-center font-bold text-blue-600">2,000 元 <span class="text-[10px] block font-normal text-slate-400">(31日後加倍為4,000)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-slate-700">終身手術定額 (最高)</td>
+                                    <td class="p-4 text-center text-slate-600">50,000 元</td>
+                                    <td class="p-4 text-center font-bold text-blue-600">100,000 元 <span class="text-[10px] block font-normal text-slate-400">(依倍數比例給付)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-slate-700">意外骨折保障 (最高)</td>
+                                    <td class="p-4 text-center text-slate-600">17.5 萬元</td>
+                                    <td class="p-4 text-center font-bold text-orange-600">35.0 萬元 <span class="text-[10px] block font-normal text-slate-400">(基數提高至100萬)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-slate-700">實支實付組合 (1HS+1HSD)</td>
+                                    <td class="p-4 text-center font-medium">合併最高 30 萬元</td>
+                                    <td class="p-4 text-center font-medium">合併最高 30 萬元</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="space-y-10">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-orange-500 rounded-full"></span>
+                        情境化理賠案例試算
+                    </h3>
+
+                    <!-- 案例一 -->
+                    <div class="case-table-wrapper">
+                        <div class="case-header">
+                            <span>案例一：嚴重肺炎住院 (10天 / 無手術 / 雜費支出 3.2 萬)</span>
+                            <span class="text-xs font-normal opacity-80">醫療險基本情境</span>
+                        </div>
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-[11px] text-slate-500 uppercase tracking-widest">
+                                    <th class="p-3 border-b text-left">給付項目</th>
+                                    <th class="p-3 border-b text-center bg-emerald-50/20">方案一：預算版</th>
+                                    <th class="p-3 border-b text-center bg-blue-50/20">方案二：完整版</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="p-3">實支實付 (住院雜費支出)</td><td class="p-3 text-center">理賠 $32,000</td><td class="p-3 text-center">理賠 $32,000</td></tr>
+                                <tr><td class="p-3">終身住院日額 (20HWHI)</td><td class="p-3 text-center">1,000 x 10 = 10,000</td><td class="p-3 text-center text-blue-600 font-bold">2,000 x 10 = 20,000</td></tr>
+                                <tr><td class="p-3">住院費用補償 (1HS 轉換型)</td><td class="p-3 text-center">1,200 x 10 = 12,000</td><td class="p-3 text-center">1,200 x 10 = 12,000</td></tr>
+                                <tr class="bg-slate-50 font-black"><td class="p-3">總計理賠金額</td><td class="p-3 text-center text-emerald-700">$ 54,000</td><td class="p-3 text-center text-blue-700">$ 64,000</td></tr>
+                                <tr class="bg-indigo-50"><td colspan="3" class="p-3 text-center text-[11px] text-indigo-800">💡 <strong>價值分析：</strong>扣除 3.2 萬醫療費後，方案二多領到 <strong>3.2 萬現金</strong> 可貼補 10 天看護費</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 案例二 -->
+                    <div class="case-table-wrapper border-l-4 border-l-orange-500">
+                        <div class="case-header !bg-orange-600">
+                            <span>案例二：意外大腿骨折 (閉鎖性 / 手術 / 自費鋼釘 17 萬)</span>
+                        </div>
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-[11px] text-slate-500 uppercase">
+                                    <th class="p-3 border-b text-left">給付項目</th>
+                                    <th class="p-3 border-b text-center bg-emerald-50/20">方案一：預算版</th>
+                                    <th class="p-3 border-b text-center bg-blue-50/20">方案二：完整版</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="p-3 font-medium">骨折保險金 (SBBR)</td><td class="p-3 text-center">14萬</td><td class="p-3 text-center text-orange-600 font-bold">28萬</td></tr>
+                                <tr><td class="p-3">實支實付 (1HS+1HSD)</td><td class="p-3 text-center">理賠 $170,000</td><td class="p-3 text-center">理賠 $170,000</td></tr>
+                                <tr><td class="p-3">終身手術定額 (20HPSI2)</td><td class="p-3 text-center">約 15,000</td><td class="p-3 text-center text-blue-600 font-bold">約 30,000</td></tr>
+                                <tr class="bg-slate-50 font-black"><td class="p-3">總計理賠金額</td><td class="p-3 text-center text-emerald-700">$ 325,000 + 實支</td><td class="p-3 text-center text-orange-700">$ 480,000 + 實支</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 案例三 -->
+                    <div class="case-table-wrapper border-l-4 border-l-red-600">
+                        <div class="case-header !bg-red-700">
+                            <span>案例三：重度癌症 (住院20天 / 手術 / 雜費30萬 / 化療20次)</span>
+                        </div>
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-[11px] text-slate-500">
+                                    <th class="p-3 border-b text-left">給付項目</th>
+                                    <th class="p-3 border-b text-center bg-emerald-50/20">方案一：預算版</th>
+                                    <th class="p-3 border-b text-center bg-blue-50/20">方案二：完整版</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="p-3 font-medium">癌症住院/化療 (HCAB2)</td><td class="p-3 text-center">$80,000</td><td class="p-3 text-center">$80,000</td></tr>
+                                <tr><td class="p-3 font-medium">化療補貼加成 (20次)</td><td class="p-3 text-center">$20,000</td><td class="p-3 text-center text-red-600 font-bold">$40,000</td></tr>
+                                <tr><td class="p-3 font-medium">實支實付 (1HS+1HSD)</td><td class="p-3 text-center">30 萬全額理賠</td><td class="p-3 text-center">30 萬全額理賠</td></tr>
+                                <tr><td class="p-3 font-medium">終身住院日額 (20HWHI)</td><td class="p-3 text-center">$20,000</td><td class="p-3 text-center text-red-600 font-bold">$40,000</td></tr>
+                                <tr class="bg-slate-50 font-black"><td class="p-3 text-slate-800">總計一次給付與補貼</td><td class="p-3 text-center text-emerald-700">約 $ 23 萬元</td><td class="p-3 text-center text-red-700">約 $ 28 萬元</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保費對照彈窗 -->
+    <div id="compareModal" class="modal-overlay flex items-center justify-center p-2 md:p-4">
+        <div class="modal-content">
+            <div class="bg-slate-50 border-b border-slate-200 px-6 py-5 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-file-invoice-dollar text-emerald-600 text-xl"></i>
+                    <h2 class="text-xl font-bold text-slate-800">各險種保費對照表</h2>
+                </div>
+                <button class="w-10 h-10 rounded-full hover:bg-slate-200 text-slate-400 flex items-center justify-center">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="table-container overflow-y-auto p-4 md:p-8 bg-slate-50/30">
+                <div class="overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase">
+                                <th class="p-4 border-b">險種商品名稱</th>
+                                <th class="p-4 border-b text-center">方案一：預算版</th>
+                                <th class="p-4 border-b text-center">方案二：完整版</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-sm">
+                            <tr><td class="p-4">新定期壽險 (N20TL2)</td><td class="p-4 text-center">$2,140</td><td class="p-4 text-center">$2,140</td></tr>
+                            <tr><td class="p-4 font-medium">雙實支實付組合 (1HS+1HSD)</td><td class="p-4 text-center">$2,909</td><td class="p-4 text-center">$2,909</td></tr>
+                            <tr><td class="p-4 font-bold text-indigo-600">日溢美滿日額 (20HWHI)</td><td class="p-4 text-center">$8,380</td><td class="p-4 text-center font-bold text-blue-600">$16,760</td></tr>
+                            <tr><td class="p-4 font-bold text-indigo-600">溢同安心2手術 (20HPSI2)</td><td class="p-4 text-center">$5,188</td><td class="p-4 text-center font-bold text-blue-600">$10,376</td></tr>
+                            <tr><td class="p-4 font-bold text-orange-600">骨折及特定手術 (SBBR)</td><td class="p-4 text-center">$1,100</td><td class="p-4 text-center font-bold text-orange-600">$2,200</td></tr>
+                            <tr><td class="p-4">癌症醫療健康 (HCAB2)</td><td class="p-4 text-center">$10,414</td><td class="p-4 text-center">$10,414</td></tr>
+                            <tr><td class="p-4">意外實支醫療 (PAMR)</td><td class="p-4 text-center">$3,260</td><td class="p-4 text-center">$3,260</td></tr>
+                            <tr class="bg-slate-900 text-white font-bold"><td class="p-4">年繳保費總計</td><td class="p-4 text-center text-xl text-emerald-400">$ 33,391</td><td class="p-4 text-center text-xl text-blue-400">$ 48,059</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const benefitModal = document.getElementById('benefitModal');
+        const compareModal = document.getElementById('compareModal');
+
+        function openModal(el) {
+            if (!el) return;
+            el.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAllModals() {
+            benefitModal.classList.remove('active');
+            compareModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('openBenefit').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openModal(benefitModal);
+        });
+
+        document.getElementById('openCompare').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openModal(compareModal);
+        });
+
+        // 核心修改：點擊螢幕任何一點即可關閉
+        window.addEventListener('click', () => {
+            if (benefitModal.classList.contains('active') || compareModal.classList.contains('active')) {
+                closeAllModals();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllModals();
+            }
+        });
+    </script>
+</body>
+</html>
