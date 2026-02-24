@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>面對癌症及重大傷病風險.我們可以怎麼做</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --app-height: 100%; }
+        body { background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        
+        /* 內容區塊切換動畫 */
+        .content-section { display: none; animation: fadeIn 0.4s ease-out forwards; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .insurance-text { color: #006400; font-weight: 600; }
+        
+        /* 編輯區域焦點樣式 */
+        .editable-element { min-height: 1.2em; transition: background 0.2s; border-radius: 4px; padding: 2px; }
+        .editable-element:focus { outline: none; background-color: #f0f7ff; border-bottom: 2px solid #3b82f6; }
+        
+        /* 超連結懸停特效：紅色 + 放大10% */
+        .editable-element a { 
+            transition: all 0.2s ease-in-out; 
+            display: inline-block; 
+            cursor: pointer !important;
+            color: #2563eb;
+            text-decoration: underline;
+        }
+        .editable-element a:hover { 
+            color: #ef4444 !important; /* 紅色 */
+            transform: scale(1.1);
+        }
+        
+        /* Emoji 動態效果設定 */
+        @keyframes soft-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulse-bounce {
+            0% { transform: scale(1.2) rotate(0deg); }
+            20% { transform: scale(1.2) rotate(-15deg); }
+            40% { transform: scale(1.2) translateY(-5px); }
+            60% { transform: scale(1.2) rotate(15deg); }
+            80% { transform: scale(1.2) translateY(0px); }
+            100% { transform: scale(1.2) rotate(0deg); }
+        }
+
+        .emoji-icon {
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: soft-float 3s ease-in-out infinite;
+        }
+
+        /* 導覽按鈕滑入效果：背景淡綠色 + Emoji 放大 20% 並彈跳 */
+        .btn-nav {
+            transition: all 0.3s ease;
+        }
+        .btn-nav:hover:not(.active) {
+            background-color: #f0fdf4 !important; /* 淡綠色 */
+            border-color: #bbf7d0 !important; /* 淺綠邊框 */
+        }
+        .btn-nav:hover .emoji-icon {
+            animation: pulse-bounce 0.8s ease-in-out infinite;
+            filter: drop-shadow(0 10px 8px rgba(0,0,0,0.15));
+        }
+        
+        /* 導覽按鈕啟動樣式 */
+        .btn-nav.active { background-color: #1e40af; color: white; border-color: #1e40af; }
+        .btn-nav.active .emoji-icon { animation: soft-float 1.5s ease-in-out infinite; }
+        
+        /* 問題漸現效果 */
+        .question-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+            pointer-events: none;
+        }
+        .question-item.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* 超連結小工具彈窗 */
+        #link-bubble {
+            display: none;
+            position: absolute;
+            z-index: 100;
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            border-radius: 99px;
+            padding: 6px 16px;
+            border: 1px solid #e2e8f0;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cta-button { background: linear-gradient(135deg, #065f46 0%, #047857 100%); transition: transform 0.2s active; }
+        .cta-button:active { transform: scale(0.98); }
+        
+        /* 全部展開模式樣式 */
+        .all-visible .content-section { display: block !important; margin-bottom: 2.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid #e2e8f0; }
+        .all-visible .cta-button { display: none; }
+        .all-visible [id^="action"] { display: block !important; }
+        .all-visible .question-item { opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
+
+        @media print { .no-print { display: none; } }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.sticky{position:sticky}.top-0{top:0px}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-10{margin-bottom:2.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.ml-1{margin-left:0.25rem}.mr-1{margin-right:0.25rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-48{height:12rem}.h-6{height:1.5rem}.min-h-\[350px\]{min-height:350px}.min-h-\[75px\]{min-height:75px}.w-32{width:8rem}.w-6{width:1.5rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}@keyframes bounce{0%, 100%{transform:translateY(-25%);animation-timing-function:cubic-bezier(0.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,0.2,1)}}.animate-bounce{animation:bounce 1s infinite}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-none{border-style:none}.border-blue-400{--tw-border-opacity:1;border-color:rgb(96 165 250 / var(--tw-border-opacity, 1))}.border-emerald-100{--tw-border-opacity:1;border-color:rgb(209 250 229 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245 / var(--tw-bg-opacity, 1))}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.bg-indigo-600{--tw-bg-opacity:1;background-color:rgb(79 70 229 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-400{--tw-bg-opacity:1;background-color:rgb(148 163 184 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/95{background-color:rgb(255 255 255 / 0.95)}.bg-transparent{background-color:transparent}.p-1\.5{padding:0.375rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.italic{font-style:italic}.text-blue-800{--tw-text-opacity:1;color:rgb(30 64 175 / var(--tw-text-opacity, 1))}.text-blue-900{--tw-text-opacity:1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.text-emerald-800{--tw-text-opacity:1;color:rgb(6 95 70 / var(--tw-text-opacity, 1))}.text-emerald-900{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.focus\:bg-white:focus{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}</style></head>
+<body class="text-slate-800">
+
+    <!-- 頂部導覽列 -->
+    <header class="sticky top-0 bg-white/95 backdrop-blur-md shadow-sm z-50 px-4 py-3 no-print">
+        <div class="flex justify-between items-center max-w-2xl mx-auto text-center">
+            <h1 class="text-xs font-bold text-slate-700 truncate mr-1">面對癌症及重大傷病風險.我們可以怎麼做</h1>
+            <div class="flex gap-1 shrink-0">
+                
+                
+                
+                <button onclick="expandAll()" class="bg-blue-600 text-white p-1.5 rounded-lg text-[10px] font-medium">📜 展開</button>
+                <button onclick="collapseAll()" class="bg-slate-400 text-white p-1.5 rounded-lg text-[10px] font-medium">🏠 重置</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 超連結工具彈窗 -->
+    <div id="link-bubble" class="no-print" style="display: none;">
+        <input type="text" id="link-url" placeholder="輸入網址..." class="text-xs border border-slate-200 rounded-md px-2 py-1 outline-none w-32">
+        <button onclick="applyLink()" class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-md">加入</button>
+        <button onclick="removeLink()" class="text-red-500 text-[10px] font-bold px-1 ml-1">取消</button>
+    </div>
+
+    <main class="max-w-2xl mx-auto px-4 pt-4">
+        
+        <!-- 手機優化導覽盤 -->
+        <div id="nav-grid" class="grid grid-cols-3 gap-2 mb-6 no-print">
+            <button id="btn-intro-nav" onclick="showSection('intro', this)" class="btn-nav p-2 bg-white rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center min-h-[75px]">
+                <span class="text-lg emoji-icon">🧠</span>
+                <span class="text-[10px] font-bold mt-1 editable-element" onclick="event.stopPropagation()">請思考幾件事</span>
+            </button>
+            <button onclick="showSection('step1', this)" class="btn-nav p-2 bg-white rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center min-h-[75px]">
+                <span class="text-lg emoji-icon">🏥</span>
+                <span class="text-[10px] font-bold mt-1 editable-element" onclick="event.stopPropagation()">身體/治療</span>
+            </button>
+            <button onclick="showSection('step2', this)" class="btn-nav p-2 bg-white rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center min-h-[75px]">
+                <span class="text-lg emoji-icon">💰</span>
+                <span class="text-[10px] font-bold mt-1 editable-element" onclick="event.stopPropagation()">財務/用藥</span>
+            </button>
+            <button onclick="showSection('rehab', this)" class="btn-nav p-2 bg-white rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center min-h-[75px]">
+                <span class="text-lg emoji-icon">🌱</span>
+                <span class="text-[10px] font-bold mt-1 editable-element" onclick="event.stopPropagation()">復健/心理</span>
+            </button>
+            <button onclick="showSection('table', this)" class="btn-nav p-2 bg-white rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center min-h-[75px]">
+                <span class="text-lg emoji-icon">📊</span>
+                <span class="text-[10px] font-bold mt-1 editable-element" onclick="event.stopPropagation()">保障對比</span>
+            </button>
+            <button onclick="showSection('summary', this)" class="btn-nav p-2 bg-white rounded-xl border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center min-h-[75px]">
+                <span class="text-lg emoji-icon">🎯</span>
+                <span class="text-[10px] font-bold mt-1 editable-element" onclick="event.stopPropagation()">行動策略</span>
+            </button>
+        </div>
+
+        <!-- 內容呈現區 -->
+        <div id="content-container" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-10 min-h-[350px]">
+            
+            <div id="default-msg" class="flex flex-col items-center justify-center h-48 text-slate-400" style="display: flex;">
+                <div class="animate-bounce mb-4 text-3xl">👇</div>
+                <p class="text-sm text-center">面對重大風險，我們有更從容的選擇</p>
+                
+            </div>
+
+            <!-- 區塊：請思考幾件事 -->
+            <section id="intro" class="content-section">
+                <h2 class="text-lg font-bold text-blue-800 mb-4 editable-element">若不幸確診，您最擔心的三個問題...</h2>
+                
+                <div class="space-y-4">
+                    <div class="question-item p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400" data-q-index="1">
+                        <p class="text-xs font-bold text-blue-900 mb-1">Q1.</p>
+                        <p class="text-sm editable-element">有一種療程要價 200 萬且效果極佳，您的第一直覺是詢問「醫師這有效嗎？」還是「我的保險賠得夠嗎？」</p>
+                    </div>
+                    <div class="question-item p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400" data-q-index="2">
+                        <p class="text-xs font-bold text-blue-900 mb-1">Q2.</p>
+                        <p class="text-sm editable-element">萬一需要治療休養 2 年，您的存款在支撐醫藥費後，還能確保「房貸、教育金」不縮水嗎？</p>
+                    </div>
+                    <div class="question-item p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400" data-q-index="3">
+                        <p class="text-xs font-bold text-blue-900 mb-1">Q3.</p>
+                        <p class="text-sm editable-element">您希望在病房醒來時思考的是「如何配合積極治療」，還是「每天張開眼又要花掉多少錢」？</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 區塊：身體計畫 -->
+            <section id="step1" class="content-section">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 editable-element">第一階段：身體與治療計畫</h2>
+                <div class="space-y-3 text-sm">
+                    <div class="flex gap-2">🔹 <span class="editable-element"><span class="font-bold">精準醫療諮詢：</span> 基因檢測、尋求第二意見。</span></div>
+                    <div class="flex gap-2">🔹 <span class="editable-element"><span class="font-bold">手術決策：</span> 傳統手術 vs. <span class="insurance-text underline"><a href="https://youtu.be/hKecv4nH-M0?si=nam95DZf1Abs3tE9" target="_blank" onclick="window.open(this.href, '_blank'); return false;">達文西機械手臂</a>/微創手術</span> (傷口小、恢復快)。</span></div>
+                    <div class="flex gap-2">🔹 <span class="editable-element"><span class="font-bold">住院品質：</span> 健保房 vs. <span class="insurance-text underline"><a href="https://youtu.be/mkeUSfWgWBU?si=ohUasTUxqGTFguVs" target="_blank" onclick="window.open(this.href, '_blank'); return false;">單人房</a></span> (降低感染機率與照顧者心理負擔)。</span></div>
+                </div>
+                <div class="mt-8">
+                    <button onclick="toggleAction('action1')" class="cta-button w-full text-white py-3 px-4 rounded-xl shadow-lg font-bold text-sm flex justify-between items-center no-print">
+                        【我們可以怎麼做】 <span id="arrow1">▼</span>
+                    </button>
+                    <div id="action1" class="hidden mt-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-sm insurance-text editable-element">
+                        建議配置高額度「醫療實支實付」險及手術保險，將高額自費用藥，與單人房差額，由保險提供補助以降低財務壓力。
+                    </div>
+                </div>
+            </section>
+
+            <!-- 區塊：財務計畫 -->
+            <section id="step2" class="content-section">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 editable-element">第二階段：財務與高額用藥</h2>
+                <div class="space-y-3 mb-6">
+                    <div class="text-sm p-3 bg-slate-50 rounded-lg editable-element">
+                        <span class="font-bold">住院雜費：</span> <span class="insurance-text">自費醫材、防沾黏貼片、住院藥物</span>
+                    </div>
+                    <div class="text-sm p-3 bg-slate-50 rounded-lg editable-element">
+                        <span class="font-bold">長期自費藥：</span> <span class="insurance-text">標靶藥物、質子．重粒子治療、免疫療法 (年花百萬常見)</span>
+                    </div>
+                    <div class="text-sm p-3 bg-slate-50 rounded-lg editable-element">
+                        <span class="font-bold">家庭防護網：</span> <span class="insurance-text">房貸負擔、薪資補償、看護(每月6-8萬)</span>
+                    </div>
+                </div>
+                <button onclick="toggleAction('action2')" class="cta-button w-full text-white py-3 px-4 rounded-xl shadow-lg font-bold text-sm flex justify-between items-center no-print">
+                    【我們可以怎麼做】 <span id="arrow2">▼</span>
+                </button>
+                <div id="action2" class="hidden mt-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-sm insurance-text editable-element">
+                    規劃高額的實支實付醫療保險，住院日額津貼保險及「一次給付型」癌症或重大傷病險。領取一整筆資金 (建議200萬以上)，解決高額自費藥及看護費，並維持出院後家庭生計不崩潰。
+                </div>
+            </section>
+
+            <!-- 區塊：復健計畫 -->
+            <section id="rehab" class="content-section">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 editable-element">第三階段：復健與心理重建</h2>
+                <div class="space-y-3 text-sm">
+                    <div class="flex gap-2 text-slate-600">🌿 <span class="editable-element"><span class="font-bold text-slate-800">營養管理：</span> 術後長期昂貴的營養補充品。</span></div>
+                    <div class="flex gap-2 text-slate-600">🌿 <span class="editable-element"><span class="font-bold text-slate-800">居家改裝：</span> <span class="insurance-text">無障礙設施或特製電動床位。</span></span></div>
+                    <div class="flex gap-2 text-slate-600">🌿 <span class="editable-element"><span class="font-bold text-slate-800">心理調適：</span> 諮商費用、病友團體與重返職場規畫。</span></div>
+                </div>
+                <div class="mt-8">
+                    <button onclick="toggleAction('action3')" class="cta-button w-full text-white py-3 px-4 rounded-xl shadow-lg font-bold text-sm flex justify-between items-center no-print">
+                        【我們可以怎麼做】 <span id="arrow3">▼</span>
+                    </button>
+                    <div id="action3" class="hidden mt-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-sm insurance-text editable-element">
+                        利用「一次給付型」保險給付帶來的財務寬裕，換取心靈痊癒的時間。確保不需要在病體未痊癒前為了經濟壓力強行復工。
+                    </div>
+                </div>
+            </section>
+
+            <!-- 區塊：表格對比 -->
+            <section id="table" class="content-section">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 editable-element">核心保障分析對比</h2>
+                <div class="border rounded-xl overflow-hidden shadow-sm text-[11px]">
+                    <div class="grid grid-cols-2 bg-slate-100 p-3 font-bold border-b text-center">
+                        <div class="editable-element">傳統定額醫療險</div>
+                        <div class="text-emerald-800 editable-element">「一次給付型」保險優點</div>
+                    </div>
+                    <div class="p-3 border-b">
+                        <p class="font-bold mb-1 editable-element">住院手術與病房</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="text-slate-500 editable-element">依天數賠</div>
+                            <div class="insurance-text editable-element">補助實支實付差額及看護費用</div>
+                        </div>
+                    </div>
+                    <div class="p-3 border-b">
+                        <p class="font-bold mb-1 editable-element">標靶藥物與用藥</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="text-slate-500 editable-element">不住院就不賠</div>
+                            <div class="insurance-text editable-element">利用「一次給付型」保險提供財務補助。</div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <p class="font-bold mb-1 editable-element">家庭生計補償</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="text-slate-500 editable-element">無此項給付</div>
+                            <div class="insurance-text editable-element">利用「一次給付型」保險提供財務補助，替代 2 年薪資不受損</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 區塊：總結策略 -->
+            <section id="summary" class="content-section">
+                <h2 class="text-lg font-bold text-blue-900 mb-4 editable-element">具體建議：現在的三個動作</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                        <div class="bg-blue-600 text-white w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0">1</div>
+                        <p class="text-xs insurance-text editable-element">一次給付型癌症或重大傷病給付</p>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                        <div class="bg-blue-600 text-white w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0">2</div>
+                        <p class="text-xs insurance-text editable-element">住院醫療險，手術險，住院收入保險</p>
+                    </div>
+                    <div class="flex items-center gap-3 p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                        <div class="bg-blue-600 text-white w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0">3</div>
+                        <p class="text-xs insurance-text editable-element">高額癌症保險</p>
+                    </div>
+                </div>
+                <p class="mt-6 text-center text-[10px] text-slate-400">保障是用來守護我們最愛的人，讓困難時依然有尊嚴。</p>
+            </section>
+
+            <!-- 超連結管理中心 -->
+            
+
+        </div>
+    </main>
+
+    <script>
+        let currentQuestionStep = 0;
+
+        // --- 全局導覽與問題切換監聽器 ---
+        document.addEventListener('click', function(e) {
+            // 處理問題漸現
+            const introSection = document.getElementById('intro');
+            if (introSection && introSection.classList.contains('active')) {
+                if (!e.target.closest('button') && !e.target.closest('.editable-element') && !e.target.closest('header')) {
+                    const questions = introSection.querySelectorAll('.question-item');
+                    if (currentQuestionStep < questions.length) {
+                        questions[currentQuestionStep].classList.add('show');
+                        currentQuestionStep++;
+                    }
+                }
+            }
+
+            // 處理超連結跳轉
+            const link = e.target.closest('.editable-element a');
+            if (link && link.getAttribute('href')) {
+                if (window.getSelection().isCollapsed) {
+                    window.open(link.href, '_blank');
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }
+        }, true);
+
+        // --- UI 控制邏輯 ---
+        function showSection(id, btn) {
+            document.getElementById('content-container').classList.remove('all-visible');
+            document.getElementById('default-msg').style.display = 'none';
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+            
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add('active');
+                if (btn) btn.classList.add('active');
+                
+                if (id === 'intro') {
+                    currentQuestionStep = 0;
+                    target.querySelectorAll('.question-item').forEach(q => q.classList.remove('show'));
+                }
+                
+                if (id === 'link-manager') refreshLinkTable();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function toggleAction(id) {
+            const el = document.getElementById(id);
+            const arrowId = id.replace('action', 'arrow');
+            const arrow = document.getElementById(arrowId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                arrow.textContent = '▲';
+            } else {
+                el.classList.add('hidden');
+                arrow.textContent = '▼';
+            }
+        }
+
+        function expandAll() {
+            document.getElementById('default-msg').style.display = 'none';
+            document.getElementById('content-container').classList.add('all-visible');
+            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+            window.scrollTo({ top: 150, behavior: 'smooth' });
+        }
+
+        function collapseAll() {
+            document.getElementById('content-container').classList.remove('all-visible');
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+            document.getElementById('default-msg').style.display = 'flex';
+            document.querySelectorAll('[id^="action"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="arrow"]').forEach(el => el.textContent = '▼');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- 超連結工具邏輯 ---
+        const bubble = document.getElementById('link-bubble');
+        const urlInput = document.getElementById('link-url');
+        let currentRange = null;
+
+        document.addEventListener('selectionchange', () => {
+            const sel = window.getSelection();
+            const editableEl = sel.anchorNode ? sel.anchorNode.parentElement.closest('.editable-element') : null;
+            if (editableEl && !sel.isCollapsed && sel.toString().trim().length > 0) {
+                const rect = sel.getRangeAt(0).getBoundingClientRect();
+                bubble.style.display = 'flex';
+                bubble.style.top = `${rect.top + window.scrollY - 50}px`;
+                bubble.style.left = `${rect.left + window.scrollX}px`;
+                currentRange = sel.getRangeAt(0).cloneRange();
+            } else {
+                if (document.activeElement !== urlInput && !bubble.contains(document.activeElement)) {
+                    bubble.style.display = 'none';
+                }
+            }
+        });
+
+        function applyLink() {
+            const url = urlInput.value.trim();
+            if (!url) return;
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(currentRange);
+            const finalUrl = url.startsWith('http') ? url : 'https://' + url;
+            
+            document.execCommand('createLink', false, finalUrl);
+            
+            const links = document.querySelectorAll('.editable-element a');
+            links.forEach(a => {
+                a.target = '_blank';
+                a.classList.add('text-blue-600', 'underline');
+                a.setAttribute('onclick', "window.open(this.href, '_blank'); return false;");
+            });
+            
+            bubble.style.display = 'none';
+            urlInput.value = '';
+            refreshLinkTable();
+        }
+
+        function removeLink() {
+            document.execCommand('unlink', false, null);
+            bubble.style.display = 'none';
+            refreshLinkTable();
+        }
+
+        // --- 超連結管理中心功能 ---
+        function refreshLinkTable() {
+            const tbody = document.getElementById('link-table-body');
+            const noMsg = document.getElementById('no-links-msg');
+            const links = document.querySelectorAll('.editable-element a');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (links.length === 0) { noMsg.classList.remove('hidden'); return; }
+            noMsg.classList.add('hidden');
+            links.forEach((link, index) => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-50";
+                row.innerHTML = `
+                    <td class="p-2"><input type="text" class="w-full border-none bg-transparent outline-none focus:bg-white" value="${link.innerText}" oninput="updateLinkContent(${index}, 'text', this.value)"></td>
+                    <td class="p-2"><input type="text" class="w-full border-none bg-transparent outline-none focus:bg-white text-blue-600 truncate" value="${link.getAttribute('href')}" oninput="updateLinkContent(${index}, 'href', this.value)"></td>
+                    <td class="p-2 text-center"><button onclick="deleteLinkByIndex(${index})" class="text-red-500 font-bold px-2">刪除</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateLinkContent(index, type, val) {
+            const links = document.querySelectorAll('.editable-element a');
+            if (links[index]) {
+                if (type === 'text') links[index].innerText = val;
+                if (type === 'href') {
+                    links[index].setAttribute('href', val);
+                    links[index].setAttribute('onclick', "window.open(this.href, '_blank'); return false;");
+                }
+            }
+        }
+
+        function deleteLinkByIndex(index) {
+            const links = document.querySelectorAll('.editable-element a');
+            if (links[index]) {
+                const textNode = document.createTextNode(links[index].innerText);
+                links[index].parentNode.replaceChild(textNode, links[index]);
+                refreshLinkTable();
+            }
+        }
+
+        // --- 民國日期輔助函式 ---
+        function getMinguoDate() {
+            const now = new Date();
+            const year = now.getFullYear() - 1911;
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}${month}${day}`;
+        }
+
+        // --- 另存功能 ---
+        function triggerDownload(content, filename) {
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function saveCurrentFile() {
+            collapseAll();
+            setTimeout(() => {
+                const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+                triggerDownload(htmlContent, `癌症險與重大傷病險${getMinguoDate()}.html`);
+            }, 500);
+        }
+
+        function saveMobileVersion() {
+            collapseAll();
+            setTimeout(() => {
+                const cloneDoc = document.documentElement.cloneNode(true);
+                const idsToRemove = ['btn-link-mgr', 'btn-save-file', 'btn-save-mobile', 'link-manager'];
+                idsToRemove.forEach(id => {
+                    const el = cloneDoc.querySelector(`#${id}`);
+                    if (el) el.remove();
+                });
+                const editHint = cloneDoc.querySelector('#edit-hint');
+                if (editHint) editHint.remove();
+                const clickHint = cloneDoc.querySelector('#click-hint');
+                if (clickHint) clickHint.remove();
+                cloneDoc.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+                const htmlContent = '<!DOCTYPE html>\n' + cloneDoc.outerHTML;
+                triggerDownload(htmlContent, `癌症險與重大傷病險${getMinguoDate()}_手機演示版.html`);
+            }, 500);
+        }
+
+        window.onload = refreshLinkTable;
+    </script>
+
+</body></html>
