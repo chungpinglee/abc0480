@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>保單互動比較工具 - 南山人壽美利享福</title>
+    <style>
+        :root {
+            --primary-color: #005a9c;
+            --accent-color: #00a0e9;
+            --bg-color: #f4f7f9;
+            --text-color: #333;
+            --premium-color: #c53030;
+            --coverage-color: #2f855a;
+            --value-color: #2b6cb0;
+            --uncertain-color: #718096; /* 已改為灰色文字 */
+        }
+
+        body {
+            font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        /* 控制面板 */
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+            justify-content: center;
+        }
+
+        button {
+            border: 1px solid #ddd;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 110px;
+        }
+
+        button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .metric-btns button[data-metric="premium"].active { background: var(--premium-color); border-color: var(--premium-color); }
+        .metric-btns button[data-metric="coverage"].active { background: var(--coverage-color); border-color: var(--coverage-color); }
+        .metric-btns button[data-metric="value"].active { background: var(--value-color); border-color: var(--value-color); }
+
+        /* 表格樣式 */
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px; 
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: right;
+            border-bottom: 1px solid #edf2f7;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-align: center;
+            position: sticky;
+            top: 0;
+        }
+
+        .th-info {
+            font-weight: normal;
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .col-year { width: 50px; text-align: center; background: #f8fafc; font-weight: bold; }
+        .col-item { width: 140px; text-align: left; font-size: 0.85rem; }
+
+        /* 金額格式顯示 */
+        .val-display { font-size: 0.95rem; }
+        .f-total { font-weight: bold; }
+        .f-uncertain { color: var(--uncertain-color); font-size: 0.85rem; margin-left: 4px; font-weight: bold; }
+
+        /* 行顏色控制 */
+        tr.metric-row { display: table-row; }
+        tr.hidden { display: none; }
+        tr[data-metric="premium"] .f-total { color: var(--premium-color); }
+        tr[data-metric="coverage"] .f-total { color: var(--coverage-color); }
+        tr[data-metric="value"] .f-total { color: var(--value-color); }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.1rem; }
+            th, td { padding: 10px 4px; font-size: 0.8rem; }
+            .col-item { width: 115px; }
+            .val-display { font-size: 0.85rem; }
+        }
+
+        .unit-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 0.75rem;
+            color: #718096;
+            margin: 5px 0;
+            padding: 0 5px;
+            line-height: 1.6;
+        }
+        .formula-legend {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .text-gray {
+            color: var(--uncertain-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>南山人壽美利享福美元利率變動型終身壽險<br>(定期給付型) 比較分析</h1>
+
+    <div class="controls">
+        <div class="btn-group product-btns">
+            <button class="active" onclick="switchProduct('6Y')">6年期 (6AYWUPL)</button>
+            <button onclick="switchProduct('10Y')">10年期 (10AYWUPL)</button>
+        </div>
+        <div class="btn-group metric-btns">
+            <button class="active" data-metric="all" onclick="filterMetric('all')">顯示全部</button>
+            <button data-metric="premium" onclick="filterMetric('premium')">保費累積</button>
+            <button data-metric="coverage" onclick="filterMetric('coverage')">保障額度</button>
+            <button data-metric="value" onclick="filterMetric('value')">保單價值</button>
+        </div>
+    </div>
+
+    <div class="unit-info">
+        <span class="formula-legend">(假設金額)為預估總額；<span class="text-gray">為增值回饋分享金部分以灰色文字表示</span></span>
+        <span>單位：美元 (USD)</span>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="comparisonTable">
+            <thead>
+                <tr>
+                    <th>年度</th>
+                    <th>比較項目</th>
+                    <th>
+                        姜基亮<br>
+                        <span class="th-info">(60歲男)</span>
+                        <span class="th-info">基本保額:42,000美元</span>
+                    </th>
+                    <th>
+                        李素碧<br>
+                        <span class="th-info">(56歲女)</span>
+                        <span class="th-info">基本保額:42,000美元</span>
+                    </th>
+                    <th>
+                        姜語珊<br>
+                        <span class="th-info">(31歲女)</span>
+                        <span class="th-info">基本保額:42,000美元</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- 動態內容由 JS 生成 -->
+            </tbody>
+        </table>
+    </div>
+
+    <div style="font-size: 0.8rem; color: #a0aec0; margin-top: 20px; padding: 10px; line-height: 1.5;">
+        * (假設金額)為預估總額；<span class="text-gray">為增值回饋分享金部分以灰色文字表示</span>。<br>
+        * 保費累積已含 1% 自動轉帳折扣。本表數據僅供參考，實際數值以保單所載為準。
+    </div>
+</div>
+
+<script>
+    const data_raw = {
+        '6Y': {
+            '姜基亮': [
+                { year: 1, premium: { g: 4840, t: 4840 }, coverage: { g: 42000, t: 42048 }, value: { g: 1991, t: 2039 } },
+                { year: 6, premium: { g: 29040, t: 29040 }, coverage: { g: 42000, t: 43989 }, value: { g: 25817, t: 27209 } },
+                { year: 10, premium: { g: 29040, t: 29040 }, coverage: { g: 42000, t: 46748 }, value: { g: 28094, t: 31423 } },
+                { year: 20, premium: { g: 29040, t: 29040 }, coverage: { g: 42000, t: 54376 }, value: { g: 32802, t: 41345 } },
+                { year: 30, premium: { g: 29040, t: 29040 }, coverage: { g: 42000, t: 63208 }, value: { g: 36851, t: 55559 } },
+                { year: 40, premium: { g: 29040, t: 29040 }, coverage: { g: 42000, t: 73446 }, value: { g: 42000, t: 73446 } }
+            ],
+            '李素碧': [
+                { year: 1, premium: { g: 3821, t: 3821 }, coverage: { g: 42000, t: 42036 }, value: { g: 1651, t: 1687 } },
+                { year: 6, premium: { g: 22926, t: 22926 }, coverage: { g: 42000, t: 43984 }, value: { g: 21521, t: 22719 } },
+                { year: 10, premium: { g: 22926, t: 22926 }, coverage: { g: 42000, t: 54840 }, value: { g: 23814, t: 26501 } },
+                { year: 20, premium: { g: 22926, t: 22926 }, coverage: { g: 42000, t: 54076 }, value: { g: 29245, t: 37823 } },
+                { year: 30, premium: { g: 22926, t: 22926 }, coverage: { g: 42000, t: 62863 }, value: { g: 34465, t: 51721 } },
+                { year: 40, premium: { g: 22926, t: 22926 }, coverage: { g: 42000, t: 73078 }, value: { g: 39098, t: 68098 } }
+            ],
+            '姜語珊': [
+                { year: 1, premium: { g: 2033, t: 2033 }, coverage: { g: 42000, t: 42024 }, value: { g: 886, t: 910 } },
+                { year: 6, premium: { g: 12198, t: 12198 }, coverage: { g: 42000, t: 43929 }, value: { g: 11605, t: 12283 } },
+                { year: 10, premium: { g: 12198, t: 12198 }, coverage: { g: 42000, t: 55079 }, value: { g: 12982, t: 14579 } },
+                { year: 20, premium: { g: 12198, t: 12198 }, coverage: { g: 42000, t: 62565 }, value: { g: 16678, t: 21707 } },
+                { year: 30, premium: { g: 12198, t: 12198 }, coverage: { g: 42000, t: 70971 }, value: { g: 21231, t: 31865 } },
+                { year: 40, premium: { g: 12198, t: 12198 }, coverage: { g: 42000, t: 72357 }, value: { g: 26515, t: 45932 } }
+            ]
+        },
+        '10Y': {
+            '姜基亮': [
+                { year: 1, premium: { g: 3202, t: 3202 }, coverage: { g: 42000, t: 42024 }, value: { g: 827, t: 851 } },
+                { year: 6, premium: { g: 19212, t: 19212 }, coverage: { g: 42000, t: 43178 }, value: { g: 13684, t: 14508 } },
+                { year: 10, premium: { g: 32020, t: 32020 }, coverage: { g: 42000, t: 45385 }, value: { g: 28094, t: 30508 } },
+                { year: 20, premium: { g: 32020, t: 32020 }, coverage: { g: 42000, t: 52768 }, value: { g: 32802, t: 41345 } },
+                { year: 30, premium: { g: 32020, t: 32020 }, coverage: { g: 42000, t: 61360 }, value: { g: 36851, t: 53935 } },
+                { year: 40, premium: { g: 32020, t: 32020 }, coverage: { g: 42000, t: 71307 }, value: { g: 42000, t: 71307 } }
+            ],
+            '李素碧': [
+                { year: 1, premium: { g: 2457, t: 2457 }, coverage: { g: 42000, t: 42024 }, value: { g: 697, t: 721 } },
+                { year: 6, premium: { g: 14742, t: 14742 }, coverage: { g: 42000, t: 43185 }, value: { g: 11668, t: 12381 } },
+                { year: 10, premium: { g: 24570, t: 24570 }, coverage: { g: 42000, t: 53482 }, value: { g: 23814, t: 25726 } },
+                { year: 20, premium: { g: 24570, t: 24570 }, coverage: { g: 42000, t: 52505 }, value: { g: 29245, t: 36726 } },
+                { year: 30, premium: { g: 24570, t: 24570 }, coverage: { g: 42000, t: 61013 }, value: { g: 34465, t: 50201 } },
+                { year: 40, premium: { g: 24570, t: 24570 }, coverage: { g: 42000, t: 75306 }, value: { g: 42000, t: 75306 } }
+            ],
+            '姜語珊': [
+                { year: 1, premium: { g: 1289, t: 1289 }, coverage: { g: 42000, t: 42012 }, value: { g: 378, t: 390 } },
+                { year: 6, premium: { g: 7734, t: 7734 }, coverage: { g: 42000, t: 43262 }, value: { g: 6359, t: 6798 } },
+                { year: 10, premium: { g: 12890, t: 12890 }, coverage: { g: 42000, t: 53796 }, value: { g: 12982, t: 14182 } },
+                { year: 20, premium: { g: 12890, t: 12890 }, coverage: { g: 42000, t: 61099 }, value: { g: 16678, t: 21118 } },
+                { year: 30, premium: { g: 12890, t: 12890 }, coverage: { g: 42000, t: 69315 }, value: { g: 21231, t: 31021 } },
+                { year: 40, premium: { g: 12890, t: 12890 }, coverage: { g: 42000, t: 70437 }, value: { g: 26515, t: 44715 } }
+            ]
+        }
+    };
+
+    let currentProduct = '6Y';
+    let currentMetric = 'all';
+
+    /**
+     * 格式化金額顯示為：假設金額 (不確定金額)
+     */
+    function formatVal(obj, isPremium = false) {
+        if (isPremium) {
+            return `<span class="f-total">${obj.t.toLocaleString()}</span>`;
+        }
+        
+        const uncertain = obj.t - obj.g;
+        return `
+            <div class="val-display">
+                <span class="f-total">${obj.t.toLocaleString()}</span>
+                <span class="f-uncertain">(${uncertain.toLocaleString()})</span>
+            </div>
+        `;
+    }
+
+    function renderTable() {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = '';
+        
+        const years = [1, 6, 10, 20, 30, 40];
+        
+        years.forEach(yr => {
+            const rows = [
+                { type: 'premium', label: '當年度保費累積' },
+                { type: 'coverage', label: '當年度保障額度' },
+                { type: 'value', label: '當年度價值預估' }
+            ];
+
+            rows.forEach((row, idx) => {
+                if (currentMetric !== 'all' && currentMetric !== row.type) return;
+
+                const tr = document.createElement('tr');
+                tr.className = 'metric-row';
+                tr.setAttribute('data-metric', row.type);
+                
+                const d_jiliang = data_raw[currentProduct]['姜基亮'].find(d => d.year === yr)[row.type];
+                const d_subi = data_raw[currentProduct]['李素碧'].find(d => d.year === yr)[row.type];
+                const d_yushan = data_raw[currentProduct]['姜語珊'].find(d => d.year === yr)[row.type];
+
+                const isPrem = row.type === 'premium';
+                
+                let yearCell = (currentMetric !== 'all' || idx === 0) 
+                    ? `<td class="col-year">${yr}</td>` 
+                    : `<td class="col-year" style="border-bottom:none;background:white"></td>`;
+
+                tr.innerHTML = `
+                    ${yearCell}
+                    <td class="col-item">${row.label}</td>
+                    <td>${formatVal(d_jiliang, isPrem)}</td>
+                    <td>${formatVal(d_subi, isPrem)}</td>
+                    <td>${formatVal(d_yushan, isPrem)}</td>
+                `;
+                body.appendChild(tr);
+            });
+        });
+    }
+
+    function switchProduct(p) {
+        currentProduct = p;
+        document.querySelectorAll('.product-btns button').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        renderTable();
+    }
+
+    function filterMetric(m) {
+        currentMetric = m;
+        document.querySelectorAll('.metric-btns button').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        renderTable();
+    }
+
+    window.onload = renderTable;
+</script>
+
+</body>
+</html>
