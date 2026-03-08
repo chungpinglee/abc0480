@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沈玉琳住院醫療開銷分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F8FAFC;
+            color: #334155;
+        }
+        .nordic-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nordic-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.05);
+        }
+        .video-wrapper {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.1);
+            background: #000;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="pt-10 pb-6 px-6 max-w-6xl mx-auto text-center">
+        <div class="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] text-blue-600 bg-blue-50 rounded-full">
+            ANALYSIS REPORT
+        </div>
+        <h1 class="text-3xl font-bold mb-2 text-slate-800">沈玉琳住院醫療開銷分析</h1>
+        <p class="text-slate-400 text-sm">數據導向：高品質醫療環境下的保險理賠試算</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 pb-20">
+        
+        <!-- Video Section -->
+        <section class="mb-12">
+            <div class="video-wrapper">
+                <div class="video-container aspect-video">
+                    <video controls poster="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-contain">
+                        <source src="沈玉琳.mp4" type="video/mp4">
+                        您的瀏覽器不支援影片播放。
+                    </video>
+                </div>
+                <div class="flex justify-between mt-4 px-2">
+                    <!-- 文字顏色改為黑色 -->
+                    <p class="text-[10px] text-black font-medium">資料來源：TVBS 電視台</p>
+                    <p class="text-[10px] text-slate-400">了解實際住院理賠案例</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <!-- Monthly Stats -->
+            <div class="nordic-card p-8 rounded-[2rem]">
+                <div class="flex items-center mb-6">
+                    <div class="p-2 bg-blue-50 rounded-lg text-blue-600 mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-700">每月收支明細 (30天)</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                        <span class="text-slate-400 text-sm font-medium">每月病房支出</span>
+                        <span class="font-bold text-red-500">-$750,000 元</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                        <span class="text-slate-400 text-sm font-medium">每月保險理賠</span>
+                        <span class="font-bold text-emerald-500">+$900,000 元</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-3">
+                        <span class="font-bold text-slate-800 text-lg">每月淨收益</span>
+                        <span class="font-bold text-2xl text-blue-600">+$150,000 元</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Stats -->
+            <div class="nordic-card p-8 rounded-[2rem]">
+                <div class="flex items-center mb-6">
+                    <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600 mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-700">7個月總額試算</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                        <span class="text-slate-400 text-sm font-medium">總病房支出</span>
+                        <span class="font-bold text-red-500">-$5,250,000 元</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                        <span class="text-slate-400 text-sm font-medium">總保險理賠</span>
+                        <span class="font-bold text-emerald-500">+$6,300,000 元</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-3">
+                        <span class="font-bold text-slate-800 text-xs">總淨收益 (不含藥費)</span>
+                        <span class="font-bold text-2xl text-blue-600">+$1,050,000 元</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Options -->
+        <section class="mb-16">
+            <h2 class="text-xl font-bold mb-8 text-center text-slate-800">幾種不同類型住院日額險提供您參考</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 11HI -->
+                <div class="nordic-card p-6 rounded-2xl flex flex-col">
+                    <h3 class="font-bold mb-3 text-slate-800">11HI-住院日額租約型 (須每年繳費，最高續保至85歲)</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed mb-6 flex-grow">
+                        保費最輕省。適合專注於當下高額住院補償規劃，提供靈活的保障調度空間。
+                    </p>
+                    <a href="南山健康險型錄-商品簡介-2025年6月版.pdf" target="_blank" class="w-full py-3 bg-blue-50 text-blue-600 text-center rounded-xl font-bold hover:bg-blue-600 hover:text-white transition-all text-xs border border-blue-100">
+                        南山健康險型錄-2025年6月版
+                    </a>
+                </div>
+
+                <!-- SHI -->
+                <div class="nordic-card p-6 rounded-2xl flex flex-col">
+                    <h3 class="font-bold mb-3 text-slate-800">SHI-住院日額租約型 (55歲以上專屬)</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed mb-6 flex-grow">
+                        專為熟齡族群設計，強化高齡住院、手術及特定人工關節補助，並含安寧療護一次金。
+                    </p>
+                    <a href="SHI-商品簡介-2025年1月版.pdf" target="_blank" class="w-full py-3 bg-emerald-50 text-emerald-600 text-center rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition-all text-xs border border-emerald-100">
+                        SHI-商品簡介-2025年1月版
+                    </a>
+                </div>
+
+                <!-- STCB -->
+                <div class="nordic-card p-6 rounded-2xl flex flex-col">
+                    <h3 class="font-bold mb-3 text-slate-800">STCB-住院日額終身型 (身故時不退保費)</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed mb-6 flex-grow">
+                        滿足短期照護需求，涵蓋住院看護、出院短期照顧及術後加值保障，終身安心。
+                    </p>
+                    <a href="STCB-商品簡介-2024年9月版.pdf" target="_blank" class="w-full py-3 bg-amber-50 text-amber-600 text-center rounded-xl font-bold hover:bg-amber-600 hover:text-white transition-all text-xs border border-amber-100">
+                        STCB-商品簡介-2024年9月版
+                    </a>
+                </div>
+
+                <!-- HWHI -->
+                <div class="nordic-card p-6 rounded-2xl flex flex-col border-indigo-100 bg-indigo-50/30">
+                    <h3 class="font-bold mb-3 text-slate-800">HWHI-住院日額終身型 (身故時可退保費差額)</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed mb-6 flex-grow">
+                        終身守護，平準保費。身故退還未領取保費差額，是長期穩健的保障首選。
+                    </p>
+                    <a href="HWHI-商品簡介-2024年12月版.pdf" target="_blank" class="w-full py-3 bg-indigo-600 text-white text-center rounded-xl font-bold hover:bg-indigo-700 transition-all text-xs shadow-md">
+                        HWHI_DM (2024.12版)
+                    </a>
+                </div>
+
+                <!-- HYPHI -->
+                <div class="nordic-card p-6 rounded-2xl flex flex-col bg-slate-800 text-white">
+                    <h3 class="font-bold mb-3">HYPHI-住院日額終身 (身故時退已繳保費)</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed mb-6 flex-grow">
+                        最高等級保障。身故退還總繳保費且理賠不扣除，兼具醫療保障與資產保全。
+                    </p>
+                    <a href="HYPHI-商品簡介-2026年1月版.pdf" target="_blank" class="w-full py-3 bg-white text-slate-800 text-center rounded-xl font-bold hover:bg-slate-200 transition-all text-xs">
+                        HYPHI-商品簡介-2026年1月版
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="bg-blue-600 rounded-[2rem] p-10 text-center text-white relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-2xl font-bold mb-4">請評估您是否有保障缺口</h2>
+                <p class="text-blue-100 text-sm mb-8">如果您目前的醫療保障與理想品質有落差，歡迎與我聯絡。</p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 font-bold">
+                    <a href="https://line.me/ti/p/~0932218851" target="_blank" class="bg-white text-blue-600 px-8 py-3 rounded-xl hover:shadow-lg transition-shadow text-sm">
+                        點此聯絡諮詢
+                    </a>
+                </div>
+            </div>
+            <div class="absolute -top-10 -left-10 w-48 h-48 bg-blue-500 rounded-full opacity-20"></div>
+        </section>
+
+    </main>
+
+    <footer class="py-10 text-center text-slate-300 text-[10px] tracking-widest uppercase">
+        &copy; 2026 Professional Insurance Planning | 數據僅供參考
+    </footer>
+
+</body>
+</html>
