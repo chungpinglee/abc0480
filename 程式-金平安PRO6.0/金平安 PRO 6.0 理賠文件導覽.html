@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金平安 PRO 6.0 理賠文件導覽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* 按鈕基礎樣式與 Hover 效果 */
+        .category-pill {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .category-pill:hover {
+            background-color: #1d4ed8 !important; /* 滑過時：藍色填滿 */
+            color: white !important; /* 滑過時：白色文字 */
+        }
+        .category-pill.active {
+            background-color: #1d4ed8 !important;
+            color: white !important;
+            box-shadow: 0 10px 15px -3px rgba(29, 78, 216, 0.3);
+            transform: scale(1.05);
+        }
+        /* 指定紅字粗體樣式 */
+        .highlight-red {
+            color: #dc2626;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body class="text-slate-800 pb-20">
+
+    <!-- Header -->
+    <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-6 py-6 text-center md:text-left">
+            <div class="flex flex-col md:flex-row items-center gap-3">
+                <div class="bg-yellow-400 p-2 rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold">金平安 PRO 6.0 理賠文件導覽</h1>
+                    <p class="text-blue-100 text-xs md:text-sm opacity-90 mt-1">南山產物保險 - 依狀況精準查詢</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 mt-8">
+        
+        <!-- Category Navigation -->
+        <div class="flex flex-wrap justify-center gap-3 mb-10 pb-6 border-b border-slate-200">
+            <button onclick="filterCategory('全部')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-slate-200 text-slate-700 border border-slate-300" id="btn-全部">顯示全部</button>
+            <button onclick="filterCategory('旅程取消(人在國內)')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-lime-100 text-lime-700 border border-lime-200" id="btn-旅程取消(人在國內)">旅程取消(人在國內)</button>
+            <button onclick="filterCategory('旅程更改(人在國外)')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-700 border border-emerald-200" id="btn-旅程更改(人在國外)">旅程更改(人在國外)</button>
+            <button onclick="filterCategory('班機延誤')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-amber-100 text-amber-700 border border-amber-200" id="btn-班機延誤">班機延誤</button>
+            <button onclick="filterCategory('行李延誤')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-200" id="btn-行李延誤">行李延誤</button>
+            <button onclick="filterCategory('行李損失')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-blue-50 text-blue-700 border border-blue-200" id="btn-行李損失">行李損失</button>
+            <button onclick="filterCategory('旅行文件損失')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-purple-100 text-purple-700 border border-purple-200" id="btn-旅行文件損失">旅行文件損失</button>
+            <button onclick="filterCategory('現金竊盜損失')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-zinc-200 text-zinc-700 border border-zinc-300" id="btn-現金竊盜損失">現金竊盜損失</button>
+            <button onclick="filterCategory('信用卡盜刷損失')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-slate-600 text-white border border-slate-700" id="btn-信用卡盜刷損失">信用卡盜刷損失</button>
+            <button onclick="filterCategory('緊急救援')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-orange-100 text-orange-700 border border-orange-200" id="btn-緊急救援">緊急救援</button>
+            <button onclick="filterCategory('醫療保險')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-rose-100 text-rose-700 border border-rose-200" id="btn-醫療保險">醫療保險</button>
+            <button onclick="filterCategory('第三人責任-體傷')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-cyan-100 text-cyan-700 border border-cyan-200" id="btn-第三人責任-體傷">第三人責任-體傷</button>
+            <button onclick="filterCategory('第三人責任-財損')" class="category-pill px-6 py-3 rounded-xl text-sm font-bold bg-teal-100 text-teal-700 border border-teal-200" id="btn-第三人責任-財損">第三人責任-財損</button>
+        </div>
+
+        <!-- Claim Content List -->
+        <div id="claim-list" class="space-y-12 min-h-[200px]">
+            <div id="placeholder" class="text-center py-20 text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p>請點選分類按鈕展開各項詳細理賠文件要求</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const claimData = [
+            // 旅程取消(人在國內)
+            {
+                category: '旅程取消(人在國內)',
+                title: '旅程取消 - 本人 死亡或病危',
+                situations: ['被保險人本人發生死亡或病危事故'],
+                documents: ['理賠申請書', '電子機票或跟團行程表', '死亡證明或病危通知書', '代收轉付收據 <span class="highlight-red">(正本)</span>', '退費證明'],
+                notes: '必須於海外旅程開始前20日內發生事故。'
+            },
+            {
+                category: '旅程取消(人在國內)',
+                title: '旅程取消 - 配偶或三親等親屬 死亡或病危',
+                situations: ['配偶或三親等內親屬發生死亡或病危事故'],
+                documents: ['理賠申請書', '電子機票或跟團行程表', '死亡證明或病危通知書', '代收轉付收據 <span class="highlight-red">(正本)</span>', '退費證明', '三親等之關係證明'],
+                notes: '三親等關係證明包含戶口名簿或戶籍謄本。'
+            },
+            {
+                category: '旅程取消(人在國內)',
+                title: '旅程取消 - 擔任訴訟證人',
+                situations: ['保期到期前須於中華民國境內擔任訴訟證人'],
+                documents: ['理賠申請書', '電子機票或跟團行程表', '出庭通知', '代收轉付收據 <span class="highlight-red">(正本)</span>', '退費證明'],
+                notes: '限擔任證人身份，<span class="highlight-red">不含當事人</span>。'
+            },
+            {
+                category: '旅程取消(人在國內)',
+                title: '旅程取消 - 公共交通業者罷工',
+                situations: ['預定搭乘之業者受僱人罷工致班次取消或<span class="highlight-red">延誤達24小時</span>'],
+                documents: ['理賠申請書', '電子機票或跟團行程表', '班機取消證明或罷工證明', '代收轉付收據 <span class="highlight-red">(正本)</span>', '退費證明'],
+                notes: '訂約時已取得罷工權、預告罷工期間或已宣布罷工為不保事項。'
+            },
+            {
+                category: '旅程取消(人在國內)',
+                title: '旅程取消 - 暴動、民眾騷擾',
+                situations: ['預定前往之旅遊地點發生暴動、民眾騷擾事故'],
+                documents: ['理賠申請書', '電子機票或跟團行程表', '暴動、民眾騷擾事件證明', '代收轉付收據 <span class="highlight-red">(正本)</span>', '退費證明'],
+                notes: '必須於海外旅程開始前20日內發生事故。'
+            },
+            {
+                category: '旅程取消(人在國內)',
+                title: '旅程取消 - 天災住居所受損',
+                situations: ['中華民國境內住居所因火災、天災損害<span class="highlight-red">金額超過25萬</span>'],
+                documents: ['理賠申請書', '電子機票或跟團行程表', '事故證明(消防局或警政單位)', '損失證明', '代收轉付收據 <span class="highlight-red">(正本)</span>', '退費證明'],
+                notes: '動產亦包含在內。'
+            },
+
+            // 旅程更改(人在國外)
+            {
+                category: '旅程更改(人在國外)',
+                title: '旅程更改 - 罷工',
+                situations: ['預定搭乘之交通工具業者受僱人罷工'],
+                documents: ['理賠申請書', '電子機票或行程表 + 實際起飛航班登機證', '班機取消證明 (罷工證明)', '額外支出交通或住宿費收據 <span class="highlight-red">(正本)</span>', '原交通或住宿費用退費證明'],
+                notes: '額外增加之交通或住宿費用，以原預定之<span class="highlight-red">同等級費用</span>為限。不含他人同宿費用，依人數比例計算。'
+            },
+            {
+                category: '旅程更改(人在國外)',
+                title: '旅程更改 - 戰爭、暴動、民眾騷擾',
+                situations: ['海外旅遊地點發生戰爭、暴動、民眾騷擾事故'],
+                documents: ['理賠申請書', '電子機票或行程表 + 實際起飛航班登機證', '戰爭、暴動、民眾騷擾事件證明', '額外支出交通或住宿費收據 <span class="highlight-red">(正本)</span>', '原交通或住宿費用退費證明'],
+                notes: '額外增加之交通或住宿費用，以原預定之<span class="highlight-red">同等級費用</span>為限。不含他人同宿費用，依人數比例計算。'
+            },
+            {
+                category: '旅程更改(人在國外)',
+                title: '旅程更改 - 天災',
+                situations: ['海外地點發生天災致行程異動'],
+                documents: ['理賠申請書', '電子機票或行程表 + 實際起飛航班登機證', '天災證明 / 相關報導 / 交通工具取消證明 (註明原因)', '額外支出交通或住宿費收據 <span class="highlight-red">(正本)</span>', '原交通或住宿費用退費證明'],
+                notes: '額外增加之交通或住宿費用，以原預定之<span class="highlight-red">同等級費用</span>為限。不含他人同宿費用，依人數比例計算。'
+            },
+            {
+                category: '旅程更改(人在國外)',
+                title: '旅程更改 - 配偶或三親等內親屬死亡',
+                situations: ['海外旅途中，配偶或三親等內親屬死亡'],
+                documents: ['理賠申請書', '電子機票或行程表 + 實際起飛航班登機證', '死亡證明', '額外支出交通或住宿費收據 <span class="highlight-red">(正本)</span>', '原交通或住宿費用退費證明', '三親等之關係證明'],
+                notes: '額外增加之交通或住宿費用，以原預定之<span class="highlight-red">同等級費用</span>為限。不含他人同宿費用，依人數比例計算。'
+            },
+            {
+                category: '旅程更改(人在國外)',
+                title: '旅程更改 - 護照或旅行文件遺失',
+                situations: ['護照、簽證或其他作為出入國境或通行之文件遺失'],
+                documents: ['理賠申請書', '電子機票或行程表 + 實際起飛航班登機證', '報案證明 (載明遺失之物件)', '額外支出交通或住宿費收據 <span class="highlight-red">(正本)</span>', '原交通或住宿費用退費證明'],
+                notes: '額外增加之交通或住宿費用，以原預定之<span class="highlight-red">同等級費用</span>為限。不含他人同宿費用，依人數比例計算。'
+            },
+            {
+                category: '旅程更改(人在國外)',
+                title: '旅程更改 - 交通事故',
+                situations: ['搭乘汽車、火車、航空器或輪船等發生交通事故'],
+                documents: ['理賠申請書', '電子機票或行程表 + 實際起飛航班登機證', '交通事故證明', '額外支出交通或住宿費收據 <span class="highlight-red">(正本)</span>', '原交通或住宿費用退費證明'],
+                notes: '額外增加之交通或住宿費用，以原預定之<span class="highlight-red">同等級費用</span>為限。不含他人同宿費用，依人數比例計算。'
+            },
+
+            // 班機延誤
+            {
+                category: '班機延誤',
+                title: '班機延誤 - 投保時「有」提供航班資訊',
+                situations: ['實際出發時間較預定出發延誤4小時以上', '投保時已主動填寫正確航班資訊'],
+                documents: ['理賠申請書', '實際起飛航班的登機證'],
+                notes: '每滿4小時給付6,000元，<span class="highlight-red">最多2次給付12,000元</span>。'
+            },
+            {
+                category: '班機延誤',
+                title: '班機延誤 - 投保時「無」提供航班資訊',
+                situations: ['實際出發時間較預定出發延誤4小時以上', '投保時未告知航班資訊或後續行程異動'],
+                documents: ['理賠申請書', '電子機票 或 跟團的行程表', '延誤證明', '實際起飛航班的登機證'],
+                notes: '每滿4小時給付6,000元，<span class="highlight-red">最多2次給付12,000元</span>。'
+            },
+
+            // 行李延誤
+            {
+                category: '行李延誤',
+                title: '行李延誤保險',
+                situations: ['隨行託運行李延誤領得'],
+                documents: ['理賠申請書', '電子機票 / 跟團行程表 + 實際登機證', '行李延誤證明 + 行李簽收單'],
+                notes: '特別不保事項：<span class="highlight-red">返抵中華民國境內機場</span>或返回出發地/居住地之行李延誤不予理賠。'
+            },
+            {
+                category: '行李延誤',
+                title: '交通工具業者處理失當 (延誤後找不回)',
+                situations: ['隨行託運行李因業者失當致延誤且最終未領回'],
+                documents: ['理賠申請書', '電子機票 / 跟團行程表 + 實際登機證', '行李延誤證明', '交通工具業者出具之賠償證明'],
+                notes: '請務必保留交通業者之正式理賠/賠償公文。'
+            },
+
+            // 行李損失
+            {
+                category: '行李損失',
+                title: '行李損失保險 - 竊盜、強盜與搶奪',
+                situations: ['隨身或行李箱內物品遭人偷竊或強奪'],
+                documents: ['理賠申請書', '電子機票 / 跟團行程表 + 實際登機證', '24小時內報案證明 <span class="highlight-red">(需載明被偷搶物件)</span>', '損失物品購買證明'],
+                notes: '不保物品：<span class="highlight-red">食物、珠寶、行動電話、飾品、現金、入場券、機/船/車票、信用卡、金融卡</span>。其餘詳見條款。'
+            },
+            {
+                category: '行李損失',
+                title: '行李損失保險 - 交通工具業者處理失當致遺失',
+                situations: ['行李箱內容物因業者疏失遺失'],
+                documents: ['理賠申請書', '電子機票 / 跟團行程表 + 實際登機證', '航空公司出具之遺失賠償證明'],
+                notes: '<span class="highlight-red">行李箱內容物之毀損</span>非承保範圍。承保範圍：<span class="highlight-red">行李箱內容物遺失</span>。'
+            },
+
+            // 旅行文件損失
+            {
+                category: '旅行文件損失',
+                title: '旅行文件損失 (強盜、搶奪、竊盜或遺失)',
+                situations: ['護照、簽證或其他出入境文件遭竊、搶或遺失'],
+                documents: ['理賠申請書', '電子機票 / 跟團行程表 + 實際登機證', '24小時內報案證明 <span class="highlight-red">(需載明遺失物件)</span>', '重新申辦旅行文件之證明'],
+                notes: '報案證明必須明確列出遺失的文件名稱。'
+            },
+
+            // 現金竊盜損失
+            {
+                category: '現金竊盜損失',
+                title: '現金竊盜損失 - 竊盜、強盜與搶奪',
+                situations: ['現金、支票、匯票或旅行支票遭竊盜、強用或盜領'],
+                documents: [
+                    '理賠申請書', 
+                    '24小時內向警政單位報案證明', 
+                    '向警政單位提列之損失清單', 
+                    '支票、匯票或旅行支票遭盜用或盜領之損失證明'
+                ],
+                notes: '必須於發現損失後 24 小時內向當地警方報案並取得證明。'
+            },
+
+            // 信用卡盜刷損失
+            {
+                category: '信用卡盜刷損失',
+                title: '信用卡盜刷損失 - 遺失、竊盜、強盜與搶奪',
+                situations: ['信用卡遺失或遭竊後，在掛失止付前遭他人冒用盜刷'],
+                documents: [
+                    '理賠申請書', 
+                    '被保險人身分證明文件', 
+                    '向警政單位報案證明 <span class="highlight-red">(不慎遺失者免檢附)</span>', 
+                    '掛失止付證明',
+                    '信用卡帳單發行機構證明 <span class="highlight-red">(證明遭盜刷金額)</span>',
+                    '信用卡核發機構之補償或不補償證明'
+                ],
+                notes: '如為不慎遺失信用卡者，無須檢附警方報案證明。'
+            },
+
+            // 緊急救援
+            {
+                category: '緊急救援',
+                title: '子女看護費用保險',
+                situations: ['子女於海外旅途中發生重大傷病需人看護'],
+                documents: [
+                    '理賠申請書', 
+                    '電子機票或行程表 + 實際登機證', 
+                    '被保險人之重大傷病診斷書', 
+                    '增加之交通及住宿費用收據 <span class="highlight-red">(正本)</span>',
+                    '親屬證明'
+                ],
+                notes: '<span class="highlight-red">該子女必須為本保險契約之被保險人</span>。'
+            },
+            {
+                category: '緊急救援',
+                title: '探病費用保險',
+                situations: ['被保險人於海外發生死亡或重大傷病'],
+                documents: [
+                    '理賠申請書', 
+                    '電子機票或行程表 + 實際登機證', 
+                    '被保險人之死亡證明書 / 重大傷病診斷書', 
+                    '增加之交通及住宿費用收據 <span class="highlight-red">(正本)</span>',
+                    '親屬證明'
+                ],
+                notes: '限親屬前往探視或處理後事所增加之費用。'
+            },
+
+            // 醫療保險
+            {
+                category: '醫療保險',
+                title: '海外突發疾病醫療',
+                situations: ['於境外突然發生疾病需診療'],
+                documents: [
+                    '理賠申請書', 
+                    '電子機票或行程表 + 實際登機證', 
+                    '病歷', 
+                    '診斷書 <span class="highlight-red">(正本)</span>',
+                    '收據 <span class="highlight-red">(正本)</span>'
+                ],
+                notes: '國外的診斷書正本、收據正本驗畢後可歸還 (如有要求)。'
+            },
+            {
+                category: '醫療保險',
+                title: '傷害醫療',
+                situations: ['海外發生意外傷害事故需診療'],
+                documents: [
+                    '理賠申請書', 
+                    '電子機票或行程表 + 實際登機證', 
+                    '病歷', 
+                    '診斷書 <span class="highlight-red">(正本)</span>',
+                    '收據 <span class="highlight-red">(正本)</span>'
+                ],
+                notes: '國外的診斷書正本、收據正本驗畢後可歸還 (如有要求)。'
+            },
+
+            // 第三人責任-體傷
+            {
+                category: '第三人責任-體傷',
+                title: '第三人責任保險 - 體傷',
+                situations: ['因行為致第三人死亡或體傷'],
+                documents: [
+                    '理賠申請書 <span class="highlight-red">(需含事故經過 & 第三人資料)</span>', 
+                    '電子機票或行程表 + 實際登機證', 
+                    '醫療收據 <span class="highlight-red">(正本)</span>', 
+                    '受傷照片',
+                    '付款憑證 / 和解書'
+                ],
+                notes: '特別不保事項有五點，最常發生下列三點<br>一． 親屬、僱用人或受僱人之賠償責任。<br>二． 被保險人所有、使用或管理之財物受有損害所致之賠償責任。<br>三． 租用／借用／使用領有牌照車輛之賠償責任。<br>＊ 餘請閱保單條款'
+            },
+
+            // 第三人責任-財損
+            {
+                category: '第三人責任-財損',
+                title: '第三人責任保險 - 財損',
+                situations: ['因行為致第三人財物受損'],
+                documents: [
+                    '理賠申請書 <span class="highlight-red">(需含事故經過 & 第三人資料)</span>', 
+                    '電子機票或行程表 + 實際登機證', 
+                    '財損修繕費估價單 / 收據 <span class="highlight-red">(正本)</span>',
+                    '購買收據 <span class="highlight-red">(正本)</span>',
+                    '財損照片',
+                    '付款憑證 / 和解書'
+                ],
+                notes: '特別不保事項有五點，最常發生下列三點<br>一． 親屬、僱用人或受僱人之賠償責任。<br>二． 被保險人所有、使用或管理之財物受有損害所致之賠償責任。<br>三． 租用／借用／使用領有牌照車輛之賠償責任。<br>＊ 餘請閱保單條款'
+            }
+        ];
+
+        function renderClaims(category) {
+            const container = document.getElementById('claim-list');
+            container.innerHTML = '';
+
+            const filtered = category === '全部' 
+                ? claimData 
+                : claimData.filter(item => item.category === category);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20 text-slate-400">
+                        <p>請點選分類按鈕展開各項詳細理賠文件要求</p>
+                    </div>`;
+                return;
+            }
+
+            filtered.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden transform transition-all duration-300 translate-y-0 opacity-100';
+                
+                card.innerHTML = `
+                    <div class="p-6 border-b border-green-100 bg-green-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                        <div class="flex-1">
+                            <span class="text-[10px] font-black text-green-700 bg-green-200 px-3 py-1 rounded-full uppercase tracking-tighter mb-1 inline-block">${item.category}</span>
+                            <h2 class="text-xl font-bold text-slate-800 leading-tight">${item.title}</h2>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <section>
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 text-center md:text-left">適用情境明細</h3>
+                            <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                                ${item.situations.map(s => `<span class="text-sm bg-slate-50 px-4 py-2 rounded-xl text-slate-600 border border-slate-200 shadow-sm">${s}</span>`).join('')}
+                            </div>
+                        </section>
+                        <section>
+                            <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-3 flex items-center justify-center md:justify-start gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                必備理賠文件 (請逐一核對)
+                            </h3>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                ${item.documents.map(doc => `
+                                    <li class="flex items-center gap-3 text-sm font-medium text-slate-800 bg-blue-50/40 p-4 rounded-2xl border border-blue-100/50 hover:bg-white transition-all shadow-sm">
+                                        <div class="bg-blue-600 p-1.5 rounded-full flex-shrink-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                        ${doc}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </section>
+                        <div class="bg-orange-50 border border-orange-100 p-4 rounded-2xl flex gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div>
+                                <h4 class="text-sm font-bold text-orange-900">重點注意</h4>
+                                <p class="text-xs text-orange-800 leading-relaxed mt-1">${item.notes}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            // 自動捲動
+            if(category !== '全部') {
+                const headerOffset = 150;
+                const elementPosition = container.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+            }
+        }
+
+        function filterCategory(category) {
+            document.querySelectorAll('.category-pill').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.getElementById(`btn-${category}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            renderClaims(category);
+        }
+
+        window.onload = () => {
+            console.log("Guide Ready. Specific keywords highlighted.");
+        };
+    </script>
+</body>
+</html>
+<a href="金平安6.0商品與保障概覽.html"
+   style="position: fixed; top: 15px; left: 15px; z-index: 99999; width: 45px; height: 45px; background-color: #f59e0b; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: all 0.3s ease; color: white; text-decoration: none;"
+   onmouseover="this.style.transform='scale(1.1)';"
+   onmouseout="this.style.transform='scale(1)';"
+   onclick="event.preventDefault(); this.style.transition='all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'; this.style.opacity='0'; this.style.transform='scale(0.5) translateY(-20px)'; setTimeout(() => { window.location.href = this.href; }, 500);"
+   title="返回商品與保障概覽">
+   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 24px; height: 24px;">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+   </svg>
+</a>

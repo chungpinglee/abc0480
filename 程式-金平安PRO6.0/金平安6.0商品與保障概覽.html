@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「金平安PRO 6.0」商品與保障概覽 (1-180天)</title>
+    <style>
+        :root {
+            --ns-blue: #1e3a8a; --ns-light-blue: #3b82f6; --ns-accent: #60a5fa;
+            --ns-bg: #f8f9fa; --ns-border: #ffffff; --ns-red: #e11d48; --ns-gray: #f1f5f9;
+            --hover-red: #be123c;
+            --hover-green: #10b981; 
+            --deep-green: #065f46; 
+            --line-green: #06C755; 
+            --initial-yellow: #fef08a; 
+            --pure-blue: #1d4ed8; 
+            --ai-purple: #6366f1;
+        }
+        body { font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif; background: #e2e8f0; margin: 0; padding: 10px; color: #334155; position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        
+        .header-title { text-align: center; color: var(--ns-blue); font-size: 26px; font-weight: bold; margin-bottom: 15px; border-bottom: 3px solid var(--ns-light-blue); padding-bottom: 15px; }
+
+        .nav-toggle-container { text-align: center; margin-bottom: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; animation: fadeIn 0.3s ease; }
+        .nav-btn { padding: 12px 18px; border: none; background: #e2e8f0; cursor: pointer; border-radius: 8px; font-weight: bold; transition: all 0.3s ease; color: var(--ns-blue); white-space: nowrap; font-size: 15px; }
+        .nav-btn.active { background: var(--ns-blue); color: white; box-shadow: 0 4px 12px rgba(30,58,138,0.3); }
+        .nav-btn:hover { font-size: 16.5px; filter: brightness(0.9); }
+
+        .category-tooltip { position: relative; display: inline-block; cursor: help; }
+        .category-tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 58, 138, 0.95);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: normal;
+            width: max-content;
+            max-width: 280px; 
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 10001;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            pointer-events: none;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .category-tooltip:hover::after { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-5px); }
+
+        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); backdrop-filter: blur(3px); z-index: 9998; }
+        #infoModal { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 90%; max-width: 680px; background: white; border-top: 6px solid var(--ns-blue); 
+            border-radius: 16px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            z-index: 9999; cursor: pointer; max-height: 85vh; overflow-y: auto;
+        }
+        #infoModal h4 { margin-top: 0; color: var(--ns-blue); border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; font-size: 22px; text-align: center; }
+        #infoModal .desc-list { line-height: 1.8; margin-top: 15px; font-size: 15px; color: #334155; padding-left: 20px; text-align: justify; }
+        #infoModal .desc-list li { margin-bottom: 12px; }
+        #infoModal .close-hint { text-align: center; color: #94a3b8; font-size: 13px; margin-top: 25px; background: #f8fafc; padding: 8px; border-radius: 20px; }
+
+        .hl-red { color: #e11d48; font-weight: bold; }
+        .hl-blue { color: #1d4ed8; font-weight: bold; }
+        .hl-green { color: #059669; font-weight: bold; }
+
+        .control-panel { 
+            background: var(--ns-gray); 
+            padding: 20px; 
+            border-radius: 12px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 25px; 
+            border-left: 6px solid var(--ns-light-blue); 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); 
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 8px; position: relative; min-width: 0; }
+        .input-group label { font-weight: bold; color: var(--ns-blue); font-size: 14px; line-height: 1.3; min-height: 36px; display: flex; align-items: flex-end; }
+        .input-group input, .input-group select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; transition: all 0.3s; outline: none; width: 100%; box-sizing: border-box;}
+        .input-group input:focus, .input-group select:focus { border-color: var(--ns-light-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+
+        .initial-bg { background-color: var(--initial-yellow) !important; border-color: #fde047 !important;}
+        .error-bg { background-color: #ffe4e6 !important; border-color: #fda4af !important;}
+        .valid-bg { background-color: #ffffff !important; border-color: #86efac !important;}
+        .day-warning { color: var(--ns-red); font-size: 12px; font-weight: bold; margin-top: 4px; display: none; }
+        .ratio-label { font-size:12px; display:inline-block; margin-top:4px; }
+
+        .premium-summary { background: linear-gradient(135deg, var(--ns-blue), #2563eb); color: white; padding: 25px; border-radius: 16px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(37,99,235,0.2); }
+        .premium-summary .user-greeting { font-size: 17px; margin-bottom: 18px; font-weight: bold; line-height: 1.6; text-align: center; max-width: 900px; margin-left: auto; margin-right: auto; letter-spacing: 0.5px;}
+        .premium-summary .plan-info { font-size: 19px; background-color: rgba(255,255,255,0.15); color: #ffffff; padding: 18px 30px; border-radius: 12px; display: inline-block; margin-bottom: 20px; line-height: 1.6; border: 1px solid rgba(255,255,255,0.3); font-weight: bold; backdrop-filter: blur(5px); }
+        .premium-val-inline { color: #fde047; font-size: 26px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-left: 8px;}
+
+        .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; justify-content: center; margin-top: 10px; }
+        .tool-btn { display: flex; align-items: center; justify-content: center; padding: 12px 8px; border-radius: 10px; font-size: 15px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid transparent; text-decoration: none !important; text-align: center; }
+        .tool-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); filter: brightness(1.1); font-size: 16.5px; }
+
+        .btn-dm { background-color: #fde047; color: #1e3a8a !important; border-color: #facc15; }
+        .btn-clauses { background-color: #3b82f6; color: white !important; border-color: #2563eb; }
+        .btn-claims { background-color: #10b981; color: white !important; border-color: #059669; }
+        .btn-qa { background-color: #8b5cf6; color: white !important; border-color: #7c3aed; }
+        .btn-sos { background-color: var(--ns-red); color: white !important; }
+        .btn-ai { background-color: var(--ai-purple); color: white !important; border-color: #4f46e5; }
+
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .table-title-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5px; margin-top: 15px;}
+        .table-title-container h2 { margin: 0; color: #333; font-size: 26px; font-weight: bold; letter-spacing: 2px;}
+        .table-title-container span { color: #666; font-size: 12px; }
+        .matrix-wrapper { overflow-x: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 8px; border: 1px solid #d1d5db;}
+        
+        .img-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; background-color: #ffffff; }
+        .img-table th, .img-table td { border: 1px solid #e2e8f0; padding: 7px 5px; vertical-align: middle; line-height: 1.4; }
+        
+        .img-header-green { background-color: #5c866d !important; color: #ffffff !important; font-weight: bold; border: 1px solid #ffffff !important; }
+        .img-header-orange { background-color: #cd5a3a !important; color: #ffffff !important; font-weight: bold; border: 1px solid #ffffff !important; }
+        
+        .img-cat-main { 
+            background-color: #5c866d !important; 
+            color: #ffffff !important; 
+            font-weight: bold; 
+            border: 1px solid #ffffff !important; 
+            writing-mode: vertical-lr; 
+            letter-spacing: 2px;
+            padding: 15px 8px !important;
+            white-space: normal; 
+            word-break: break-word;
+            text-align: center; 
+        }
+        .img-cat-main a { 
+            color: #ffffff; 
+            text-decoration: none; 
+            display: inline-block;
+            margin: auto;
+        }
+        .img-cat-main a:hover { 
+            text-decoration: none; 
+            color: #ffffff !important; 
+            background-color: var(--pure-blue) !important;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .img-cat-sub { background-color: #e5f0ea !important; color: #1f2937 !important; text-align: left; border: 1px solid #ffffff !important; font-weight: bold; white-space: normal; word-break: break-word;}
+        .img-cat-sub.text-center { text-align: center; }
+        .img-val { background-color: transparent; color: #374151; }
+        
+        .text-red { color: #d32f2f; font-size: 12.5px; font-weight: bold;}
+        
+        .modal-link { cursor: pointer; color: inherit; text-decoration: none; border-bottom: 1px dashed #6b7280; transition: all 0.2s ease; display: inline-block; }
+        .modal-link:hover { 
+            color: #ffffff !important; 
+            background-color: var(--pure-blue) !important; 
+            border-bottom-color: transparent;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .plan-col-1, .plan-col-2, .plan-col-3, .plan-col-4, .plan-col-5, .plan-col-6, .plan-col-7, .plan-col-8 { display: none; }
+        table.show-plan-1 .plan-col-1,
+        table.show-plan-2 .plan-col-2,
+        table.show-plan-3 .plan-col-3,
+        table.show-plan-4 .plan-col-4,
+        table.show-plan-5 .plan-col-5,
+        table.show-plan-6 .plan-col-6,
+        table.show-plan-7 .plan-col-7,
+        table.show-plan-8 .plan-col-8 { display: table-cell; }
+
+        table.show-all-plans .plan-col-1,
+        table.show-all-plans .plan-col-2,
+        table.show-all-plans .plan-col-3,
+        table.show-all-plans .plan-col-4,
+        table.show-all-plans .plan-col-5,
+        table.show-all-plans .plan-col-6,
+        table.show-all-plans .plan-col-7,
+        table.show-all-plans .plan-col-8 { display: table-cell; }
+        table.show-all-plans { min-width: 1350px; }
+
+        .basic-table { width: 100%; border-collapse: collapse; font-size: 15px; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 25px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);}
+        .basic-table th { background-color: var(--ns-light-blue); color: white; padding: 15px 8px; font-weight: bold; border: 1px solid #93c5fd;}
+        .basic-table td { border: 1px solid #cbd5e1; padding: 12px 8px; background-color: #ffffff; text-align: center;}
+
+        .btn-toggle-sm { padding: 6px 14px; background-color: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; color: var(--ns-blue); font-weight: bold; cursor: pointer; font-size: 14px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+        .btn-toggle-sm:hover { background-color: #cbd5e1; transform: translateY(-1px); }
+        .btn-toggle-sm.active { background-color: var(--initial-yellow); border-color: #facc15; }
+
+        .btn-container { text-align: center; margin-top: 25px; }
+        .save-btn { background: #10b981; color: white; border: none; padding: 14px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(16,185,129,0.3); transition: all 0.3s ease;}
+        .save-btn:hover { font-size: 17.6px; filter: brightness(1.1); }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; width: 100%; max-width: none; border: none; padding: 0;}
+            .header-title, .nav-toggle-container, .nav-tabs, .control-panel, .action-grid { display: none !important; }
+            .premium-summary { background: none; color: black; box-shadow: none; padding: 10px; border: 1px solid #ccc;}
+            .premium-summary .plan-info { color: black; border: none; background: #eee;}
+            .premium-val-inline { color: black; text-shadow: none; }
+            .matrix-wrapper { overflow: visible; box-shadow: none; border: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="modalOverlay" onclick="closeModal()"></div>
+<div id="infoModal" onclick="closeModal()">
+    <h4 id="infoTitle">條款說明</h4>
+    <div id="infoContentContainer">
+        <ul id="infoContent" class="desc-list"></ul>
+    </div>
+    <div class="close-hint">─ 點擊視窗內任意處或背景關閉 ─</div>
+</div>
+
+<div class="container">
+    <div class="header-title">🛡️ 「金平安PRO 6.0」商品與保障概覽</div>
+    
+    <div class="nav-toggle-container" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <button id="btn-toggle-nav" class="btn-toggle-sm" onclick="toggleNavTabs()">⚙️ 顯示頂部選單</button>
+        <button id="btn-toggle-cust" class="btn-toggle-sm" onclick="toggleCustName()">👤 顯示客戶姓名</button>
+    </div>
+
+    <nav class="nav-tabs" id="mainNavTabs" style="display: none;">
+        <button id="btn-prop" class="nav-btn active" onclick="switchPage('prop')">🔍 保障內容總表</button>
+        <button id="btn-rates" class="nav-btn" onclick="switchPage('rates')">📊 費率速算表 (1-180天)</button>
+        <a href="金平安6.0保單條款查詢.html" target="_blank" class="nav-btn" style="text-decoration: none; display: flex; align-items: center; box-sizing: border-box;">📑 保單條款</a>
+        <button id="btn-edit" class="nav-btn" onclick="switchPage('edit')">⚙️ 網址編輯</button>
+    </nav>
+
+    <section id="page-prop" class="page-section active">
+        <div class="control-panel">
+            <div class="input-group" id="custNameGroup" style="display: none;">
+                <label>客戶姓名</label>
+                <input type="text" id="custName" class="cust-name-input" placeholder="姓名" oninput="updateSummary()">
+            </div>
+            <div class="input-group">
+                <label class="category-tooltip" data-tip="請依出國地區選擇，新海外突發疾病醫療保險金將視不同地區加倍給付上限。">旅遊地區 ⓘ</label>
+                <select id="destRegion" class="valid-bg dest-region-select" onchange="onInputUpdate('destRegion')">
+                    <option value="" disabled>請選擇地區</option>
+                    <option value="1">一般地區 (100%)</option>
+                    <option value="2" selected>日本、韓國、紐澳 (200%)</option>
+                    <option value="3">美加、歐洲 (300%)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>天數 (1-180)</label>
+                <input type="number" id="tripDays" class="valid-bg trip-days-input" value="5" min="1" max="180" placeholder="天數" oninput="onInputUpdate('tripDays')">
+                <span id="dayWarning" class="day-warning dayWarningClass">⚠️ 超過180天需另行報價</span>
+            </div>
+            <div class="input-group">
+                <label>選擇計畫 ⓘ</label>
+                <select id="planSelect" class="valid-bg plan-select" onchange="onInputUpdate('planSelect')">
+                    <option value="" disabled>請選擇計畫</option>
+                    <option value="1">計畫一 (2000萬) 18-64歲</option>
+                    <option value="2">計畫二 (1000萬) 18-64歲</option>
+                    <option value="3" selected>計畫三 (500萬) 15-74歲</option>
+                    <option value="4">計畫四 (300萬) 15-84歲</option>
+                    <option value="5">計畫五 (69萬) 未滿15歲</option>
+                    <option value="6">計畫六 (童遊專案) 未滿15歲</option>
+                    <option value="7">小三通計畫A (成人)</option>
+                    <option value="8">小三通計畫B童遊 (未滿15歲)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="premium-summary">
+            <div id="displayName" class="user-greeting displayNameClass">本表格可協助您快速了解保障內容，但正確數據應以保險公司條款為準。</div>
+            <div id="planSummaryInfo" class="plan-info planSummaryInfoClass" style="display:none;"></div>
+            
+            <div class="action-grid">
+                <a href="金平安專案_DM-6.0.pdf" target="_blank" class="tool-btn btn-dm">📄 商品簡介</a>
+                <a href="金平安 PRO 6.0 理賠文件導覽.html" target="_blank" class="tool-btn btn-claims">📋 理賠文件導覽</a>
+                <a href="金平安PRO6各種Q&A彙整.html" target="_blank" class="tool-btn btn-qa">❓ 常見Q&A彙整</a>
+                <a href="https://www.nanshangeneral.com.tw/service-119" target="_blank" class="tool-btn btn-sos">🆘 緊急救援專線</a>
+                <a href="https://notebooklm.google.com/notebook/962ed1a9-0b20-45d3-b13b-83d2d9fe5c2a" target="_blank" class="tool-btn btn-ai">🤖 AI諮詢(僅供參考)</a>
+            </div>
+        </div>
+
+        <div class="table-title-container">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <h2>專案組合</h2>
+                <button id="btn-toggle-all-plans" class="btn-toggle-sm btn-toggle-all-plans" onclick="toggleAllPlans()">👀 顯示所有計畫</button>
+                <button id="btn-toggle-tongyou" class="btn-toggle-sm btn-toggle-tongyou" onclick="toggleTongYou()">👦 顯示童遊專案</button>
+            </div>
+            <span style="white-space: nowrap;">幣別：新台幣 / 單位：元</span>
+        </div>
+        <div class="matrix-wrapper">
+            <table class="img-table">
+                <colgroup>
+                    <col style="width: 10%;"> 
+                    <col style="width: 25%;"> 
+                    <col style="width: 25%;"> 
+                    <col id="col-plan-1" class="plan-col-1 col-plan-1" style="width: 40%;">
+                    <col id="col-plan-2" class="plan-col-2 col-plan-2" style="width: 40%;">
+                    <col id="col-plan-3" class="plan-col-3 col-plan-3" style="width: 40%;">
+                    <col id="col-plan-4" class="plan-col-4 col-plan-4" style="width: 40%;">
+                    <col id="col-plan-5" class="plan-col-5 col-plan-5" style="width: 40%;">
+                    <col id="col-plan-6" class="plan-col-6 col-plan-6" style="width: 40%;">
+                    <col id="col-plan-7" class="plan-col-7 col-plan-7" style="width: 40%;">
+                    <col id="col-plan-8" class="plan-col-8 col-plan-8" style="width: 40%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th colspan="3" rowspan="2" class="img-header-green">承保範圍 / 計畫別 / 承保年齡 / 保險金額</th>
+                        <th class="img-header-green plan-col-1">計畫一</th>
+                        <th class="img-header-green plan-col-2">計畫二</th>
+                        <th class="img-header-green plan-col-3">計畫三</th>
+                        <th class="img-header-green plan-col-4">計畫四</th>
+                        <th class="img-header-orange plan-col-5">計畫五</th>
+                        <th class="img-header-orange plan-col-6">計畫六(童遊)</th>
+                        <th class="img-header-green plan-col-7">小三通計畫A</th>
+                        <th class="img-header-orange plan-col-8">小三通計畫B童遊</th>
+                    </tr>
+                    <tr>
+                        <th class="img-header-green plan-col-1">18歲~未滿65歲</th>
+                        <th class="img-header-green plan-col-2">18歲~未滿65歲</th>
+                        <th class="img-header-green plan-col-3">15足歲~未滿75歲</th>
+                        <th class="img-header-green plan-col-4">15足歲~未滿85歲</th>
+                        <th class="img-header-orange plan-col-5">未滿15足歲</th>
+                        <th class="img-header-orange plan-col-6">未滿15足歲</th>
+                        <th class="img-header-green plan-col-7">15足歲~未滿85歲</th>
+                        <th class="img-header-orange plan-col-8">未滿15足歲</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="row-tongyou" class="row-tongyou" style="display: none;">
+                        <td class="img-cat-main"><a id="link-童遊標題" href="#" target="_blank">童遊旅行傷害醫療保險</a></td>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('意外傷害')">傷害醫療保險金</a> <span class="text-red">※實際費用且<span class="hl-red">最高</span>以保險金額為限</span></td>
+                        <td class="img-val plan-col-1">-</td>
+                        <td class="img-val plan-col-2">-</td>
+                        <td class="img-val plan-col-3">-</td>
+                        <td class="img-val plan-col-4">-</td>
+                        <td class="img-val plan-col-5">-</td>
+                        <td class="img-val plan-col-6">10萬</td>
+                        <td class="img-val plan-col-7">-</td>
+                        <td class="img-val plan-col-8">10萬</td>
+                    </tr>
+                    
+                    <tr>
+                        <td rowspan="7" class="img-cat-main"><a id="link-旅平標題" href="#" target="_blank">個人旅行平安保險</a></td>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('身故失能')">身故(喪葬費用)及失能保險金</a></td>
+                        <td class="img-val plan-col-1">2,000萬</td>
+                        <td class="img-val plan-col-2">1,000萬</td>
+                        <td class="img-val plan-col-3">500萬</td>
+                        <td class="img-val plan-col-4">300萬</td>
+                        <td class="img-val plan-col-5">69萬</td>
+                        <td class="img-val plan-col-6">-</td>
+                        <td class="img-val plan-col-7">300萬</td>
+                        <td class="img-val plan-col-8">-</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('意外傷害')">傷害醫療保險金</a> <span class="text-red">※實際費用且<span class="hl-red">最高</span>以保險金額為限</span></td>
+                        <td class="img-val plan-col-1">100萬</td>
+                        <td class="img-val plan-col-2">100萬</td>
+                        <td class="img-val plan-col-3">50萬</td>
+                        <td class="img-val plan-col-4">20萬</td>
+                        <td class="img-val plan-col-5">10萬</td>
+                        <td class="img-val plan-col-6">-</td>
+                        <td class="img-val plan-col-7">20萬</td>
+                        <td class="img-val plan-col-8">-</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="img-cat-sub"><a id="link-新海外突發疾病" class="modal-link" onclick="openModal('新海外突發疾病')">新海外突發疾病</a><br><span class="text-red">※實際費用且<span class="hl-red">最高</span>以保險金額為限</span></td>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('海外住院')">住院醫療保險金<br><span id="label-hosp-ratio" class="text-red label-hosp-ratio ratio-label"></span></a></td>
+                        <td id="td-hosp-1" class="img-val plan-col-1 td-hosp-1">100萬</td>
+                        <td id="td-hosp-2" class="img-val plan-col-2 td-hosp-2">100萬</td>
+                        <td id="td-hosp-3" class="img-val plan-col-3 td-hosp-3">50萬</td>
+                        <td id="td-hosp-4" class="img-val plan-col-4 td-hosp-4">20萬</td>
+                        <td id="td-hosp-5" class="img-val plan-col-5 td-hosp-5">10萬</td>
+                        <td id="td-hosp-6" class="img-val plan-col-6 td-hosp-6">10萬</td>
+                        <td id="td-hosp-7" class="img-val plan-col-7 td-hosp-7">20萬</td>
+                        <td id="td-hosp-8" class="img-val plan-col-8 td-hosp-8">10萬</td>
+                    </tr>
+                    <tr>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('海外返國住院')">返國住院醫療保險金</a></td>
+                        <td class="img-val plan-col-1">10萬</td>
+                        <td class="img-val plan-col-2">10萬</td>
+                        <td class="img-val plan-col-3">5萬</td>
+                        <td class="img-val plan-col-4">2萬</td>
+                        <td class="img-val plan-col-5">1萬</td>
+                        <td class="img-val plan-col-6">1萬</td>
+                        <td class="img-val plan-col-7">2萬</td>
+                        <td class="img-val plan-col-8">1萬</td>
+                    </tr>
+                    <tr>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('海外門診')">門診醫療保險金<br><span id="label-opd-ratio" class="text-red label-opd-ratio ratio-label"></span></a></td>
+                        <td id="td-opd-1" class="img-val plan-col-1 td-opd-1">3萬</td>
+                        <td id="td-opd-2" class="img-val plan-col-2 td-opd-2">3萬</td>
+                        <td id="td-opd-3" class="img-val plan-col-3 td-opd-3">1.5萬</td>
+                        <td id="td-opd-4" class="img-val plan-col-4 td-opd-4">6仟</td>
+                        <td id="td-opd-5" class="img-val plan-col-5 td-opd-5">3仟</td>
+                        <td id="td-opd-6" class="img-val plan-col-6 td-opd-6">3仟</td>
+                        <td id="td-opd-7" class="img-val plan-col-7 td-opd-7">6仟</td>
+                        <td id="td-opd-8" class="img-val plan-col-8 td-opd-8">3仟</td>
+                    </tr>
+                    <tr>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('海外急診')">急診醫療保險金<br><span id="label-er-ratio" class="text-red label-er-ratio ratio-label"></span></a></td>
+                        <td id="td-er-1" class="img-val plan-col-1 td-er-1">10萬</td>
+                        <td id="td-er-2" class="img-val plan-col-2 td-er-2">10萬</td>
+                        <td id="td-er-3" class="img-val plan-col-3 td-er-3">5萬</td>
+                        <td id="td-er-4" class="img-val plan-col-4 td-er-4">2萬</td>
+                        <td id="td-er-5" class="img-val plan-col-5 td-er-5">1萬</td>
+                        <td id="td-er-6" class="img-val plan-col-6 td-er-6">1萬</td>
+                        <td id="td-er-7" class="img-val plan-col-7 td-er-7">2萬</td>
+                        <td id="td-er-8" class="img-val plan-col-8 td-er-8">1萬</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('食物中毒')">食物中毒保險金附加條款</a></td>
+                        <td class="img-val plan-col-1">2仟</td>
+                        <td class="img-val plan-col-2">2仟</td>
+                        <td class="img-val plan-col-3">2仟</td>
+                        <td class="img-val plan-col-4">2仟</td>
+                        <td class="img-val plan-col-5">2仟</td>
+                        <td class="img-val plan-col-6">2仟</td>
+                        <td class="img-val plan-col-7">2仟</td>
+                        <td class="img-val plan-col-8">2仟</td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="17" class="img-cat-main"><a id="link-新個人旅行不便" href="#" target="_blank">新個人旅行不便綜合保險</a></td>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('旅程取消')">旅程取消保險<span class="text-red">(實支實付)</span></a></td>
+                        <td class="img-val plan-col-1">限額12萬</td>
+                        <td class="img-val plan-col-2">限額12萬</td>
+                        <td class="img-val plan-col-3">限額12萬</td>
+                        <td class="img-val plan-col-4">限額12萬</td>
+                        <td class="img-val plan-col-5">限額12萬</td>
+                        <td class="img-val plan-col-6">限額12萬</td>
+                        <td class="img-val plan-col-7">限額12萬</td>
+                        <td class="img-val plan-col-8">限額12萬</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('班機延誤')">班機延誤保險(定額給付-累進式)</a></td>
+                        <td class="img-val plan-col-1">每滿4小時定額給付6仟, 每次事故<span class="hl-red">最高</span>1.2萬 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-2">每滿4小時定額給付6仟, 每次事故<span class="hl-red">最高</span>1.2萬 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-3">每滿4小時定額給付6仟, 每次事故<span class="hl-red">最高</span>1.2萬 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-4">每滿4小時定額給付6仟, 每次事故<span class="hl-red">最高</span>1.2萬 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-5">每滿4小時定額給付6仟, 每次事故<span class="hl-red">最高</span>1.2萬 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-6">每滿4小時定額給付6仟, 每次事故<span class="hl-red">最高</span>1.2萬 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-7">每滿4小時定額給付3仟, 每次事故<span class="hl-red">最高</span>6仟 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-8">每滿4小時定額給付3仟, 每次事故<span class="hl-red">最高</span>6仟 <span class="text-red">※延誤4小時以上/保期內2次為限</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('旅程更改')">旅程更改保險<span class="text-red">(實支實付)</span></a></td>
+                        <td class="img-val plan-col-1">限額12萬</td>
+                        <td class="img-val plan-col-2">限額12萬</td>
+                        <td class="img-val plan-col-3">限額12萬</td>
+                        <td class="img-val plan-col-4">限額12萬</td>
+                        <td class="img-val plan-col-5">限額12萬</td>
+                        <td class="img-val plan-col-6">限額12萬</td>
+                        <td class="img-val plan-col-7">限額12萬</td>
+                        <td class="img-val plan-col-8">限額12萬</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('行李延誤')">行李延誤保險(定額給付)</a></td>
+                        <td class="img-val plan-col-1">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-2">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-3">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-4">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-5">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-6">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-7">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                        <td class="img-val plan-col-8">定額給付5仟 <span class="text-red">※達6小時以上/保期內2次為限</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('行李損失')">行李損失保險(定額給付)</a></td>
+                        <td class="img-val plan-col-1">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-2">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-3">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-4">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-5">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-6">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-7">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-8">定額給付5仟 <span class="text-red">※保期內2次為限</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('文件損失')">旅行文件損失保險(定額給付)</a></td>
+                        <td class="img-val plan-col-1">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-2">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-3">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-4">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-5">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-6">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-7">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-8">定額給付3仟 <span class="text-red">※保期內2次為限</span></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="img-cat-sub"><a class="modal-link" onclick="openModal('救援標題')">緊急救援費用</a></td>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('緊急醫療運送')">緊急醫療運送費用保險</a></td>
+                        <td class="img-val plan-col-1">限額300萬</td>
+                        <td class="img-val plan-col-2">限額300萬</td>
+                        <td class="img-val plan-col-3">限額300萬</td>
+                        <td class="img-val plan-col-4">限額300萬</td>
+                        <td class="img-val plan-col-5">限額300萬</td>
+                        <td class="img-val plan-col-6">限額300萬</td>
+                        <td class="img-val plan-col-7">限額300萬</td>
+                        <td class="img-val plan-col-8">限額300萬</td>
+                    </tr>
+                    <tr>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('遺體運返')">遺體運返費用保險</a></td>
+                        <td class="img-val plan-col-1">限額300萬</td>
+                        <td class="img-val plan-col-2">限額300萬</td>
+                        <td class="img-val plan-col-3">限額300萬</td>
+                        <td class="img-val plan-col-4">限額300萬</td>
+                        <td class="img-val plan-col-5">限額300萬</td>
+                        <td class="img-val plan-col-6">限額300萬</td>
+                        <td class="img-val plan-col-7">限額300萬</td>
+                        <td class="img-val plan-col-8">限額300萬</td>
+                    </tr>
+                    <tr>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('子女看護')">子女看護費用保險</a></td>
+                        <td class="img-val plan-col-1">限額12萬</td>
+                        <td class="img-val plan-col-2">限額12萬</td>
+                        <td class="img-val plan-col-3">限額12萬</td>
+                        <td class="img-val plan-col-4">限額12萬</td>
+                        <td class="img-val plan-col-5">限額12萬</td>
+                        <td class="img-val plan-col-6">限額12萬</td>
+                        <td class="img-val plan-col-7">限額12萬</td>
+                        <td class="img-val plan-col-8">限額12萬</td>
+                    </tr>
+                    <tr>
+                        <td class="img-cat-sub text-center"><a class="modal-link" onclick="openModal('探病費用')">探病費用保險</a></td>
+                        <td class="img-val plan-col-1">限額20萬</td>
+                        <td class="img-val plan-col-2">限額20萬</td>
+                        <td class="img-val plan-col-3">限額20萬</td>
+                        <td class="img-val plan-col-4">限額20萬</td>
+                        <td class="img-val plan-col-5">限額20萬</td>
+                        <td class="img-val plan-col-6">限額20萬</td>
+                        <td class="img-val plan-col-7">限額20萬</td>
+                        <td class="img-val plan-col-8">限額20萬</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('責任險')">第三人責任保險</a></td>
+                        <td class="img-val plan-col-1">限額500萬</td>
+                        <td class="img-val plan-col-2">限額500萬</td>
+                        <td class="img-val plan-col-3">限額500萬</td>
+                        <td class="img-val plan-col-4">限額500萬</td>
+                        <td class="img-val plan-col-5">限額500萬</td>
+                        <td class="img-val plan-col-6">限額500萬</td>
+                        <td class="img-val plan-col-7">限額500萬</td>
+                        <td class="img-val plan-col-8">限額500萬</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('班機改降')">班機改降補償附加條款</a></td>
+                        <td class="img-val plan-col-1">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                        <td class="img-val plan-col-2">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                        <td class="img-val plan-col-3">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                        <td class="img-val plan-col-4">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                        <td class="img-val plan-col-5">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                        <td class="img-val plan-col-6">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                        <td class="img-val plan-col-7">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                        <td class="img-val plan-col-8">定額給付5仟 <span class="text-red">※定期航班若改降於中華民國境內其他機場者，本公司按保險金額的50%給付保險金/保期內2次為限</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('信用卡盜刷')">信用卡盜刷損失附加條款</a></td>
+                        <td class="img-val plan-col-1">限額2萬</td>
+                        <td class="img-val plan-col-2">限額2萬</td>
+                        <td class="img-val plan-col-3">限額2萬</td>
+                        <td class="img-val plan-col-4">限額2萬</td>
+                        <td class="img-val plan-col-5">-</td>
+                        <td class="img-val plan-col-6">-</td>
+                        <td class="img-val plan-col-7">限額2萬</td>
+                        <td class="img-val plan-col-8">-</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('現金竊盜')">現金竊盜損失附加條款</a></td>
+                        <td class="img-val plan-col-1">限額5仟</td>
+                        <td class="img-val plan-col-2">限額5仟</td>
+                        <td class="img-val plan-col-3">限額5仟</td>
+                        <td class="img-val plan-col-4">限額5仟</td>
+                        <td class="img-val plan-col-5">-</td>
+                        <td class="img-val plan-col-6">-</td>
+                        <td class="img-val plan-col-7">限額5仟</td>
+                        <td class="img-val plan-col-8">-</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('旅程取消傳染病')">旅程取消費用傳染病及檢疫給付附加條款</a></td>
+                        <td class="img-val plan-col-1">限額12萬</td>
+                        <td class="img-val plan-col-2">限額12萬</td>
+                        <td class="img-val plan-col-3">限額12萬</td>
+                        <td class="img-val plan-col-4">限額12萬</td>
+                        <td class="img-val plan-col-5">限額12萬</td>
+                        <td class="img-val plan-col-6">限額12萬</td>
+                        <td class="img-val plan-col-7">限額12萬</td>
+                        <td class="img-val plan-col-8">限額12萬</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('旅程更改傳染病')">旅程更改費用傳染病及檢疫給付附加條款</a></td>
+                        <td class="img-val plan-col-1">限額12萬</td>
+                        <td class="img-val plan-col-2">限額12萬</td>
+                        <td class="img-val plan-col-3">限額12萬</td>
+                        <td class="img-val plan-col-4">限額12萬</td>
+                        <td class="img-val plan-col-5">限額12萬</td>
+                        <td class="img-val plan-col-6">限額12萬</td>
+                        <td class="img-val plan-col-7">限額12萬</td>
+                        <td class="img-val plan-col-8">限額12萬</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('水上交通延誤')">離島兩岸通航航線之水上公共交通工具延誤保險附加條款</a></td>
+                        <td class="img-val plan-col-1">-</td>
+                        <td class="img-val plan-col-2">-</td>
+                        <td class="img-val plan-col-3">-</td>
+                        <td class="img-val plan-col-4">-</td>
+                        <td class="img-val plan-col-5">-</td>
+                        <td class="img-val plan-col-6">-</td>
+                        <td class="img-val plan-col-7">每滿4小時定額給付3仟, 每次事故<span class="hl-red">最高</span>6仟 <span class="text-red">※保期內2次為限</span></td>
+                        <td class="img-val plan-col-8">每滿4小時定額給付3仟, 每次事故<span class="hl-red">最高</span>6仟 <span class="text-red">※保期內2次為限</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="img-cat-sub"><a class="modal-link" onclick="openModal('班機延誤免檢附')">班機延誤免檢附部分理賠文件附加條款</a></td>
+                        <td class="img-val plan-col-1">班機延誤免檢附部分理賠文件</td>
+                        <td class="img-val plan-col-2">班機延誤免檢附部分理賠文件</td>
+                        <td class="img-val plan-col-3">班機延誤免檢附部分理賠文件</td>
+                        <td class="img-val plan-col-4">班機延誤免檢附部分理賠文件</td>
+                        <td class="img-val plan-col-5">班機延誤免檢附部分理賠文件</td>
+                        <td class="img-val plan-col-6">班機延誤免檢附部分理賠文件</td>
+                        <td class="img-val plan-col-7">班機延誤免檢附部分理賠文件</td>
+                        <td class="img-val plan-col-8">班機延誤免檢附部分理賠文件</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3" class="img-cat-main" style="text-align:center; writing-mode: horizontal-tb; letter-spacing: normal; padding: 10px !important;"><a class="modal-link" onclick="openModal('恐怖主義')" style="text-decoration: none; border-bottom: none;">傷害保險恐怖主義行為保險限額給付附加條款</a></td>
+                        <td class="img-header-green plan-col-1" style="font-size:12px; text-align:left; font-weight:normal; padding: 6px 12px;">對於直接或間接因任何恐怖主義者之行為或為抑制、防止、鎮壓恐怖主義者之行為或與其有關之行動，致被保險人死亡或失能，其給付金額<span class="hl-red">最高</span>以新台幣二百萬元為限。</td>
+                        <td class="img-header-green plan-col-2" style="font-size:12px; text-align:left; font-weight:normal; padding: 6px 12px;">對於直接或間接因任何恐怖主義者之行為或為抑制、防止、鎮壓恐怖主義者之行為或與其有關之行動，致被保險人死亡或失能，其給付金額<span class="hl-red">最高</span>以新台幣二百萬元為限。</td>
+                        <td class="img-header-green plan-col-3" style="font-size:12px; text-align:left; font-weight:normal; padding: 6px 12px;">對於直接或間接因任何恐怖主義者之行為或為抑制、防止、鎮壓恐怖主義者之行為或與其有關之行動，致被保險人死亡或失能，其給付金額<span class="hl-red">最高</span>以新台幣二百萬元為限。</td>
+                        <td class="img-header-green plan-col-4" style="font-size:12px; text-align:left; font-weight:normal; padding: 6px 12px;">對於直接或間接因任何恐怖主義者之行為或為抑制、防止、鎮壓恐怖主義者之行為或與其有關之行動，致被保險人死亡或失能，其給付金額<span class="hl-red">最高</span>以新台幣二百萬元為限。</td>
+                        <td class="img-header-green plan-col-5" style="font-size:12px; text-align:left; font-weight:normal; padding: 6px 12px;">對於直接或間接因任何恐怖主義者之行為或為抑制、防止、鎮壓恐怖主義者之行為或與其有關之行動，致被保險人死亡或失能，其給付金額<span class="hl-red">最高</span>以新台幣二百萬元為限。</td>
+                        <td class="img-header-green plan-col-6" style="padding: 6px 12px;">-</td>
+                        <td class="img-header-green plan-col-7" style="font-size:12px; text-align:left; font-weight:normal; padding: 6px 12px;">對於直接或間接因任何恐怖主義者之行為或為抑制、防止、鎮壓恐怖主義者之行為或與其有關之行動，致被保險人死亡或失能，其給付金額<span class="hl-red">最高</span>以新台幣二百萬元為限。</td>
+                        <td class="img-header-orange plan-col-8" style="padding: 6px 12px;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="page-rates" class="page-section">
+        <h3 style="color:var(--ns-blue); border-bottom: 2px solid var(--ns-light-blue); padding-bottom: 10px;">📊 金平安PRO 6.0 費率速算表 (1-180天)</h3>
+        <table class="basic-table">
+            <thead>
+                <tr><th>天數</th><th>計畫一</th><th>計畫二</th><th>計畫三</th><th>計畫四</th><th>計畫五</th><th>計畫六</th><th>小三通A</th><th>小三通B童遊</th></tr>
+            </thead>
+            <tbody id="rateMatrixBody"></tbody>
+        </table>
+    </section>
+
+    <section id="page-edit" class="page-section">
+        <h3 style="color:var(--ns-blue); border-bottom: 2px solid var(--ns-light-blue); padding-bottom: 10px;">⚙️ 網址編輯 (管理權限)</h3>
+        <table class="basic-table">
+            <thead><tr><th style="width:20%">項目</th><th style="width:80%">網址連結</th></tr></thead>
+            <tbody id="editorBody"></tbody>
+        </table>
+        <div class="btn-container">
+            <button class="save-btn" onclick="applyAndDownload()">💾 另存下載更新網頁檔</button>
+        </div>
+    </section>
+</div>
+
+<script id="configData">
+/*CONFIG_START*/
+const URL_CONFIG = {
+    "身故失能": { "name": "身故(喪葬費用)及失能保險金", "url": "金平安6.0保單條款查詢.html" },
+    "意外傷害": { "name": "傷害醫療保險金 (實支實付最高額)", "url": "金平安6.0保單條款查詢.html" },
+    "新海外突發疾病": { "name": "新海外突發疾病醫療附加保險", "url": "金平安6.0保單條款查詢.html" },
+    "食物中毒": { "name": "食物中毒保險金附加條款(定額)", "url": "金平安6.0保單條款查詢.html" },
+    "新個人旅行不便": { "name": "新個人旅行不便綜合保險", "url": "金平安6.0保單條款查詢.html" },
+    "旅程取消": { "name": "旅程取消保險(實支實付)", "url": "金平安 PRO 6.0 理賠文件導覽.html" },
+    "班機延誤": { "name": "班機延誤保險 (定額給付-累進式)", "url": "金平安 PRO 6.0 理賠文件導覽.html" },
+    "旅程更改": { "name": "旅程更改保險(實支實付)", "url": "金平安 PRO 6.0 理賠文件導覽.html" },
+    "行李延誤": { "name": "行李延誤保險 (定額)", "url": "金平安 PRO 6.0 理賠文件導覽.html" },
+    "行李損失": { "name": "行李損失保險 (定額)", "url": "金平安 PRO 6.0 理賠文件導覽.html" },
+    "文件損失": { "name": "旅行文件損失保險(定額)", "url": "金平安 PRO 6.0 理賠文件導覽.html" },
+    "責任險": { "name": "第三人責任保險 (限額)", "url": "金平安6.0保單條款查詢.html" },
+    "救援標題": { "name": "緊急救援費用保險", "url": "金平安6.0保單條款查詢.html" },
+    "旅平標題": { "name": "個人旅行平安保險", "url": "金平安6.0保單條款查詢.html" },
+    "童遊標題": { "name": "童遊旅行傷害醫療保險", "url": "金平安6.0保單條款查詢.html" },
+    "班機改降": { "name": "班機改降補償附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "信用卡盜刷": { "name": "信用卡盜刷損失附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "現金竊盜": { "name": "現金竊盜損失附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "旅程取消傳染病": { "name": "旅程取消費用傳染病及檢疫給付附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "旅程更改傳染病": { "name": "旅程更改費用傳染病及檢疫給付附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "水上交通延誤": { "name": "離島兩岸通航航線之水上公共交通工具延誤保險附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "班機延誤免檢附": { "name": "班機延誤免檢附部分理賠文件附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "恐怖主義": { "name": "傷害保險恐怖主義行為保險限額給付附加條款", "url": "金平安6.0保單條款查詢.html" },
+    "緊急醫療運送": { "name": "緊急醫療運送費用保險", "url": "金平安6.0保單條款查詢.html" },
+    "遺體運返": { "name": "遺體運返費用保險", "url": "金平安6.0保單條款查詢.html" },
+    "子女看護": { "name": "子女看護費用保險", "url": "金平安6.0保單條款查詢.html" },
+    "探病費用": { "name": "探病費用保險", "url": "金平安6.0保單條款查詢.html" },
+    "海外住院": { "name": "海外突發疾病住院醫療保險金", "url": "金平安6.0保單條款查詢.html" },
+    "海外返國住院": { "name": "海外突發疾病返國住院醫療保險金", "url": "金平安6.0保單條款查詢.html" },
+    "海外門診": { "name": "海外突發疾病門診醫療保險金", "url": "金平安6.0保單條款查詢.html" },
+    "海外急診": { "name": "海外突發疾病急診醫療保險金", "url": "金平安6.0保單條款查詢.html" }
+};
+/*CONFIG_END*/
+
+function getDynamicDescriptions() {
+    const planSelect = document.getElementById('planSelect') || document.querySelector('.plan-select');
+    const destSelect = document.getElementById('destRegion') || document.querySelector('.dest-region-select');
+    const planId = planSelect ? planSelect.value : "3";
+    let regionId = "2"; 
+    if (destSelect) {
+        if (destSelect.selectedIndex === 1 || destSelect.value.indexOf("100") !== -1) regionId = "1";
+        else if (destSelect.selectedIndex === 3 || destSelect.value.indexOf("300") !== -1) regionId = "3";
+    }
+
+    const pData = {
+        "1": { name: "計畫一", death: "2000萬", deathNum: 2000, med: "100萬", hosp: 100, opd: 3, er: 10 },
+        "2": { name: "計畫二", death: "1000萬", deathNum: 1000, med: "100萬", hosp: 100, opd: 3, er: 10 },
+        "3": { name: "計畫三", death: "500萬", deathNum: 500, med: "50萬", hosp: 50, opd: 1.5, er: 5 },
+        "4": { name: "計畫四", death: "300萬", deathNum: 300, med: "20萬", hosp: 20, opd: 0.6, er: 2 },
+        "5": { name: "計畫五", death: "69萬", deathNum: 69, med: "10萬", hosp: 10, opd: 0.3, er: 1 },
+        "6": { name: "計畫六", death: "無", deathNum: 0, med: "10萬", hosp: 10, opd: 0.3, er: 1 },
+        "7": { name: "小三通計畫A", death: "300萬", deathNum: 300, med: "20萬", hosp: 20, opd: 0.6, er: 2 },
+        "8": { name: "小三通計畫B童遊", death: "無", deathNum: 0, med: "10萬", hosp: 10, opd: 0.3, er: 1 }
+    }[planId] || { name: "計畫三", death: "500萬", deathNum: 500, med: "50萬", hosp: 50, opd: 1.5, er: 5 };
+
+    const rData = {
+        "1": { name: "一般地區", ratio: 1, ratioPct: "100%" },
+        "2": { name: "日本、韓國、紐澳", ratio: 2, ratioPct: "200%" },
+        "3": { name: "美加、歐洲", ratio: 3, ratioPct: "300%" }
+    }[regionId];
+
+    const fmt = (num) => {
+        if (num >= 1) return `${num}萬`;
+        if (num > 0) return `${(num * 10000).toLocaleString()}元`;
+        return "0元";
+    };
+
+    return {
+        "身故失能": `<li><b>1. 保障範圍：</b>於保險期間內因遭受意外傷害事故，致身體蒙受傷害而於<span class="hl-green">180日</span>以內失能或死亡時給付。</li><li><b>2. 意外定義：</b>事故必須完全符合「非由疾病引起」、「外來」、「突發」三大要件。</li><li><b>3. 身故理賠金額：</b>依您選擇的計畫保額，給付<span class="hl-red">100%</span>身故保險金或喪葬費用保險金。</li><li><b>4. 失能理賠金額：</b>依您選擇的計畫保額，按失能程度等級（<span class="hl-red">1至11級</span>，給付比例<span class="hl-red">5%至100%</span>）計算理賠金。</li><li><b>5. 延期認定：</b>若超過<span class="hl-green">180日</span>才死亡或確定失能，只要能證明與該意外事故具因果關係，仍可申請理賠。</li><li><b>6. 兒童投保限制：</b>依保險法規定，未滿<span class="hl-red">15足歲</span>孩童，累計同業喪葬費用保額<span class="hl-red">最高</span>不得超過<span class="hl-red">69萬元</span>。</li><li><b class="hl-blue">7. 動態試算：</b>依您目前選擇的「<span class="hl-red">${pData.name}</span>」${pData.deathNum ? `（保額<span class="hl-red">${pData.deathNum}萬</span>），若旅行中不幸發生車禍導致單目失明（第7級失能，比例<span class="hl-red">40%</span>），可獲賠 <span class="hl-red">${pData.deathNum * 0.4} 萬元</span>。` : `，本計畫無身故失能保額。`}</li><li><b>8. 注意事項：</b>若因恐怖主義行為所致之死亡或失能，<span class="hl-red">最高給付</span><span class="hl-red">限額</span>以新台幣<span class="hl-red">200萬元</span>為限。</li>`,
+        "意外傷害": `<li><b>1. 保障範圍：</b>於保險期間內遭受意外傷害事故，自事故發生之日起<span class="hl-green">180日內</span>，經合格醫院或診所治療之實際醫療費用。</li><li><b>2. 給付方式：</b>採「<span class="hl-red">實支實付</span>」，針對超過全民健保給付之部分，在保額<span class="hl-red">限額</span>內給付。</li><li><b>3. 延期認定：</b>若超過<span class="hl-green">180日</span>仍繼續治療，只要能證明與該意外事故具因果關係者，仍可申請理賠。</li><li><b>4. 理賠金額：</b>依您選擇的計畫，<span class="hl-red">最高給付</span><span class="hl-red">限額</span>從<span class="hl-red">10萬</span>至<span class="hl-red">100萬元</span>不等。</li><li><b>5. 適用對象：</b>保障包含「個人旅行平安保險」與未滿<span class="hl-red">15歲</span>的「童遊旅行傷害醫療保險」。</li><li><b>6. 醫療機構定義：</b>就醫地點必須為依照當地醫療法規定領有開業執照的公、私立醫院或診所。</li><li><b class="hl-blue">7. 動態試算：</b>依您目前選擇的「<span class="hl-red">${pData.name}</span>」（意外醫療<span class="hl-red">限額</span><span class="hl-red">${pData.med}</span>），若出國滑雪不慎摔倒骨折，海外就醫總花費<span class="hl-red">15萬元</span>，${parseFloat(pData.med) >= 15 ? `可<span class="hl-red">實支實付</span>全額理賠 <span class="hl-red">15萬元</span>。` : `受限於保額<span class="hl-red">上限</span>，<span class="hl-red">最高</span>可理賠 <span class="hl-red">${pData.med}</span>。`}</li><li><b>8. 注意事項：</b>本項目僅限「意外傷害」所致之醫療費用，若因疾病（如感冒、腸胃炎）就醫不在本項目理賠範圍，屬突發疾病範疇。</li>`,
+        "新海外突發疾病": `<li><b>1. 突發疾病定義：</b>需即時在醫院或診所診療始能避免損及健康之疾病，且生效前<span class="hl-green">180日內</span>「未曾接受該疾病之診療者」。</li><li><b>2. 地區加倍機制：</b>依旅遊地區自動調整保額<span class="hl-red">限額</span>，美加歐洲為<span class="hl-red">300%</span>，日韓紐澳為<span class="hl-red">200%</span>，其他地區<span class="hl-red">100%</span>。</li><li><b>3. 理賠金額(住院)：</b>住院醫療<span class="hl-red">最高給付</span><span class="hl-red">限額</span>為調整後保額的<span class="hl-red">100%</span>。</li><li><b>4. 理賠金額(門診/急診)：</b>門診<span class="hl-red">最高給付</span><span class="hl-red">限額</span>為調整後保額的<span class="hl-red">3%</span>；急診<span class="hl-red">最高</span>為調整後保額的<span class="hl-red">10%</span>。</li><li><b>5. 返國繼續住院：</b>海外突發疾病住院且於返國前<span class="hl-green">1日內</span>出院，入境後<span class="hl-green">1日內</span>因同疾病住院，<span class="hl-red">最高</span>可賠調整後保額的<span class="hl-red">10%</span>。</li><li><b>6. 排除事項：</b>以獲得中華民國境外醫療為目的之出國治療行為，不在理賠範圍內。</li><li><b class="hl-blue">7. 動態試算：</b>依您目前選擇的「<span class="hl-red">${pData.name}</span>」去「<span class="hl-red">${rData.name}</span>」（地區係數<span class="hl-red">${rData.ratioPct}</span>），住院<span class="hl-red">限額</span>變為 <span class="hl-red">${pData.hosp * rData.ratio}萬</span>；若急性腸胃炎掛急診，<span class="hl-red">最高</span>可賠 <span class="hl-red">${fmt(pData.er * rData.ratio)}</span>。</li><li><b>8. 法定傳染病：</b>本商品之新海外突發疾病醫療保障「包含」法定傳染病（如新冠肺炎、登革熱等）。</li>`,
+        "海外住院": `<li><b>1. 保障範圍：</b>於海外旅行期間，因突發疾病必須於海外醫院接受「住院」診療所生之實際醫療費用。</li><li><b>2. 給付期間：</b>自住院第<span class="hl-red">1日</span>起至第<span class="hl-green">180日</span>止。</li><li><b>3. 理賠項目：</b>包含病房費、膳食費、護理費、醫師指示用藥、掛號費、救護車費、手術費、診療檢驗及醫療材料費等。</li><li><b>4. 給付限額：</b><span class="hl-red">最高</span><span class="hl-red">限額</span>為保單所載之「海外突發疾病醫療保險金<span class="hl-red">限額</span>」乘上「海外特定地區<span class="hl-red">限額</span>調整係數」。<br><span class="hl-blue">【動態試算】</span>依您選擇的「<span class="hl-red">${pData.name}</span>」及「<span class="hl-red">${rData.name}</span>」，本次海外住院<span class="hl-red">最高</span><span class="hl-red">限額</span>為 <span class="hl-red">${pData.hosp * rData.ratio} 萬元</span>。</li>`,
+        "海外返國住院": `<li><b>1. 保障範圍：</b>在海外因突發疾病實際住院診療，並因「同一突發疾病」於返國後繼續住院診療之費用。</li><li><b>2. 啟動要件：</b>必須於「返國前<span class="hl-green">1日內</span>」始出院，且於「入境後<span class="hl-green">1日內</span>」繼續住院診療。</li><li><b>3. 給付方式：</b>採<span class="hl-red">實支實付</span>，賠付返國後繼續住院所實際發生之醫療費用。</li><li><b>4. 給付限額：</b>同一海外突發疾病於返國後繼續住院給付總額，<span class="hl-red">最高</span>以保單所載「海外突發疾病醫療保險金<span class="hl-red">限額</span>」的<span class="hl-red">10%</span>為限（不乘地區係數）。<br><span class="hl-blue">【動態試算】</span>依您選擇的「<span class="hl-red">${pData.name}</span>」，返國繼續住院<span class="hl-red">最高</span><span class="hl-red">限額</span>為 <span class="hl-red">${fmt(pData.hosp * 0.1)}</span>。</li>`,
+        "海外門診": `<li><b>1. 保障範圍：</b>於海外旅行期間，因突發疾病需接受「門診」診療時所實際發生之醫療費用。</li><li><b>2. 給付方式：</b>採<span class="hl-red">實支實付</span>，針對海外合格診所或醫院之門診費用核銷。</li><li><b>3. 給付限額：</b>每次門診醫療保險金給付總額，<span class="hl-red">最高</span>以保單所載<span class="hl-red">限額</span>乘上「海外特定地區<span class="hl-red">限額</span>調整係數」後所得金額的<span class="hl-red">3%</span>為限。</li><li><b class="hl-blue">4. 動態試算：</b>依您選擇的「<span class="hl-red">${pData.name}</span>」（基礎<span class="hl-red">限額</span><span class="hl-red">${pData.hosp}萬</span>）前往「<span class="hl-red">${rData.name}</span>」（地區係數<span class="hl-red">${rData.ratioPct}</span>），調整後住院<span class="hl-red">限額</span>為<span class="hl-red">${pData.hosp * rData.ratio}萬</span>，每次門診<span class="hl-red">最高</span>可理賠 <span class="hl-red">${fmt(pData.opd * rData.ratio)}</span>。</li>`,
+        "海外急診": `<li><b>1. 保障範圍：</b>於海外旅行期間，因突發疾病需接受「急診」診療時所實際發生之醫療費用。</li><li><b>2. 給付方式：</b>採<span class="hl-red">實支實付</span>，針對海外合格醫院或診所之急診費用核銷。</li><li><b>3. 給付限額：</b>每次急診醫療保險金給付總額，<span class="hl-red">最高</span>以保單所載<span class="hl-red">限額</span>乘上「海外特定地區<span class="hl-red">限額</span>調整係數」後所得金額的<span class="hl-red">10%</span>為限。</li><li><b class="hl-blue">4. 動態試算：</b>依您選擇的「<span class="hl-red">${pData.name}</span>」（基礎<span class="hl-red">限額</span><span class="hl-red">${pData.hosp}萬</span>）前往「<span class="hl-red">${rData.name}</span>」（地區係數<span class="hl-red">${rData.ratioPct}</span>），調整後住院<span class="hl-red">限額</span>為<span class="hl-red">${pData.hosp * rData.ratio}萬</span>，每次急診<span class="hl-red">最高</span>可理賠 <span class="hl-red">${fmt(pData.er * rData.ratio)}</span>。</li>`,
+        "旅平標題": `<li><b>1. 保障範圍：</b>涵蓋身故(喪葬費用)、失能及意外傷害醫療等三大核心保障。</li><li><b>2. 啟動條件：</b>必須為保險期間內因遭受「外來、突發、非疾病」的意外傷害事故所致之體傷或死亡。</li><li><b>3. 身故失能理賠：</b>依所選計畫給付身故保險金；或按失能等級比例(<span class="hl-red">5%至100%</span>)給付失能保險金。</li><li><b>4. 醫療理賠：</b>意外傷害醫療採<span class="hl-red">實支實付</span>，<span class="hl-red">最高</span>以各計畫之保險金額為限。</li><li><b>5. 兒童限制：</b>未滿<span class="hl-red">15歲</span>孩童僅給付失能及醫療，身故則給付喪葬費用且累計同業保額不得超過<span class="hl-red">69萬元</span>。</li><li><b>6. 年齡限制：</b>各計畫有對應之投保年齡限制，例如計畫一<span class="hl-red">最高</span>承保至<span class="hl-red">64歲</span>，計畫三可至<span class="hl-red">74歲</span>。</li><li><b class="hl-blue">7. 動態試算：</b>依您選擇的「<span class="hl-red">${pData.name}</span>」，${pData.deathNum ? `遇意外身故可獲 <span class="hl-red">${pData.death}</span> 保險金；` : `本計畫無身故保險金；`}意外受傷海外就醫，醫療花費<span class="hl-red">實支實付</span><span class="hl-red">最高</span>可達 <span class="hl-red">${pData.med}</span>。</li><li><b>8. 注意事項：</b>因恐怖主義行為所致之身故或失能，<span class="hl-red">最高給付</span>以新台幣<span class="hl-red">200萬元</span>為限。</li>`,
+        "童遊標題": `<li><b>1. 保障範圍：</b>專為未滿<span class="hl-red">15足歲</span>孩童設計，提供海外旅行期間之意外傷害醫療保障。</li><li><b>2. 啟動條件：</b>必須為保險期間內遭遇「非疾病引起之外來突發事故」導致體傷就醫。</li><li><b>3. 給付方式：</b>採「<span class="hl-red">實支實付</span>」，針對超過全民健保給付之部分，在<span class="hl-red">限額</span>內核銷。</li><li><b>4. 理賠金額：</b>專案童遊屬性保障，每次意外傷害醫療<span class="hl-red">最高給付</span><span class="hl-red">限額</span>為新台幣<span class="hl-red">10萬元</span>。</li><li><b>5. 兒童限制法規：</b>依保險法規定，因未滿<span class="hl-red">15歲</span>受<span class="hl-red">最高</span>喪葬費用<span class="hl-red">69萬</span>限制，此專案單純補足傷害醫療缺口，不含身故/失能保額。</li><li><b>6. 注意事項：</b>必須於當地合格之醫院或診所就醫，且為事故發生之日起<span class="hl-green">180日內</span>之醫療費用。</li><li><b class="hl-blue">7. 舉例說明：</b>若家中<span class="hl-red">10歲</span>孩童已有其他壽險高額意外險，無法再投保高保額計畫時，可單獨投保童遊專案，在國外跌倒受傷就醫<span class="hl-red">最高</span>可<span class="hl-red">實支實付</span><span class="hl-red">10萬元</span>。</li><li><b>8. 搭配保障：</b>除意外醫療外，亦同步包含「新海外突發疾病醫療」及「新個人旅行不便險」等完整保障。</li>`,
+        "食物中毒": `<li><b>1. 事故定義：</b>二人以上攝取相同食物發生相似症狀，並自人體及食餘檢體分離出相同致病原因。</li><li><b>2. 特殊除外：</b>若因細菌性毒素或急性化學性食物中毒引起，即使只有一人也視為「食物中毒」。</li><li><b>3. 給付方式：</b>採「<span class="hl-red">定額給付</span>」，不論實際醫療花費多少，皆給付固定金額保險金。</li><li><b>4. 理賠金額：</b>依您選擇的各項計畫，每次食物中毒事故皆<span class="hl-red">定額給付</span>新台幣<span class="hl-red">2,000元</span>。</li><li><b>5. 次數限制：</b>保險期間內，食物中毒理賠次數<span class="hl-red">最高</span>以給付<span class="hl-red">2次</span>為限。</li><li><b>6. 醫療院所：</b>必須經登記合格的醫院或診所治療，才能符合申請理賠資格。</li><li><b class="hl-blue">7. 舉例說明：</b>全家出國皆投保「<span class="hl-red">${pData.name}</span>」，吃海鮮導致集體上吐下瀉就醫，每人皆可申請<span class="hl-red">定額</span><span class="hl-red">2,000元</span>理賠。</li><li><b>8. 搭配理賠：</b>食物中毒除可申請本項<span class="hl-red">定額給付</span>外，實際醫療花費亦可同步申請「新海外突發疾病醫療保險」<span class="hl-red">實支實付</span>。</li>`,
+        "新個人旅行不便": `<li><b>1. 保障範圍：</b>涵蓋旅程取消、班機延誤、旅程更改、行李延誤、行李損失、文件損失及第三人責任等多項不便險保障。</li><li><b>2. 啟動條件：</b>各項目詳細理賠條件與除外不保事項，請參閱各細項說明及保單條款。</li><li><b>3. 給付方式：</b>多採<span class="hl-red">定額給付</span>或<span class="hl-red">實支實付</span>，視發生之事故項目而定。</li><li><b>4. 限額說明：</b>各項目皆設有<span class="hl-red">最高</span>賠付<span class="hl-red">限額</span>與給付次數限制。</li><li><b class="hl-blue">5. 舉例說明：</b>班機延誤達<span class="hl-green">4小時</span>可獲<span class="hl-red">定額</span>理賠；旅程因故取消或更改可<span class="hl-red">實支實付</span>理賠不可退還之費用。</li><li><b>6. 法定傳染病：</b>包含旅程取消及旅程更改附加傳染病及檢疫給付條款。</li><li><b>7. 救援服務：</b>提供高額海外緊急救援保障，<span class="hl-red">最高</span>達<span class="hl-red">300萬元</span>。</li><li><b>8. 注意事項：</b>發生事故時請保留所有交通、住宿憑證及相關事故證明書以保障自身權益。</li>`,
+        "旅程取消": `<li><b>1. 特定期間限制：</b>必須於預定海外旅程開始前<span class="hl-green">20日</span>至海外旅行期間開始時止，發生保險事故才啟動。</li><li><b>2. 承保事由1：</b>被保險人、配偶或三親等內親屬死亡或經醫師診斷為病危（一般生病住院不賠）。</li><li><b>3. 承保事由2：</b>預定搭乘之公共交通工具受僱人或機場地勤罷工，致班機取消或延誤達<span class="hl-green">24小時</span>以上。</li><li><b>4. 承保事由3：</b>目的地發生暴動、民眾騷擾，或國內住家因火災天災毀損逾<span class="hl-red">25萬元</span>，或須於國內擔任訴訟證人。</li><li><b>5. 傳染病/檢疫：</b>若目的地政府因傳染病關閉邊境或發布第三級警告，或被保險人於國內遭強制檢疫亦可理賠。</li><li><b>6. 給付方式：</b>採「<span class="hl-red">實支實付</span>」，賠付無法取回之預繳團費、交通、住宿及票券等實際損失，<span class="hl-red">最高給付</span><span class="hl-red">限額</span>為<span class="hl-red">12萬元</span>。</li><li><b class="hl-blue">7. 舉例說明：</b>若旅程出發前3天父親不幸病危，取消行程損失不可退還之機票飯店共<span class="hl-red">4萬元</span>，可<span class="hl-red">實支實付</span>理賠<span class="hl-red">4萬元</span>。</li><li><b>8. 注意事項：</b>公共交通工具業者不包含郵輪；且若訂立保險契約時員工已宣布或取得罷工權則為不保事項。</li>`,
+        "班機延誤": `<li><b>1. 啟動條件：</b>搭乘定期航班因故延誤，致實際出發時間較預定出發時間延誤達<span class="hl-green">4小時</span>（含）以上。</li><li><b>2. 事故定義：</b>包含班機延誤、班機取消，或因前班班機延誤/取消導致下一轉接班機失接。</li><li><b>3. 給付方式：</b>採「<span class="hl-red">定額給付-累進式</span>」，給付固定金額以補償旅客因延誤造成之不便。</li><li><b>4. 理賠金額：</b>每滿<span class="hl-green">4小時</span><span class="hl-red">定額給付</span><span class="hl-red">6,000元</span>(小三通為3,000元)，每次事故<span class="hl-red">最高給付</span><span class="hl-red">12,000元</span>(小三通為6,000元)。</li><li><b>5. 次數限制：</b>保險期間內<span class="hl-red">最高</span>以給付<span class="hl-red">2次</span>為限。去回程同一機場發生之延誤或取消視為「同一事故」，給付一次。</li><li><b>6. 排除事項：</b>返回「中華民國境內機場」之班機延誤；若為「自行安排替代班機」且於保期到期後才安排者不賠。</li><li><b class="hl-blue">7. 舉例說明：</b>遇颱風導致原下午1點起飛班機，延誤到晚上10點才起飛（延誤9小時），一般計畫可獲賠<span class="hl-red">最高</span><span class="hl-red">上限</span><span class="hl-red">12,000元</span>。</li><li><b>8. 快速理賠：</b>若投保時有提供航班資訊且經本公司系統比對確認延誤，可依「班機延誤免檢附條款」免附相關證明文件。</li>`,
+        "旅程更改": `<li><b>1. 啟動條件：</b>必須於「海外旅行期間內」發生保險事故，導致必須更改預定旅程。</li><li><b>2. 承保事由1：</b>包含海外目的地發生天災/戰爭/暴動，或公共交通工具員工/機場地勤罷工。</li><li><b>3. 承保事由2：</b>配偶或三親等親屬死亡或病危，或本次旅程旅行文件（護照）被偷搶遺失。</li><li><b>4. 承保事由3：</b>搭乘之汽車、火車、航空器或輪船發生翻覆、碰撞、火災等嚴重意外事故。</li><li><b>5. 傳染病給付：</b>被保險人所處或預定前往地點發生傳染病，或被要求接受檢疫，也可啟動。</li><li><b>6. 理賠限額：</b>採「<span class="hl-red">實支實付</span>」，<span class="hl-red">最高</span><span class="hl-red">12萬</span>。增加的交通 or 住宿費，<span class="hl-red">最高</span>以原預定每日各增加<span class="hl-red">20%</span>為限；無單據則每日<span class="hl-red">上限</span><span class="hl-red">2,000元</span>。</li><li><b class="hl-blue">7. 舉例說明：</b>在國外遇颱風班機取消需多住一晚，原飯店一晚<span class="hl-red">4000元</span>，重訂同等級房間花<span class="hl-red">5000元</span>，可理賠增加之<span class="hl-red">1000元</span>住宿費。</li><li><b>8. 注意事項：</b>投保時若中華民國氣象局已發布「海上颱風警報」，因該颱風造成之旅程更改將列為不保事項。</li>`,
+        "行李延誤": `<li><b>1. 啟動條件：</b>於海外旅行期間內，隨行託運並取得領取單之個人行李，因公共交通工具業者處理失當而延誤。</li><li><b>2. 時間認定：</b>抵達目的地機場後，達<span class="hl-green">6小時</span>（含）以上仍未領得該託運行李。</li><li><b>3. 給付方式：</b>採「<span class="hl-red">定額給付</span>」，不論因行李延誤實際花費多少金額購買日用品，皆給付固定保險金。</li><li><b>4. 理賠金額：</b>每次行李延誤事故皆<span class="hl-red">定額給付</span>新台幣<span class="hl-red">5,000元</span>。</li><li><b>5. 次數限制：</b>保險期間內，行李延誤理賠次數<span class="hl-red">最高</span>以給付<span class="hl-red">2次</span>為限。</li><li><b>6. 排除事項：</b>返回「中華民國境內機場」之行李延誤，不予理賠。</li><li><b class="hl-blue">7. 舉例說明：</b>飛抵希臘後發現行李未跟上，經航空公司確認隔天（超過<span class="hl-green">6小時</span>）才送到飯店，可理賠<span class="hl-red">定額</span><span class="hl-red">5,000元</span>。</li><li><b>8. 注意事項：</b>事故發生後必須經公共交通工具業者確認並留存延誤達<span class="hl-green">6小時</span>以上之紀錄。</li>`,
+        "行李損失": `<li><b>1. 啟動條件：</b>於海外旅行期間內，個人物品置於行李箱、手提箱或類似容器內遭受毀損或滅失。</li><li><b>2. 承保事由1：</b>因遭遇竊盜、強盜與搶奪所致之毀損或滅失。</li><li><b>3. 承保事由2：</b>交由公共交通工具業者「託運」之行李，因該業者處理失當導致之「遺失」。</li><li><b>4. 排除事項：</b>「行李箱、手提箱或類似容器本身」的毀損，不在本項目理賠範圍。</li><li><b>5. 給付方式：</b>採「<span class="hl-red">定額給付</span>」，不論實際損失物品總價值多少，皆給付固定保險金。</li><li><b>6. 理賠金額：</b>每次行李損失事故皆<span class="hl-red">定額給付</span>新台幣<span class="hl-red">5,000元</span>。</li><li><b>7. 次數限制：</b>保險期間內，行李損失理賠次數<span class="hl-red">最高</span>以給付<span class="hl-red">2次</span>為限。</li><li><b class="hl-blue">8. 舉例說明：</b>在法國旅遊時隨身包包遭搶走，於<span class="hl-green">24小時內</span>向當地警察機關報案，回國即可理賠<span class="hl-red">定額</span><span class="hl-red">5,000元</span>。</li>`,
+        "文件損失": `<li><b>1. 保障範圍：</b>於海外旅行期間內，本次旅程使用之「旅行文件」發生遺失或遭竊盜、強盜、搶奪。</li><li><b>2. 文件定義：</b>旅行文件係指護照、簽證及其他作為出入國境或通行之重要文件。</li><li><b>3. 啟仰條件：</b>除了文件遺失或遭竊外，被保險人必須有「重新申辦該文件」的事實與相關費用產生。</li><li><b>4. 報案時效：</b>發生遭竊或遺失事故後，請務必於<span class="hl-green">24小時內</span>向當地警政機關報案。</li><li><b>5. 給付方式：</b>採「<span class="hl-red">定額給付</span>」，不論重新申辦規費、交通費與拍照費用花費多少，皆給付固定金額。</li><li><b>6. 理賠金額：</b>每次旅行文件損失皆<span class="hl-red">定額給付</span>新台幣<span class="hl-red">3,000元</span>。</li><li><b>7. 次數限制：</b>保險期間內，旅行文件損失理賠次數<span class="hl-red">最高</span>以給付<span class="hl-red">2次</span>為限。</li><li><b class="hl-blue">8. 舉例說明：</b>在英國護照不慎遺失，前往當地警局報案並至外館重新辦理護照，回國可理賠<span class="hl-red">定額</span><span class="hl-red">3,000元</span>以彌補不便。</li>`,
+        "責任險": `<li><b>1. 保障範圍：</b>於保險期間內進行旅行時，因被保險人行為導致「第三人」死亡、體傷或財物受損。</li><li><b>2. 啟動條件：</b>被保險人依法應負民事賠償責任，且受第三人賠償請求時，保險公司依約負理賠之責。</li><li><b>3. 理賠金額：</b><span class="hl-red">最高給付</span><span class="hl-red">限額</span>為新台幣<span class="hl-red">500萬元</span>，包含民事賠償與事前經同意之訴訟費用。</li><li><b>4. 財損排除1：</b>被保險人「所有、使用或管理」之財物受損不賠（例如：打破飯店房間內的電視或弄髒床單皆不賠）。</li><li><b>5. 關係排除2：</b>被保險人「親屬、僱用人或受僱人」受傷或財物受損，不在本理賠範圍內。</li><li><b>6. 交通排除3：</b>因使用 or 管理飛機、船舶、武器、動物 or 「依法應領有牌照之車輛（如出國自駕租車）」所致者不賠。</li><li><b>7. 刑事排除：</b>因刑事責任所生之一切費用，由被保險人自行負擔，保險公司不負償還之責。</li><li><b class="hl-blue">8. 舉例說明：</b>逛街時不慎撞破店家架上昂貴藝術品，店家要求賠償<span class="hl-red">10萬元</span>，因非本人管理之財物，可啟動理賠代償<span class="hl-red">10萬元</span>。</li>`,
+        "救援標題": `<li><b>1. 保障範圍：</b>包含緊急醫療運送、遺體運返、子女看護、探病費用等四大項緊急救援保障。</li><li><b>2. 啟動前提：</b>必須經本公司簽約之「海外救援服務公司」判定，及當地主治醫生判斷同意後安排，方可啟動理賠。</li><li><b>3. 緊急醫療運送：</b>當地醫療設備不足時，由救援公司安排轉送其他醫療處所或返國，<span class="hl-red">限額</span><span class="hl-red">300萬元</span>。</li><li><b>4. 遺體運返費用：</b>若於海外不幸身故，由救援公司安排將遺體運返台灣之合理必要費用，<span class="hl-red">限額</span><span class="hl-red">300萬元</span>。</li><li><b>5. 子女看護費用：</b>因重大傷病於海外連續住院達<span class="hl-green">5日</span>，安排一位親屬前往照顧同行的15歲以下子女(同為被保險人)及返國費用，<span class="hl-red">限額</span><span class="hl-red">12萬元</span>。</li><li><b>6. 探病費用：</b>因死亡 or 重大傷病於海外連續住院達<span class="hl-green">5日</span>，安排一位親屬前往事故地照顧之交通住宿費，<span class="hl-red">限額</span><span class="hl-red">20萬元</span>。</li><li><b>7. 除外事項：</b>因法令 or 當地政府命令所致而無法運送之情事，為本保險之除外不保事項。</li><li><b class="hl-blue">8. 舉例說明：</b>在國外發生嚴重車禍致重傷，當地醫院無法醫治，經救援公司安排專機返台治療，相關運送費在<span class="hl-red">300萬</span><span class="hl-red">限額</span>內理賠。</li>`,
+        "班機改降": `<li><b>1. 保障範圍：</b>於海外旅行期間內，搭乘定期航班起飛後，因天氣因素或機械故障，導致「改降落」於非原定降落機場。</li><li><b>2. 給付方式：</b>採「<span class="hl-red">定額給付</span>」，給付固定保險金以補償旅程不便。</li><li><b>3. 理賠金額：</b>每次事故<span class="hl-red">定額給付</span>新台幣<span class="hl-red">5,000元</span>。</li><li><b>4. 次數限制：</b>保險期間內<span class="hl-red">最高</span>以給付<span class="hl-red">2次</span>為限。</li><li><b>5. 特殊規定：</b>若定期航班改降於「中華民國境內」之其他機場，則理賠金額減半（按保險金額的<span class="hl-red">50%</span>給付）。</li><li><b>6. 排除事項：</b>若班機起飛後因故「返回起飛機場」，不屬於本項班機改降補償的理賠範圍。</li>`,
+        "信用卡盜刷": `<li><b>1. 保障範圍：</b>於海外旅行期間內，因信用卡遺失 or 遭受竊盜、強盜、搶奪，於向發卡機構辦理掛失前<span class="hl-green">24小時內</span>遭未經授權盜刷的損失。</li><li><b>2. 啟動要件：</b>發生事故後，必須向當地警政單位報案（單純不慎遺失者免附），且依發卡機構規定辦妥掛失止付手續。</li><li><b>3. 理賠項目：</b>包含遭盜刷之金額，以及信用卡的掛失止付及申請重置費用。</li><li><b>4. 扣除額度：</b>理賠金額須先扣除信用卡發卡機構依約應承擔吸收的部份。</li><li><b>5. 理賠限額：</b><span class="hl-red">最高</span>理賠<span class="hl-red">限額</span>為新台幣<span class="hl-red">20,000元</span>。</li><li><b>6. 排除事項：</b>親屬、家屬、同居人、受僱人等冒用（除非提出告訴），或未辦理掛失止付及拒絕接受調查者，不在理賠範圍。</li>`,
+        "現金竊盜": `<li><b>1. 保障範圍：</b>於海外旅行期間內，隨身攜帶 or 置存於旅館房間內之「現金」，因遭受竊盜、強盜與搶奪事故而造成之損失。</li><li><b>2. 現金定義：</b>包含現行通用之紙幣、硬幣、支票、匯票 or 旅行支票。</li><li><b>3. 啟動要件：</b>發生事故後<span class="hl-green">24小時內</span>，必須向當地警政單位報案並取得報案證明與提列之損失清單。</li><li><b>4. 理賠限額：</b><span class="hl-red">最高</span>理賠<span class="hl-red">限額</span>為新台幣<span class="hl-red">5,000元</span>。</li><li><b>5. 排除事項1：</b>若為被保險人自身疏忽、點查錯誤 or 遺失，而非遭遇竊盜 or 搶奪事故，皆不在理賠範圍內。</li><li><b>6. 排除事項2：</b>若置於旅館房間內遭受竊盜，但當時「旅館房間未予鎖妥」亦不予理賠。</li>`,
+        "旅程取消傳染病": `<li><b>1. 啟動期間：</b>必須於預定海外旅程開始前<span class="hl-green">20日</span>至旅行期間開始時止，發生保險事故。</li><li><b>2. 承保事由1：</b>被保險人於中華民國境內被要求接受強制檢疫。</li><li><b>3. 承保事由2：</b>預定前往地點發生傳染病，且疫情被衛生機關公告達到第三級警告。</li><li><b>4. 承保事由3：</b>預定前往地點政府為防治傳染病發布命令關閉邊境，或禁止我國籍人士/航班入境。</li><li><b>5. 承保事由4：</b>搭機起飛後，目的地政府才發布禁令導致無法入境必須折返。</li><li><b>6. 給付方式：</b>採「<span class="hl-red">實支實付</span>」，賠償無法取回之預繳團費、交通、住宿及票券費用，<span class="hl-red">最高</span><span class="hl-red">限額</span><span class="hl-red">12萬元</span>。</li>`,
+        "旅程更改傳染病": `<li><b>1. 啟動期間：</b>必須於「海外旅行期間內」發生傳染病相關保險事故，導致必須更改預定旅程。</li><li><b>2. 承保事由1：</b>被保險人所處地點 or 預定前往地點發生傳染病（依WHO or 傳染病防治法規定之傳染病）。</li><li><b>3. 承保事由2：</b>被保險人於海外旅行期間被要求接受檢疫。</li><li><b>4. 除外事項：</b>被保險人違反檢疫規定 or 應採行而未採行作為所導致之費用不予理賠。</li><li><b>5. 給付方式：</b>採「<span class="hl-red">實支實付</span>」，賠付因更改行程而增加的合理交通及住宿費用，<span class="hl-red">最高</span><span class="hl-red">限額</span><span class="hl-red">12萬元</span>。</li><li><b>6. 額度限制：</b>增加的交通 or 住宿費，<span class="hl-red">最高</span>以原預定每日各增加<span class="hl-red">20%</span>為限；若無單據證明，則每日合計<span class="hl-red">最高</span>補償<span class="hl-red">上限</span><span class="hl-red">2,000元</span>。</li>`,
+        "水上交通延誤": `<li><b>1. 專屬保障：</b>專為小三通計畫設計，涵蓋離島兩岸通航航線之水上公共交通工具延誤。</li><li><b>2. 啟動條件：</b>搭乘之水上公共交通工具因故延誤，達<span class="hl-green">4小時</span>（含）以上。</li><li><b>3. 理賠金額：</b>每滿<span class="hl-green">4小時</span><span class="hl-red">定額給付</span><span class="hl-red">3,000元</span>，每次事故<span class="hl-red">最高給付</span><span class="hl-red">6,000元</span>。</li><li><b>4. 次數限制：</b>保險期間內<span class="hl-red">最高</span>以給付<span class="hl-red">2次</span>為限。</li>`,
+        "班機延誤免檢附": `<li><b>1. 條款目的：</b>簡化被保險人申請班機延誤理賠之手續與文件，提供更便捷的理賠服務。</li><li><b>2. 適用條件：</b>被保險人主動提供搭乘之定期航班資訊，且保險公司能透過系統逕行取得班機延誤資訊進行比對。</li><li><b>3. 便利措施：</b>經系統比對符合延誤標準（達<span class="hl-green">4小時</span>以上），即可免除檢附理賠申請書中部分文件（如航空業者出具之延誤證明 or 搭機證明等）。</li><li><b>4. 注意事項：</b>本附加條款為行政服務性質條款，實際理賠認定與給付標準仍依主保險契約之「班機延誤保險(<span class="hl-red">定額給付-累進式</span>)」約定辦理。</li>`,
+        "恐怖主義": `<li><b>1. 保障範圍：</b>直接 or 間接因任何恐怖主義者之行為， or 為抑制、防止、鎮壓恐怖主義行為所致之被保險人死亡 or 失能。</li><li><b>2. 恐怖主義定義：</b>任何個人 or 團體運用武力、暴力、恐嚇 or 破壞等行為以遂其政治、宗教 or 其他類似意圖之目的。</li><li><b>3. 理賠額度限制：</b>無論保險單上所載保險金額多高，其死亡給付額度<span class="hl-red">最高</span>以新台幣<span class="hl-red">200萬元</span>為限。</li><li><b>4. 失能額度計算：</b>若為失能，則以新台幣<span class="hl-red">200萬元</span>乘以失能等級對應之給付比例（<span class="hl-red">5%至100%</span>）計算。</li><li><b>5. 共保組織限制：</b>若向多家產險公司投保傷害保險恐怖主義行為保險，合計<span class="hl-red">最高</span>理賠總額仍以新台幣<span class="hl-red">200萬元</span>為限。</li>`,
+        "緊急醫療運送": `<li><b>1. 保障範圍：</b>於海外旅行期間因傷害 or 疾病接受緊急治療後，因當地醫療設備不足，需轉送其他醫療處所 or 返國接受醫療的運送費用。</li><li><b>2. 啟立條件：</b>必須經本公司簽約之海外救援服務公司判定，及被保險人主治醫師診斷同意後安排，方可啟動理賠。</li><li><b>3. 運送方式：</b>由救援公司安排，包含救護飛機、救護車、一般空中交通運輸工具、火車等適宜方式。</li><li><b>4. 理賠費用：</b>包含安排運輸， or 運送過程中必要醫療服務及醫療用品所需之費用，<span class="hl-red">最高</span><span class="hl-red">限額</span><span class="hl-red">300萬元</span>。</li>`,
+        "遺體運返": `<li><b>1. 保障範圍：</b>於海外旅行期間內，不幸因傷害 or 疾病而於海外死亡者。</li><li><b>2. 啟動條件：</b>由本公司簽約之救援服務公司安排，將被保險人遺體運返中華民國境內。</li><li><b>3. 理賠費用：</b>給付運返遺體所需之合理且必要的費用，<span class="hl-red">最高</span><span class="hl-red">限額</span><span class="hl-red">300萬元</span>。</li>`,
+        "子女看護": `<li><b>1. 啟動條件：</b>被保險人於海外旅行因重大傷病需連續住院達<span class="hl-green">5日</span>（含）以上。</li><li><b>2. 保障對象：</b>安排配偶、三親等內親屬 or 同行夥伴（以1人為限），前往照顧隨行之「<span class="hl-red">15歲</span>以下子女」並陪同返國。</li><li><b>3. 特殊限制：</b>該隨行之15歲以下子女，亦必須為本保險契約之被保險人。</li><li><b>4. 理賠項目：</b>理賠因此所生 or 增加之交通及住宿費用，<span class="hl-red">最高</span><span class="hl-red">限額</span><span class="hl-red">12萬元</span>。</li>`,
+        "探病費用": `<li><b>1. 啟動條件：</b>被保險人於海外旅行期間內死亡， or 遭受重大傷病需於海外連續住院達<span class="hl-green">5日</span>（含）以上。</li><li><b>2. 保障對象：</b>被保險人之配偶、三親等內親屬 or 同行夥伴（以1人為限）。</li><li><b>3. 理賠項目：</b>給付前往事故當地照顧被保險人 or 處理後事所支出之合理且必要的交通 or 住宿費用。</li><li><b>4. 理賠限額：</b><span class="hl-red">最高給付</span><span class="hl-red">限額</span>為新台幣<span class="hl-red">20萬元</span>。</li>`
+    };
+}
+
+const plans = {
+    "1": { name: "計畫一 (2000萬)" },
+    "2": { name: "計畫二 (1000萬)" },
+    "3": { name: "計畫三 (500萬)" },
+    "4": { name: "計畫四 (300萬)" },
+    "5": { name: "計畫五 (69萬)" },
+    "6": { name: "計畫六 (童遊)" },
+    "7": { name: "小三通計畫A" },
+    "8": { name: "小三通計畫B童遊" }
+};
+
+const rates = { 
+    "1": [
+        0,1082,1252,1416,1845,2346,2612,2814,2905,2992,3082,3174,3266,3357,3445,3543,3648,3747,3846,3945,4041,4145,4216,4284,4353,4418,4489,4563,4631,4699,4767,
+        4838,4915,4998,5074,5152,5231,5308,5387,5476,5555,5632,5710,5788,5867,5948,6024,6104,6182,6262,6338,6421,6502,6578,6656,6735,6814,6898,6972,7056,7133,
+        7186,7244,7298,7355,7410,7464,7520,7574,7631,7683,7741,7795,7852,7907,7962,8019,8071,8137,8192,8246,8301,8359,8417,8469,8525,8581,8634,8688,8745,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    ], 
+    "2": [
+        0,798,942,1080,1409,1809,2034,2194,2264,2332,2401,2474,2545,2616,2684,2757,2836,2910,2985,3058,3129,3207,3262,3313,3365,3414,3468,3525,3575,3627,3678,
+        3732,3790,3852,3908,3967,4025,4082,4142,4211,4269,4327,4385,4443,4502,4563,4618,4678,4736,4796,4852,4915,4975,5031,5089,5148,5206,5270,5324,5388,5445,
+        5483,5528,5568,5610,5652,5692,5734,5774,5817,5855,5898,5939,5982,6023,6064,6107,6145,6197,6238,6278,6320,6363,6407,6445,6487,6529,6568,6609,6651,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    ], 
+    "3": [
+        0,503,618,729,952,1244,1429,1544,1591,1640,1686,1736,1782,1830,1876,1923,1968,2015,2062,2110,2152,2201,2234,2267,2300,2332,2371,2402,2435,2471,2505,
+        2538,2577,2614,2650,2688,2722,2760,2797,2839,2880,2918,2955,2992,3027,3065,3100,3139,3173,3210,3248,3285,3323,3359,3398,3434,3470,3509,3543,3585,3619,
+        3643,3674,3696,3723,3749,3778,3804,3832,3858,3882,3912,3934,3961,3989,4014,4040,4068,4102,4127,4155,4181,4205,4239,4264,4287,4316,4341,4365,4391,4420,
+        4445,4469,4490,4513,4538,4563,4585,4607,4630,4654,4676,4703,4727,4748,4776,4797,4821,4845,4867,4892,4914,4938,4962,4984,5010,5043,5066,5089,5115,5137,
+        5151,5169,5189,5205,5224,5242,5258,5276,5292,5311,5330,5346,5362,5382,5398,5414,5431,5451,5465,5483,5500,5521,5538,5553,5572,5591,5604,5625,5641,5655,
+        5671,5683,5699,5711,5735,5752,5764,5777,5789,5802,5818,5830,5842,5856,5869,5883,5896,5910,5923,5937,5952,5964,5978,5991,6004,6019,6030,6044,6057,6072
+    ], 
+    "4": [
+        0,349,448,552,715,952,1117,1209,1241,1273,1306,1338,1369,1404,1434,1464,1497,1528,1563,1596,1622,1654,1679,1702,1723,1748,1772,1792,1817,1840,1863,
+        1886,1912,1940,1961,1986,2013,2036,2065,2096,2120,2147,2169,2199,2220,2247,2274,2298,2324,2349,2374,2399,2425,2447,2471,2498,2522,2549,2571,2602,2624,
+        2641,2661,2677,2696,2713,2731,2750,2768,2787,2805,2824,2840,2859,2877,2895,2914,2932,2959,2976,2998,3016,3035,3054,3072,3086,3104,3123,3138,3159,3177,
+        3195,3213,3228,3245,3262,3276,3293,3308,3325,3343,3358,3377,3391,3406,3426,3441,3459,3476,3492,3507,3524,3540,3557,3573,3590,3617,3630,3647,3667,3682,
+        3690,3706,3719,3729,3745,3755,3769,3779,3794,3812,3824,3836,3847,3861,3872,3886,3898,3912,3924,3933,3949,3960,3975,3988,3999,4015,4024,4038,4049,4060,
+        4071,4081,4090,4101,4121,4132,4142,4151,4161,4170,4184,4193,4200,4212,4220,4232,4240,4249,4262,4271,4284,4291,4301,4312,4321,4334,4340,4349,4360,4371
+    ], 
+    "5": [
+        0,243,338,431,560,762,909,994,1018,1038,1060,1082,1102,1126,1148,1168,1191,1212,1234,1256,1277,1299,1317,1335,1346,1363,1383,1395,1413,1431,1450,
+        1462,1481,1500,1516,1531,1549,1569,1586,1608,1628,1646,1662,1677,1695,1713,1731,1750,1763,1782,1799,1818,1833,1848,1872,1890,1908,1924,1940,1961,1979,
+        1989,2005,2014,2029,2040,2054,2065,2079,2092,2106,2117,2130,2142,2157,2168,2183,2198,2217,2231,2242,2257,2268,2284,2294,2309,2320,2335,2343,2361,2371,
+        2386,2397,2409,2419,2435,2444,2459,2467,2478,2491,2501,2516,2527,2538,2552,2564,2575,2589,2598,2613,2623,2632,2648,2656,2671,2691,2705,2714,2730,2738,
+        2746,2759,2766,2773,2788,2795,2804,2815,2824,2835,2843,2854,2863,2871,2884,2891,2898,2917,2922,2929,2943,2953,2961,2968,2982,2992,2998,3011,3019,3027,
+        3038,3044,3050,3056,3074,3088,3093,3100,3106,3113,3124,3131,3136,3145,3155,3162,3168,3177,3184,3195,3202,3207,3216,3227,3234,3241,3247,3254,3265,3272
+    ], 
+    "6": [
+        0,224,317,407,530,726,869,951,972,989,1009,1028,1045,1066,1085,1102,1123,1141,1161,1180,1199,1218,1234,1250,1260,1275,1293,1303,1319,1335,1352,
+        1362,1379,1397,1411,1424,1440,1458,1474,1494,1512,1528,1542,1556,1572,1588,1604,1621,1633,1650,1665,1682,1695,1709,1731,1747,1763,1777,1792,1811,1827,
+        1836,1850,1858,1872,1881,1894,1904,1917,1928,1941,1951,1962,1973,1987,1996,2010,2024,2042,2054,2064,2078,2087,2102,2111,2125,2134,2148,2155,2171,2180,
+        2194,2204,2215,2224,2239,2247,2261,2268,2278,2290,2298,2312,2322,2332,2345,2356,2366,2379,2387,2401,2410,2418,2433,2440,2454,2473,2486,2494,2509,2516,
+        2523,2535,2541,2548,2562,2568,2576,2587,2595,2605,2612,2623,2631,2638,2651,2657,2663,2681,2686,2692,2705,2714,2722,2728,2741,2750,2756,2768,2775,2782,
+        2793,2798,2804,2809,2827,2840,2845,2851,2857,2863,2874,2880,2885,2893,2903,2909,2915,2923,2929,2940,2946,2951,2959,2970,2976,2983,2988,2995,3005,3012
+    ],
+    "7": [
+        0, 412, 517, 626, 811, 1069, 1244, 1346, 1385, 1424, 1463, 1504, 1542, 1583, 1620, 1657, 1696, 1734, 1776, 1814, 1847, 1886, 1916, 1943, 1970, 2000, 2028, 2052, 2083, 2111, 2139,
+        2167, 2198, 2231, 2257, 2287, 2319, 2347, 2382, 2418, 2446, 2479, 2506, 2540, 2567, 2599, 2631, 2660, 2691, 2723, 2753, 2783, 2814, 2841, 2870, 2902, 2931, 2963, 2991, 3026, 3054,
+        3074, 3099, 3119, 3139, 3160, 3181, 3205, 3226, 3249, 3270, 3292, 3310, 3333, 3356, 3377, 3400, 3420, 3451, 3471, 3497, 3519, 3540, 3563, 3584, 3602, 3624, 3646, 3664, 3688, 3709,
+        3730, 3752, 3770, 3790, 3809, 3827, 3846, 3865, 3885, 3906, 3925, 3945, 3963, 3981, 4004, 4023, 4043, 4064, 4082, 4100, 4120, 4139, 4160, 4179, 4199, 4228, 4244, 4264, 4288, 4306,
+        4316, 4334, 4349, 4361, 4379, 4391, 4407, 4419, 4435, 4457, 4471, 4484, 4499, 4513, 4527, 4542, 4556, 4573, 4587, 4598, 4617, 4630, 4646, 4661, 4674, 4693, 4704, 4720, 4733, 4747,
+        4759, 4770, 4781, 4793, 4815, 4827, 4837, 4848, 4859, 4870, 4886, 4896, 4905, 4918, 4927, 4941, 4951, 4962, 4975, 4985, 4999, 5008, 5020, 5031, 5042, 5057, 5064, 5075, 5087, 5100
+    ],
+    "8": [
+        0, 287, 386, 481, 626, 843, 996, 1088, 1116, 1140, 1166, 1194, 1218, 1245, 1271, 1295, 1322, 1347, 1374, 1398, 1424, 1450, 1471, 1491, 1507, 1527, 1549, 1563, 1585, 1606, 1628,
+        1643, 1665, 1688, 1707, 1725, 1746, 1769, 1791, 1816, 1838, 1860, 1879, 1897, 1919, 1940, 1961, 1983, 2000, 2024, 2044, 2066, 2084, 2103, 2130, 2151, 2172, 2191, 2212, 2235, 2257,
+        2269, 2288, 2300, 2315, 2328, 2344, 2359, 2375, 2390, 2406, 2419, 2432, 2447, 2466, 2478, 2496, 2512, 2534, 2549, 2563, 2581, 2592, 2611, 2623, 2641, 2654, 2671, 2681, 2700, 2712,
+        2729, 2743, 2757, 2769, 2786, 2798, 2814, 2825, 2838, 2853, 2865, 2880, 2894, 2907, 2923, 2938, 2950, 2967, 2977, 2994, 3006, 3017, 3036, 3046, 3063, 3084, 3100, 3111, 3130, 3140,
+        3149, 3163, 3171, 3180, 3196, 3204, 3214, 3227, 3236, 3250, 3259, 3271, 3283, 3290, 3302, 3313, 3321, 3342, 3349, 3357, 3373, 3384, 3393, 3401, 3416, 3428, 3436, 3450, 3459, 3459,
+        3481, 3487, 3495, 3501, 3521, 3535, 3540, 3548, 3555, 3563, 3576, 3583, 3590, 3599, 3610, 3618, 3626, 3636, 3642, 3654, 3661, 3668, 3678, 3689, 3697, 3706, 3712, 3721, 3732, 3741
+    ]
+};
+
+function switchPage(p) {
+    if (p === 'edit') {
+        const pwd = prompt("請輸入密碼：");
+        if (pwd !== '362963') return;
+    }
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + p)?.classList.add('active');
+    document.getElementById('btn-' + p)?.classList.add('active');
+    if (p === 'rates') renderRateTable();
+    if (p === 'edit') renderEditor();
+    if (p === 'prop') calculateAll();
+}
+
+function toggleNavTabs() {
+    const nav = document.getElementById('mainNavTabs');
+    const btn = document.getElementById('btn-toggle-nav');
+    if (!nav || !btn) return;
+    if (nav.style.display === 'none' || nav.style.display === '') {
+        nav.style.display = 'flex';
+        btn.innerText = '🔼 隱藏頂部選單';
+        btn.classList.add('active');
+    } else {
+        nav.style.display = 'none';
+        btn.innerText = '⚙️ 顯示頂部選單';
+        btn.classList.remove('active');
+    }
+}
+
+function toggleCustName() {
+    const group = document.getElementById('custNameGroup');
+    const btn = document.getElementById('btn-toggle-cust');
+    if (!group) return;
+    if (group.style.display === 'none' || group.style.display === '') {
+        group.style.display = 'flex';
+        if (btn) {
+            btn.innerText = '👤 隱藏客戶姓名';
+            btn.classList.add('active');
+        }
+    } else {
+        group.style.display = 'none';
+        if (btn) {
+            btn.innerText = '👤 顯示客戶姓名';
+            btn.classList.remove('active');
+        }
+    }
+}
+
+function onInputUpdate(idOrEl) {
+    const el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+    if (!el) return;
+    el.classList.remove('initial-bg', 'error-bg', 'valid-bg');
+    
+    if (el.id === 'planSelect' || el.classList.contains('plan-select')) {
+        const destSelect = document.getElementById('destRegion') || document.querySelector('.dest-region-select');
+        if (destSelect && (el.value === "7" || el.value === "8")) {
+            destSelect.value = "1";
+            destSelect.classList.remove('initial-bg', 'error-bg');
+            destSelect.classList.add('valid-bg');
+        }
+    }
+
+    if (el.id === 'tripDays' || el.classList.contains('trip-days-input')) {
+        const numVal = parseInt(el.value) || 0;
+        const warningEl = document.getElementById('dayWarning') || document.querySelector('.dayWarningClass');
+        const planSelect = document.getElementById('planSelect') || document.querySelector('.plan-select');
+        const pId = planSelect ? planSelect.value : "3";
+        const maxDays = (pId === "1" || pId === "2") ? 89 : 180;
+        
+        if (numVal > maxDays || numVal < 1) { 
+            el.classList.add('error-bg'); 
+            if (warningEl) {
+                if (numVal > 89 && (pId === "1" || pId === "2")) {
+                    warningEl.innerText = "⚠️ 計畫一/二超過89天需另行報價";
+                } else {
+                    warningEl.innerText = "⚠️ 超過180天需另行報價";
+                }
+                warningEl.style.display = 'block'; 
+            }
+        } else { 
+            el.classList.add('valid-bg'); 
+            if (warningEl) warningEl.style.display = 'none'; 
+        }
+    } else {
+        if (!el.value) el.classList.add('initial-bg'); else el.classList.add('valid-bg');
+    }
+    calculateAll();
+}
+
+function initLinks() {
+    ['童遊標題', '旅平標題', '新個人旅行不便'].forEach(key => {
+        const a = document.getElementById('link-' + key);
+        if (a && URL_CONFIG[key]) a.href = URL_CONFIG[key].url;
+    });
+}
+
+let isShowingAllPlans = false;
+
+function highlightColumn(planId) {
+    for (let i = 1; i <= 8; i++) {
+        const col = document.getElementById('col-plan-' + i) || document.querySelector('col.plan-col-' + i);
+        if (col) col.style.backgroundColor = 'transparent';
+    }
+    if (planId && isShowingAllPlans) {
+        const targetCol = document.getElementById('col-plan-' + planId) || document.querySelector('col.plan-col-' + planId);
+        if (targetCol) targetCol.style.backgroundColor = 'rgba(253, 224, 71, 0.4)'; 
+    }
+}
+
+function toggleAllPlans() {
+    const btn = document.getElementById('btn-toggle-all-plans') || document.querySelector('.btn-toggle-all-plans');
+    const tableElem = document.querySelector('.img-table');
+    if (!tableElem || !btn) return;
+
+    isShowingAllPlans = !isShowingAllPlans;
+    
+    if (isShowingAllPlans) {
+        tableElem.classList.add('show-all-plans');
+        btn.innerText = '👁️ 隱藏其他計畫';
+        btn.classList.add('active');
+    } else {
+        tableElem.classList.remove('show-all-plans');
+        btn.innerText = '👀 顯示所有計畫';
+        btn.classList.remove('active');
+    }
+    calculateAll(); 
+}
+
+function calculateAll() {
+    const destSelect = document.getElementById('destRegion') || document.querySelector('.dest-region-select');
+    const planSelect = document.getElementById('planSelect') || document.querySelector('.plan-select');
+    const daysInput = document.getElementById('tripDays') || document.querySelector('.trip-days-input');
+    
+    const pId = planSelect ? (planSelect.value || "3") : "3";
+    const days = daysInput ? (parseInt(daysInput.value) || 0) : 5;
+
+    const infoElem = document.getElementById('planSummaryInfo') || document.querySelector('.planSummaryInfoClass');
+    const tableElem = document.querySelector('.img-table');
+    const isReady = (destSelect && planSelect && days > 0);
+    
+    if (tableElem) {
+        for (let i = 1; i <= 8; i++) {
+            tableElem.classList.remove('show-plan-' + i);
+        }
+        
+        const rowTongYou = document.getElementById('row-tongyou') || document.querySelector('.row-tongyou');
+        const btnTongYou = document.getElementById('btn-toggle-tongyou') || document.querySelector('.btn-toggle-tongyou');
+        
+        if (isReady && pId !== "") {
+            if(infoElem) infoElem.style.display = 'inline-block';
+            const p = plans[pId];
+            let premium = (days > 180 || !rates[pId] || !rates[pId][days]) ? 0 : (rates[pId][days] || 0);
+            if (premium > 0) {
+                if(infoElem) infoElem.innerHTML = `【${p.name}】 | 保費試算：<span class="premium-val-inline">${premium.toLocaleString()} 元</span>`;
+            } else {
+                if(infoElem) infoElem.innerHTML = `【${p.name}】 | 保費試算：<span class="premium-val-inline">需另行報價</span>`;
+            }
+            tableElem.classList.add('show-plan-' + pId);
+            
+            highlightColumn(pId);
+            
+            if (pId === "6" || pId === "8") {
+                if(rowTongYou) rowTongYou.style.display = 'table-row';
+                if(btnTongYou) {
+                    btnTongYou.innerText = '👦 隱藏童遊專案';
+                    btnTongYou.classList.add('active');
+                }
+            } else {
+                if(rowTongYou) rowTongYou.style.display = 'none';
+                if(btnTongYou) {
+                    btnTongYou.innerText = '👦 顯示童遊專案';
+                    btnTongYou.classList.remove('active');
+                }
+            }
+        } else { 
+            if(infoElem) infoElem.style.display = 'none'; 
+            tableElem.classList.add('show-plan-3'); 
+            highlightColumn(null);
+            
+            if(rowTongYou) rowTongYou.style.display = 'none';
+            if(btnTongYou) {
+                btnTongYou.innerText = '👦 顯示童遊專案';
+                btnTongYou.classList.remove('active');
+            }
+        }
+    }
+
+    let ratioMultiplier = 1;
+    let ratioText = "1";
+
+    if (destSelect) {
+        if (destSelect.selectedIndex === 2 || destSelect.value.indexOf("200") !== -1 || destSelect.value === "2") {
+            ratioMultiplier = 2;
+            ratioText = "2";
+        } else if (destSelect.selectedIndex === 3 || destSelect.value.indexOf("300") !== -1 || destSelect.value === "3") {
+            ratioMultiplier = 3;
+            ratioText = "3";
+        }
+    }
+
+    const ratioLabelText = ratioMultiplier > 1 ? `(乘上 ${ratioText} 倍)` : "";
+    
+    ['label-hosp-ratio', 'label-opd-ratio', 'label-er-ratio'].forEach(className => {
+        const el = document.getElementById(className) || document.querySelector('.' + className);
+        if (el) el.innerText = ratioLabelText;
+    });
+
+    const formatMoney = (valInWan) => {
+        const val = Number(valInWan.toFixed(3)); 
+        if (val >= 1) {
+            return `${val}萬`;
+        } else {
+            return `${Math.round(val * 10)}仟`;
+        }
+    };
+
+    const baseLimits = { "1": 100, "2": 100, "3": 50, "4": 20, "5": 10, "6": 10, "7": 20, "8": 10 };
+
+    for (let i = 1; i <= 8; i++) {
+        const base = baseLimits[i];
+        
+        const tdHosp = document.getElementById(`td-hosp-${i}`) || document.querySelector(`.td-hosp-${i}`);
+        if(tdHosp) tdHosp.innerHTML = `<span class="hl-blue">${formatMoney(base * ratioMultiplier)}</span>`;
+        
+        const tdOpd = document.getElementById(`td-opd-${i}`) || document.querySelector(`.td-opd-${i}`);
+        if(tdOpd) tdOpd.innerHTML = `<span class="hl-blue">${formatMoney(base * ratioMultiplier * 0.03)}</span>`;
+        
+        const tdEr = document.getElementById(`td-er-${i}`) || document.querySelector(`.td-er-${i}`);
+        if(tdEr) tdEr.innerHTML = `<span class="hl-blue">${formatMoney(base * ratioMultiplier * 0.1)}</span>`;
+    }
+}
+
+function openModal(key) {
+    const title = URL_CONFIG[key] && URL_CONFIG[key].name ? URL_CONFIG[key].name : key;
+    const titleEl = document.getElementById('infoTitle');
+    if (titleEl) titleEl.innerText = title;
+    
+    const dynamicDescriptions = getDynamicDescriptions();
+    const content = dynamicDescriptions[key] || "<li>詳見保單條款。</li>";
+    
+    const contentEl = document.getElementById('infoContent');
+    if (contentEl) contentEl.innerHTML = content;
+    
+    const overlay = document.getElementById('modalOverlay');
+    const modal = document.getElementById('infoModal');
+    if (overlay) overlay.style.display = 'block';
+    if (modal) modal.style.display = 'block';
+}
+
+function closeModal() {
+    const overlay = document.getElementById('modalOverlay');
+    const modal = document.getElementById('infoModal');
+    if (overlay) overlay.style.display = 'none';
+    if (modal) modal.style.display = 'none';
+}
+
+function renderRateTable() {
+    const b = document.getElementById('rateMatrixBody');
+    if (!b) return;
+    b.innerHTML = '';
+    for (let d = 1; d <= 180; d++) {
+        const r1 = rates["1"][d] ? rates["1"][d] : '-';
+        const r2 = rates["2"][d] ? rates["2"][d] : '-';
+        const r3 = rates["3"][d] ? rates["3"][d] : '-';
+        const r4 = rates["4"][d] ? rates["4"][d] : '-';
+        const r5 = rates["5"][d] ? rates["5"][d] : '-';
+        const r6 = rates["6"][d] ? rates["6"][d] : '-';
+        const r7 = rates["7"][d] ? rates["7"][d] : '-';
+        const r8 = rates["8"][d] ? rates["8"][d] : '-';
+        b.innerHTML += `<tr><td>${d}天</td><td>${r1}</td><td>${r2}</td><td>${r3}</td><td>${r4}</td><td>${r5}</td><td>${r6}</td><td>${r7}</td><td>${r8}</td></tr>`;
+    }
+}
+
+function renderEditor() {
+    const b = document.getElementById('editorBody'); 
+    if (!b) return;
+    b.innerHTML = '';
+    Object.keys(URL_CONFIG).forEach(k => {
+        b.innerHTML += `<tr><td>${k}</td><td><input style="width:100%" onchange="URL_CONFIG['${k}'].url=this.value" value="${URL_CONFIG[k].url}"></td></tr>`;
+    });
+}
+
+function applyAndDownload() {
+    let html = document.documentElement.outerHTML;
+    const startIdx = html.indexOf('/*CONFIG_START*/');
+    const endIdx = html.indexOf('/*CONFIG_END*/') + '/*CONFIG_END*/'.length;
+    if (startIdx === -1 || endIdx === -1) {
+        alert("原始設定區塊損毀，無法儲存");
+        return;
+    }
+    const newCfg = `/*CONFIG_START*/\nconst URL_CONFIG = ${JSON.stringify(URL_CONFIG, null, 4)};\n/*CONFIG_END*/`;
+    html = html.substring(0, startIdx) + newCfg + html.substring(endIdx);
+    const blob = new Blob(['<!DOCTYPE html>\n' + html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "金平安6.0保險內容概覽_更新版.html";
+    a.click();
+}
+
+function updateSummary() { 
+    const el = document.getElementById('custName') || document.querySelector('.cust-name-input');
+    const n = el ? el.value : "";
+    const baseText = "本表格可協助您快速了解保障內容，但正確數據應以保險公司條款為準。";
+    const disp = document.getElementById('displayName') || document.querySelector('.displayNameClass');
+    if (disp) disp.innerText = n ? (n + " 您好！" + baseText) : baseText;
+}
+
+function toggleTongYou() {
+    const row = document.getElementById('row-tongyou') || document.querySelector('.row-tongyou');
+    const btn = document.getElementById('btn-toggle-tongyou') || document.querySelector('.btn-toggle-tongyou');
+    if (!row || !btn) return;
+
+    if (row.style.display === 'none' || row.style.display === '') {
+        row.style.display = 'table-row';
+        btn.innerText = '👦 隱藏童遊專案';
+        btn.classList.add('active');
+    } else {
+        row.style.display = 'none';
+        btn.innerText = '👦 顯示童遊專案';
+        btn.classList.remove('active');
+    }
+}
+
+function initApp() {
+    initLinks();
+    calculateAll();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
+window.onload = initApp;
+
+</script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金平安PRO6 FAQ 查詢工具 (教材原文 RWD 版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --primary-blue: #1d4ed8;
+            --hover-purple: #9333ea;
+            --negative-red: #ef4444;
+            --content-orange: #fff7ed; /* orange-50 改為稍深的背景 */
+            --border-orange: #fed7aa;
+        }
+
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            overflow-x: hidden;
+            background-color: #f8fafc;
+        }
+        
+        /* 否定語句標紅 */
+        .negative-text { color: var(--negative-red); font-weight: bold; }
+        
+        /* 風琴式標題框架懸停效果 */
+        .accordion-header {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--primary-blue);
+            transform-origin: center;
+        }
+        
+        @media (hover: hover) {
+            .accordion-header:hover {
+                background-color: var(--hover-purple) !important;
+                color: white !important;
+                transform: scale(1.05); /* 手機版建議 1.05 較不影響佈局，電腦版可設 1.1 */
+                z-index: 20;
+                box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.3);
+            }
+        }
+
+        /* 風琴式過渡動畫 */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .section-active .accordion-content {
+            max-height: 8000px; /* 足夠大的數值容納長內容 */
+        }
+
+        /* 3D 翻轉按鈕 */
+        .flip-card {
+            perspective: 1000px;
+            width: 140px;
+            height: 48px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px; /* 膠囊型 */
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .flip-card-front {
+            background-color: #22c55e; /* 綠色 */
+        }
+        .flip-card-back {
+            background-color: #78350f; /* 咖啡色 (較深) */
+            transform: rotateY(180deg);
+        }
+
+        /* FAQ 內容填滿效果 */
+        .faq-item-box {
+            background-color: #ffedd5; /* 橙色填滿 */
+            border: 1px solid var(--border-orange);
+        }
+
+        /* RWD 標題縮放 */
+        @media (max-width: 640px) {
+            .header-title { font-size: 1.25rem; }
+            .section-title { font-size: 1.125rem; }
+        }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <!-- 頂部控制列 -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 px-4 py-3 md:py-4 border-b border-slate-100">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <h1 class="header-title text-xl md:text-2xl font-black text-blue-700 flex items-center gap-2">
+                <i class="fas fa-shield-halved text-blue-600"></i> 金平安PRO6 承保項目各種 Q&A
+            </h1>
+            
+            <!-- 翻轉按鈕 -->
+            <div class="flip-card" id="globalToggle" onclick="toggleAll()">
+                <div class="flip-card-inner" id="flipInner">
+                    <div class="flip-card-front">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                        全部展開
+                    </div>
+                    <div class="flip-card-back">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        全部收闔
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6">
+        
+        <!-- 1. 投保規定與一般原則 -->
+        <div class="faq-section bg-white rounded-2xl shadow-sm border border-slate-200" id="sec-1">
+            <button onclick="toggleSection('sec-1')" class="accordion-header w-full text-left px-5 md:px-8 py-4 md:py-5 bg-blue-50 rounded-2xl flex justify-between items-center outline-none">
+                <span class="section-title text-lg md:text-xl font-bold">1. 投保規定與一般原則</span>
+                <i class="fas fa-plus transition-transform duration-300"></i>
+            </button>
+            <div class="accordion-content">
+                <div class="p-4 md:p-8 space-y-6">
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">案例一：未滿15足歲孩童投保注意事項</p>
+                        <p class="text-sm font-bold text-slate-800 mb-2">問：倘若家中未滿15足歲孩童已投保意外傷害保險喪葬費用保險金達新台幣69萬元,是否還能投保金平安PRO6專案計劃五呢?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">答：無法再投保金平安PRO6專案計劃五</span><br><br>依《保險法》第107條規定,為保障孩童權益,未滿15足歲之被保險人投保傷害保險(含旅行平安保險),累計喪葬費用(含南山產物及保險業)不得超過遺產及贈與稅法第十七條有關遺產稅喪葬費扣除額之一半(現行為69萬元)。另外,提醒未滿15足歲被保險人旅行平安保險投保家數(含南山產物),<span class="negative-text">不得超過2家保險公司</span>。<br>建議可投保計劃六增加傷害醫療保險,讓保障更提升。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 1：海外旅行不便保險承保項目有哪些?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">答：1. 旅程取消保險(實支實付)、2. 班機延誤保險(定額給付-累進式)、3. 旅程更改保險(實支實付)、4. 行遞延誤保險(定額給付)、5. 行李損失保險(定額給付)、6. 旅行文件損失保險(定額給付)</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 2：海外旅行不便保險,旅程取消保險及旅程更改保險是實支實付型商品,可以副本收據申請理賠嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:不行。</span><br>財產保險適用損害填補原則,旅遊不便險中的各項費用補償保險金,其保險金額係以實損實賠為基礎,請檢附正式收據申請。如損失已獲賠償(損害已獲得填補),<span class="negative-text">保單將不再賠付</span>。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 旅程取消保險 -->
+        <div class="faq-section bg-white rounded-2xl shadow-sm border border-slate-200" id="sec-2">
+            <button onclick="toggleSection('sec-2')" class="accordion-header w-full text-left px-5 md:px-8 py-4 md:py-5 bg-blue-50 rounded-2xl flex justify-between items-center outline-none">
+                <span class="section-title text-lg md:text-xl font-bold">2. 旅程取消保險</span>
+                <i class="fas fa-plus transition-transform duration-300"></i>
+            </button>
+            <div class="accordion-content">
+                <div class="p-4 md:p-8 space-y-6">
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 3：我在旅程開始前七日因急性闌尾炎住院手術,診斷書上載明『不宜出國』,是否符合旅程取消?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:不符合。</span><br>被保險人於預定海外旅程開始前20日至海外旅行期間開始前,因被保險人、配偶或三親等內親屬病危,且檢具醫師開立之「病危通知書」,旅程取消保險才會啟動。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 4：我的父親病危,我想取消三周後預定出國的行程,可以啟動旅程取消保險嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:不行。</span><br>被保險人於預定海外旅程開始20日起至海外旅行期間開始時止,因被保險人、配偶或三親等內親屬死亡或病危者,旅程取消保險才會啟動。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 班機延誤保險 -->
+        <div class="faq-section bg-white rounded-2xl shadow-sm border border-slate-200" id="sec-3">
+            <button onclick="toggleSection('sec-3')" class="accordion-header w-full text-left px-5 md:px-8 py-4 md:py-5 bg-blue-50 rounded-2xl flex justify-between items-center outline-none">
+                <span class="section-title text-lg md:text-xl font-bold">3. 班機延誤保險</span>
+                <i class="fas fa-plus transition-transform duration-300"></i>
+            </button>
+            <div class="accordion-content">
+                <div class="p-4 md:p-8 space-y-6">
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 5：颱風來臨,我在家收到航空公司通知班機暫時無法起飛,可以啟動班機延誤保險嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:只要於保險期間內,實際搭乘航班較預定航班延誤四小時以上者,可以啟動班機延誤保險。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 6：我要從美國回台灣,途中經香港轉機,但美國到香港的班機延誤9個小時,導致我趕不上原定香港回台灣的班機,可以申請幾次班機延誤保險?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:一次。每次事故最高8小時。<br>因前班班機延誤/取消所致轉接班機之失接,視為同一延誤事故。<br>* 出發之時:指飛機離開閘口之時(電子機票上的起飛時間係飛機離開閘口的時間)</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 7：我提前收到班機的取消通知,航空公司安排的替代航班比原班機提早了2個小時,可以申請班機延誤保險金嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:不行。</span><br>實際搭乘的航班較原預定航班延誤四小時以上者,才會賠付班機延誤保險金。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 旅程更改保險 -->
+        <div class="faq-section bg-white rounded-2xl shadow-sm border border-slate-200" id="sec-4">
+            <button onclick="toggleSection('sec-4')" class="accordion-header w-full text-left px-5 md:px-8 py-4 md:py-5 bg-blue-50 rounded-2xl flex justify-between items-center outline-none">
+                <span class="section-title text-lg md:text-xl font-bold">4. 旅程更改保險</span>
+                <i class="fas fa-plus transition-transform duration-300"></i>
+            </button>
+            <div class="accordion-content">
+                <div class="p-4 md:p-8 space-y-6">
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 8：我在中國旅行,因颱風因素,航空公司安排班機提前一天起飛,最後一天的住宿費用如果無法退費,旅程更改可以理賠嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:無法理賠。</span><br>旅程更改賠付因保險事故致更改預定旅程因而增加之交通或住宿費用。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 9：旅程更改的保額12萬,是定額給付嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:不是。</span><br>旅程更改保險係填補實際損失之商品,申請理賠時應檢具費用單據正本。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 10：我在海外旅行期間,因為天災而必須多待在國外一晚,同行夥伴與我共計五人,新增了一間四人房及一間雙人房的住宿費用,是否可以獲得全額理賠?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:所增加之住宿費用,以原預定之住宿同等級之費用為限,且應扣除可以由旅館業者、住宿業者處獲得之退款,並依人數比例計算保險金。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 行李與文件保障 -->
+        <div class="faq-section bg-white rounded-2xl shadow-sm border border-slate-200" id="sec-5">
+            <button onclick="toggleSection('sec-5')" class="accordion-header w-full text-left px-5 md:px-8 py-4 md:py-5 bg-blue-50 rounded-2xl flex justify-between items-center outline-none">
+                <span class="section-title text-lg md:text-xl font-bold">5. 行李與文件保障</span>
+                <i class="fas fa-plus transition-transform duration-300"></i>
+            </button>
+            <div class="accordion-content">
+                <div class="p-4 md:p-8 space-y-6">
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">案例二：行李延誤/損失保險</p>
+                        <p class="text-sm font-bold text-slate-800 mb-4 italic">① 於海外旅行期間,隨行託運之行李延誤或損失理賠啟動要件為何?<br>② 倘若「受託運行李」,因公共交通工具業者處理失當導致毀損,是否會啟動行李損失保險?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">●行李延誤啟動要件:被保險人於海外旅行期間內,①其隨行託運並取得託運行李領取單之個人行李因公共交通工具業者之處理失當,②致其在抵達目的地六小時後仍未領得時,本公司依本保險契約約定之保險金額給付保險金。(<span class="negative-text">返國之行李延誤不負理賠責任</span>)<br>→理賠應檢附證明:①理賠申請書②公共交通工具業者所出具行李延誤證明③延誤達六小時以上之文件,必要時本公司得要求提供行李條或托運憑證。<br><br>●行李損失啟動要件:因下列事故致其所擁有且置於行李箱、手提箱或類似容器內之個人物品遭受毀損或滅失,依約定負理賠之責,但保險期間內以給付2次為限。<br>一、竊盜、強盜與搶奪。<br>二、因該公共交通工具業者處理失當所致之遺失。<br>(<span class="negative-text">不賠付因航空公司託運所致行李箱本身及其內容物的毀損。</span>)<br>→理賠應檢附證明:理賠申請書、24小時內向當地警政單位報案並取得證明或公共交通工具業者所開立之事故與損失證明。<br>(<span class="negative-text">行李箱、手提箱或類似容器為不保物</span>)</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 11：我到希臘旅行,但是行李卻在我到達希臘的隔天才送達,可以啟動行李延誤保險嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:可以的。隨身託運並取得託運行李領取單之個人行李,因公共交通工具業者之處理失當,致其在抵達目的地六小時後仍未領得者,檢具公共交通工具業者所出具行李延誤達六小時以上之文件,可申請理賠,必要時本公司得要求提供行李條或托運憑證。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 12：我回到桃園機場後沒有領到行李,隔天才送到家中,可以啟動行李延誤保險嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:不行。</span><br>被保險人於返回中華民國境內機場之行李延誤,為特別不保事項。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 13：我在法國旅行,參觀凱旋門時隨身包包被搶走,我該怎麼做?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:請於二十四小時內至當地警政單位報案並取得損失物品的報案證明。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 14：承上題,我可以取得多少保險金?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:因竊盜、強盜與搶奪所致之個人物品遭受毀損或滅失,本公司依本保險契約約定之保險金額給付保險金,給付定額五千,保險期間內以給付二次為限。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 15：我到英國旅行時,行李箱被航空公司弄壞了,可以啟動行李損失保險嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed"><span class="negative-text">A:不行。</span><br>因航空公司處理失當所致之隨行託運行李毀損非承保範圍。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. 海外突發疾病醫療 -->
+        <div class="faq-section bg-white rounded-2xl shadow-sm border border-slate-200" id="sec-6">
+            <button onclick="toggleSection('sec-6')" class="accordion-header w-full text-left px-5 md:px-8 py-4 md:py-5 bg-blue-50 rounded-2xl flex justify-between items-center outline-none">
+                <span class="section-title text-lg md:text-xl font-bold">6. 海外突發疾病醫療</span>
+                <i class="fas fa-plus transition-transform duration-300"></i>
+            </button>
+            <div class="accordion-content">
+                <div class="p-4 md:p-8 space-y-6">
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 16：「海外突發疾病」的定義?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:「海外」:係指臺灣、澎湖、金門、馬祖等由中華民國政府所轄範圍以外之地區。<br>「突發疾病」:係指被保險人需即時在醫院或診所診療始能避免損及身體健康之疾病,且在本附加保險生效前一百八十日以內,<span class="negative-text">未曾接受該疾病之診療者</span>。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 17：我在日本因突發疾病而住院治療,我的醫療保險金限額是多少?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:海外突發給付總額以本附加保險所載之「海外突發疾病醫療保險金限額」乘上「海外特定地區限額調整係數表」之調整係數所得之金額為限。<br>以計劃一為例:「海外突發疾病醫療保險金限額100萬」乘上「日本地區調整係數200%」,所得之保險限額為200萬。</p>
+                    </div>
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">FQA 18：若我因海外突發疾病住院,回國後仍身體不適返國繼續住院治療,可以申請理賠嗎?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">A:「返國後繼續住院診療」係指被保險人於海外罹患突發疾病實際住院診療而於返國前一日內始出院,並因同一突發疾病於入境後一日內住院診療。<br>被保險人於本附加保險有效期間內,在海外因突發疾病而須住院治療,且因同一突發疾病於返國後繼續住院診療者,本公司對被保險人返國後繼續住院診療所實際發生之住院醫療費用負給付責任。<br>但同一海外突發疾病於返國後繼續住院給付總額以本附加保險所載之「海外突發疾病醫療保險金限額」之百分之十為限。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. 第三人責任保險 -->
+        <div class="faq-section bg-white rounded-2xl shadow-sm border border-slate-200" id="sec-7">
+            <button onclick="toggleSection('sec-7')" class="accordion-header w-full text-left px-5 md:px-8 py-4 md:py-5 bg-blue-50 rounded-2xl flex justify-between items-center outline-none">
+                <span class="section-title text-lg md:text-xl font-bold">7. 第三人責任保險</span>
+                <i class="fas fa-plus transition-transform duration-300"></i>
+            </button>
+            <div class="accordion-content">
+                <div class="p-4 md:p-8 space-y-6">
+                    <div class="faq-item-box p-5 rounded-xl">
+                        <p class="font-black text-blue-700 mb-3 border-b border-orange-200 pb-2">案例三：第三人責任保險</p>
+                        <p class="text-sm text-slate-800 mb-4">問：第三人責任保險承保內容為何? 倘若於旅途中,無意造成住宿飯店房間內床單損壞,是否會啟動理賠?</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">1. 第三人責任保險承保內容為被保險人於保險期間內進行旅行時,因其行為致第三人死亡、體傷或財物受損,依法應負賠償責任,而受賠償請求時,本公司依本保險契約之約定,負理賠之責。<br>2. 倘若於旅途中,無意造成住宿飯店房間內床單損壞,因房內物品為被保險人使用或管理之財物,為第三人責任保險特別不保事項,<span class="negative-text">故不會啟動理賠</span>。<br><br><b>特別不保事項:</b><br>1. 被保險人親屬、僱用人或受僱人死亡、體傷或財物受有損害所致之賠償責任。<br>2. 被保險人所有、使用或管理之財物受有損害所致之賠償責任。<br>3. 被保險人以契約或協議所承受之賠償責任。<br>4. 被保險人因所有、使用或管理飛機、船舶、武器、動物或依法應領有牌照之車輛所致者。<br>5. 因交易、商業行為或執行職務行為所致者。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let isAllExpanded = false;
+
+        function toggleSection(id) {
+            const sections = document.querySelectorAll('.faq-section');
+            const target = document.getElementById(id);
+            const isAlreadyActive = target.classList.contains('section-active');
+
+            // 收合所有 (Accordion 核心邏輯)
+            sections.forEach(sec => {
+                sec.classList.remove('section-active');
+                const icon = sec.querySelector('.fas');
+                icon.className = 'fas fa-plus transition-transform duration-300';
+            });
+
+            // 如果原本不是展開的，則展開點擊的這個
+            if (!isAlreadyActive) {
+                target.classList.add('section-active');
+                const icon = target.querySelector('.fas');
+                icon.className = 'fas fa-minus transition-transform duration-300';
+            }
+            
+            // 重置按鈕狀態
+            isAllExpanded = false;
+            document.getElementById('globalToggle').classList.remove('is-flipped');
+        }
+
+        function toggleAll() {
+            const sections = document.querySelectorAll('.faq-section');
+            const flipCard = document.getElementById('globalToggle');
+            
+            isAllExpanded = !isAllExpanded;
+            
+            if (isAllExpanded) {
+                sections.forEach(sec => {
+                    sec.classList.add('section-active');
+                    const icon = sec.querySelector('.fas');
+                    icon.className = 'fas fa-minus transition-transform duration-300';
+                });
+                flipCard.classList.add('is-flipped');
+            } else {
+                sections.forEach(sec => {
+                    sec.classList.remove('section-active');
+                    const icon = sec.querySelector('.fas');
+                    icon.className = 'fas fa-plus transition-transform duration-300';
+                });
+                flipCard.classList.remove('is-flipped');
+            }
+        }
+    </script>
+</body>
+</html>
+<a href="金平安6.0商品與保障概覽.html"
+   style="position: fixed; top: 15px; left: 15px; z-index: 99999; width: 45px; height: 45px; background-color: #f59e0b; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: all 0.3s ease; color: white; text-decoration: none;"
+   onmouseover="this.style.transform='scale(1.1)';"
+   onmouseout="this.style.transform='scale(1)';"
+   onclick="event.preventDefault(); this.style.transition='all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'; this.style.opacity='0'; this.style.transform='scale(0.5) translateY(-20px)'; setTimeout(() => { window.location.href = this.href; }, 500);"
+   title="返回商品與保障概覽">
+   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width: 24px; height: 24px;">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+   </svg>
+</a>
