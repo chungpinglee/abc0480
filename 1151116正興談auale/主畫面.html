@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2,500 萬資產傳承與成交佈局：五大思考方向</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-paper: #FAF7F2;
+      --bg-card: #FFFFFF;
+      --bg-sage-soft: #EEF3EC;
+      --bg-amber-soft: #F9EFE4;
+      --text-ink: #2B332E;
+      --text-muted: #647068;
+      --sage-primary: #3A5A40;
+      --sage-mid: #588157;
+      --sage-light: #A3B18A;
+      --amber-accent: #C87D55;
+      --border-warm: #E6DFD3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Noto Sans TC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-paper);
+      color: var(--text-ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-serif-tc {
+      font-family: 'Noto Serif TC', Georgia, serif;
+    }
+
+    .font-num {
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+
+    /* Subtle organic paper background blobs */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .blob-1 {
+      position: absolute;
+      top: -12%;
+      right: -8%;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(163, 177, 138, 0.22) 0%, rgba(250, 247, 242, 0) 70%);
+      animation: breathe 14s ease-in-out infinite;
+    }
+
+    .blob-2 {
+      position: absolute;
+      bottom: -15%;
+      left: -10%;
+      width: 560px;
+      height: 560px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 163, 115, 0.18) 0%, rgba(250, 247, 242, 0) 70%);
+      animation: breathe 18s ease-in-out infinite reverse;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(18px, -14px) scale(1.06); }
+    }
+
+    /* Entrance & Transition Animations */
+    @keyframes fadeSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeSlideRight {
+      0% {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes zoomPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.94) translateY(14px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes thinkingPulse {
+      0% {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      35% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      75% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.03);
+      }
+    }
+
+    .anim-up {
+      opacity: 0;
+      animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .anim-right {
+      opacity: 0;
+      animation: fadeSlideRight 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .anim-pop {
+      opacity: 0;
+      animation: zoomPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .delay-1 { animation-delay: 0.06s; }
+    .delay-2 { animation-delay: 0.14s; }
+    .delay-3 { animation-delay: 0.22s; }
+    .delay-4 { animation-delay: 0.30s; }
+    .delay-5 { animation-delay: 0.38s; }
+    .delay-6 { animation-delay: 0.46s; }
+
+    /* Interactive Card Styles */
+    .literary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-warm);
+      box-shadow: 0 10px 30px -10px rgba(43, 51, 46, 0.07);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.32s ease;
+    }
+
+    .literary-card-hover:hover {
+      transform: translateY(-4px) scale(1.008);
+      box-shadow: 0 18px 38px -12px rgba(58, 90, 64, 0.16);
+      border-color: var(--sage-light);
+    }
+
+    .literary-card-hover:active {
+      transform: translateY(-1px) scale(0.995);
+    }
+
+    .hub-thinking-card {
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.28s ease,
+                  background-color 0.28s ease;
+    }
+
+    .hub-thinking-card:hover {
+      background: linear-gradient(135deg, #FDE2DC 0%, #FFF3BF 100%);
+      border-color: #2E7D32;
+      box-shadow: 0 0 0 2px #2E7D32, 0 18px 38px -12px rgba(46, 125, 50, 0.22);
+    }
+
+    .hub-thinking-text {
+      display: inline-block;
+      transform-origin: left center;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.28s ease;
+    }
+
+    .hub-thinking-card:hover .hub-thinking-text {
+      transform: scale(1.05);
+      color: #1B5E20;
+    }
+
+    .overview-focus-card {
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.28s ease,
+                  background 0.28s ease;
+    }
+
+    .overview-focus-card:hover {
+      background: linear-gradient(135deg, #F39C12 0%, #D9381E 100%);
+      border-color: #D9381E;
+      box-shadow: 0 16px 34px -10px rgba(217, 56, 30, 0.32);
+    }
+
+    .overview-focus-text {
+      display: inline-block;
+      transform-origin: left center;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.28s ease;
+    }
+
+    .overview-focus-card:hover .overview-focus-text,
+    .overview-focus-card:hover .overview-focus-meta {
+      color: #FFFFFF;
+    }
+
+    .overview-focus-card:hover .overview-focus-text {
+      transform: scale(1.05);
+    }
+
+    /* Section Transition Curtain */
+    #transition-curtain {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(250, 247, 242, 0.92);
+      backdrop-filter: blur(10px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+
+    #transition-curtain.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .curtain-badge {
+      animation: zoomPop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D4CCC0;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #B8AE9F;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen relative selection:bg-[#3A5A40]/15 selection:text-[#2B332E]">
+
+  <!-- Ambient Background -->
+  <div class="ambient-bg">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <!-- Section Transition Curtain -->
+  <div id="transition-curtain" aria-hidden="true">
+    <div id="curtain-content" class="text-center px-6 max-w-xl"></div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-[#FAF7F2]/85 border-b border-[#E6DFD3]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <!-- Left spacer -->
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0"></div>
+
+      <!-- Center: Current Flow Step Dots -->
+      <div id="flow-dots" class="hidden sm:flex items-center gap-1.5"></div>
+
+      <!-- Right: Gear Save, Slide Counter, Index Drawer, Fullscreen -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="btn-save-html" type="button" data-btn-id="btn-save-html"
+          class="inline-flex items-center justify-center w-9 h-9 rounded-full text-[#3A5A40] bg-white border border-[#E6DFD3] hover:border-[#3A5A40] hover:bg-[#EEF3EC] transition-colors cursor-pointer shadow-sm"
+          title="另存修改後的新 HTML 檔案">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+
+        <span id="header-page-badge" class="font-num text-xs sm:text-sm font-semibold text-[#3A5A40] bg-[#EEF3EC] px-3 py-1.5 rounded-full border border-[#D4E0D1]">
+          01 / 25
+        </span>
+
+        <button id="btn-toc" type="button" data-btn-id="btn-toc"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium text-[#2B332E] bg-white border border-[#E6DFD3] hover:border-[#3A5A40] hover:text-[#3A5A40] transition-colors cursor-pointer"
+          title="開啟 25 頁簡報目錄">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+          </svg>
+          <span class="hidden sm:inline">全部目錄</span>
+        </button>
+
+        <button id="btn-fullscreen" type="button"
+          class="inline-flex items-center justify-center w-9 h-9 rounded-full text-[#647068] bg-white border border-[#E6DFD3] hover:border-[#3A5A40] hover:text-[#3A5A40] transition-colors cursor-pointer"
+          title="全螢幕簡報模式">
+          <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+          </svg>
+          <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4H4m0 0l5 5m6-5v5h5m0 0l-5-5M9 15v5H4m0 0l5-5m6 5v-5h5m0 0l-5 5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Subtle Progress Bar -->
+    <div class="w-full h-1 bg-[#EDE8DF]">
+      <div id="progress-bar" class="h-full bg-gradient-to-r from-[#588157] to-[#C87D55] transition-all duration-500 ease-out" style="width: 4%;"></div>
+    </div>
+  </header>
+
+  <!-- Main Slide Stage -->
+  <main class="relative z-10 flex-1 flex flex-col justify-center py-6 sm:py-10 px-4 sm:px-6">
+    <div id="slide-stage" class="max-w-5xl w-full mx-auto"></div>
+  </main>
+
+  <!-- Bottom Presenter Controls -->
+  <footer class="relative z-30 border-t border-[#E6DFD3] bg-[#FAF7F2]/90 backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <button id="btn-prev" type="button" data-btn-id="btn-prev"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-white border border-[#E6DFD3] text-[#2B332E] hover:border-[#3A5A40] hover:text-[#3A5A40] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>上一頁</span>
+        </button>
+
+        <button id="btn-next" type="button" data-btn-id="btn-next"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-[#3A5A40] text-white hover:bg-[#2F4A34] disabled:opacity-40 disabled:pointer-events-none transition-all shadow-sm cursor-pointer">
+          <span>下一頁</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Contextual Quick Action (e.g., Return to Hub 0 or Jump to Next Thinking) -->
+      <div id="footer-context-actions" class="flex items-center gap-2 flex-wrap"></div>
+
+
+    </div>
+  </footer>
+
+  <!-- Table of Contents Modal -->
+  <div id="toc-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#2B332E]/40 backdrop-blur-sm">
+    <div class="bg-[#FAF7F2] border border-[#E6DFD3] rounded-3xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden anim-pop">
+      <div class="px-6 py-4 bg-white border-b border-[#E6DFD3] flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold tracking-wider uppercase text-[#588157]">簡報總覽目錄</span>
+          <h2 class="font-serif-tc text-xl font-bold text-[#2B332E]">2,500 萬資產傳承與成交佈局（共 25 頁）</h2>
+        </div>
+        <button id="btn-close-toc" type="button"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-[#647068] hover:bg-[#EEF3EC] hover:text-[#3A5A40] transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div id="toc-list" class="p-4 sm:p-6 overflow-y-auto space-y-2"></div>
+    </div>
+  </div>
+
+  <!-- Right-Click Button Edit Modal -->
+  <div id="btn-edit-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#2B332E]/45 backdrop-blur-sm">
+    <div class="bg-[#FAF7F2] border border-[#E6DFD3] rounded-3xl shadow-2xl w-full max-w-md overflow-hidden anim-pop">
+      <div class="px-6 py-4 bg-white border-b border-[#E6DFD3] flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold tracking-wider uppercase text-[#588157]">按鈕編輯模式</span>
+          <h3 class="font-serif-tc text-lg font-bold text-[#2B332E]">修改按鈕名稱與超連結</h3>
+        </div>
+        <button id="btn-close-edit" type="button"
+          class="w-8 h-8 rounded-full flex items-center justify-center text-[#647068] hover:bg-[#EEF3EC] hover:text-[#3A5A40] transition-colors cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <form id="btn-edit-form" class="p-6 space-y-4">
+        <div>
+          <label for="edit-btn-label" class="block text-xs font-semibold text-[#647068] mb-1.5">按鈕名稱</label>
+          <input id="edit-btn-label" type="text" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E6DFD3] text-sm text-[#2B332E] focus:outline-none focus:border-[#3A5A40]" />
+        </div>
+        <div>
+          <label for="edit-btn-url" class="block text-xs font-semibold text-[#647068] mb-1.5">超連結網址（選填，留空則維持原按鈕功能）</label>
+          <input id="edit-btn-url" type="url" placeholder="https://example.com"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#E6DFD3] text-sm text-[#2B332E] focus:outline-none focus:border-[#3A5A40]" />
+        </div>
+        <div class="pt-2 flex items-center justify-between gap-2">
+          <button id="btn-reset-edit" type="button"
+            class="px-3.5 py-2 rounded-full text-xs font-medium text-[#647068] bg-white border border-[#E6DFD3] hover:border-[#C87D55] hover:text-[#9E6240] transition-colors cursor-pointer">
+            恢復預設
+          </button>
+          <div class="flex items-center gap-2">
+            <button id="btn-cancel-edit" type="button"
+              class="px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-[#647068] bg-white border border-[#E6DFD3] hover:bg-[#FAF7F2] transition-colors cursor-pointer">
+              取消
+            </button>
+            <button type="submit"
+              class="px-5 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-[#3A5A40] hover:bg-[#2F4A34] transition-colors shadow-sm cursor-pointer">
+              儲存設定
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 hidden px-5 py-2.5 rounded-full bg-[#2B332E] text-white text-xs sm:text-sm font-medium shadow-lg"></div>
+
+  <script id="embedded-button-config" type="application/json">{}</script>
+  <script>
+    // =========================================================================
+    // 25 頁簡報逐字資料（嚴格一字不漏保留原始文字）
+    // =========================================================================
+    const THINKING_GROUPS = [
+      {
+        id: 1,
+        shortTitle: '思考一：風險診斷',
+        fullLabel: '思考一：風險診斷  —  2,500 萬移轉難題與致命盲點',
+        startSlide: 3,
+        endSlide: 6,
+        slides: [3, 4, 5, 6],
+        accent: '#3A5A40',
+        softBg: '#EEF3EC',
+        tag: 'THINKING 01'
+      },
+      {
+        id: 2,
+        shortTitle: '思考二：資產活化',
+        fullLabel: '思考二：資產活化  —  五年前超前佈局與資產創造',
+        startSlide: 7,
+        endSlide: 11,
+        slides: [7, 8, 9, 10, 11],
+        accent: '#4A6B5D',
+        softBg: '#EAF2EE',
+        tag: 'THINKING 02'
+      },
+      {
+        id: 3,
+        shortTitle: '思考三：金流落地',
+        fullLabel: '思考三：金流落地  —  移轉路徑與高齡網銀實務攻防',
+        startSlide: 12,
+        endSlide: 15,
+        slides: [12, 13, 14, 15],
+        accent: '#B56945',
+        softBg: '#F9EFE4',
+        tag: 'THINKING 03'
+      },
+      {
+        id: 4,
+        shortTitle: '思考四：契約架構',
+        fullLabel: '思考四：契約架構  —  AUALE 保單關係人與傳承配置五大核心',
+        startSlide: 16,
+        endSlide: 21,
+        slides: [16, 17, 18, 19, 20, 21],
+        accent: '#3A5A40',
+        softBg: '#EEF3EC',
+        tag: 'THINKING 04'
+      },
+      {
+        id: 5,
+        shortTitle: '思考五：成交關鍵',
+        fullLabel: '思考五：成交關鍵  —  共有產權終局處分與顧問成交護城河',
+        startSlide: 22,
+        endSlide: 24,
+        slides: [22, 23, 24],
+        accent: '#9E6240',
+        softBg: '#F7EDE2',
+        tag: 'THINKING 05'
+      }
+    ];
+
+    const SLIDES = [
+      {
+        num: 1,
+        pageLabel: '01 / 25',
+        type: 'hub',
+        groupId: 0,
+        eyebrow: '演講總覽',
+        title: '2,500 萬資產傳承與成交佈局：五大思考方向',
+        items: [
+          { groupId: 1, text: '思考一：風險診斷  —  2,500 萬移轉難題與致命盲點' },
+          { groupId: 2, text: '思考二：資產活化  —  五年前超前佈局與資產創造' },
+          { groupId: 3, text: '思考三：金流落地  —  移轉路徑與高齡網銀實務攻防' },
+          { groupId: 4, text: '思考四：契約架構  —  AUALE 保單關係人與傳承配置五大核心' },
+          { groupId: 5, text: '思考五：成交關鍵  —  共有產權終局處分與顧問成交護城河' }
+        ]
+      },
+      {
+        num: 2,
+        pageLabel: '02 / 25',
+        type: 'background',
+        groupId: 0,
+        eyebrow: '背景說明',
+        title: '個案緣起：家族背景與傳承初衷',
+        sections: [
+          {
+            heading: '傳承初衷',
+            bullets: [
+              '• 日前決定處分台北市老宅扣除相關費用稅負後約有2500萬現金。'
+            ]
+          },
+          {
+            heading: '家族結構',
+            bullets: [
+              '• 育有兄弟二人，弟弟不幸早逝，留有遺孀（媳婦）及孫子女。',
+              '• 哥哥孝順值得託付，但目前名下背負 800 萬元貸款。'
+            ]
+          },
+          {
+            heading: '核心矛盾',
+            bullets: [
+              '• 媳婦平日不孝，老父母態度堅決，名下財產一心只想全額留給哥哥，並協助減輕其財務壓力。'
+            ]
+          }
+        ]
+      },
+      {
+        num: 3,
+        pageLabel: '03 / 25',
+        type: 'overview',
+        groupId: 1,
+        eyebrow: '思考方向導覽',
+        title: '思考一：風險診斷——2,500 萬資產移轉的致命盲點',
+        focusHeader: ['THINKING 01', 'FOCUS POINTS', '本思考方向共包含 3 項核心關鍵剖析。'],
+        focusItems: [
+          { targetSlide: 4, text: '01  個案現況：2,500 萬資產移轉難題' },
+          { targetSlide: 5, text: '02  盲點一：無法迴避的代位繼承特留分' },
+          { targetSlide: 6, text: '03  盲點二：直接贈與最大風險——白髮人送黑髮人' }
+        ]
+      },
+      {
+        num: 4,
+        pageLabel: '04 / 25',
+        type: 'points',
+        groupId: 1,
+        eyebrow: '思考一：風險診斷',
+        title: '2,500 萬資產移轉：如果你是顧問，這一步怎麼走？',
+        points: [
+          { num: '01', text: '處分老宅結餘約 2,500 萬現金；老夫妻名下仍有一棟自住共有老屋' },
+          { num: '02', text: '父母堅決排除另一房繼承，只想全數移轉給值得託付的大兒子' }
+        ]
+      },
+      {
+        num: 5,
+        pageLabel: '05 / 25',
+        type: 'points',
+        groupId: 1,
+        eyebrow: '思考一：風險診斷',
+        title: '傳統繼承的致命引信：無法迴避的法定特留分',
+        points: [
+          { num: '01', text: '弟弟早逝，其子女依法享有代位繼承權（形成兩房繼承局面）' },
+          { num: '02', text: '身後若走法定繼承（資產以 3,000 萬計），另一房依法至少主張 500 萬特留分' }
+        ],
+        hasChartButton: true
+      },
+      {
+        num: 6,
+        pageLabel: '06 / 25',
+        type: 'points',
+        groupId: 1,
+        eyebrow: '思考一：風險診斷',
+        title: '直接贈與的最大風險：萬一大兒子先走怎麼辦？',
+        points: [
+          { num: '01', text: '全額直接贈與老大，若老大不幸早逝，資產依法全數由兒媳與孫子繼承' },
+          { num: '02', text: '老父母恐面臨「白髮人送黑髮人、養老金全空」之人財兩失絕境' }
+        ]
+      },
+      {
+        num: 7,
+        pageLabel: '07 / 25',
+        type: 'overview',
+        groupId: 2,
+        eyebrow: '思考方向導覽',
+        title: '思考二：資產活化——這 2,500 萬是怎麼長出來的？',
+        focusHeader: ['THINKING 02', 'FOCUS POINTS', '本思考方向共包含 4 項核心關鍵剖析。'],
+        focusItems: [
+          { targetSlide: 8, text: '01  成交真相：這筆錢不是原本就在的' },
+          { targetSlide: 9, text: '02  第一步：華南銀行「以房養老」創造現金流' },
+          { targetSlide: 10, text: '03  第二步：修繕加包租代管，月現金流突破 10 萬' },
+          { targetSlide: 11, text: '04  五年期滿：老宅 2,860 萬獲利出場，完美對沖貸款' }
+        ]
+      },
+      {
+        num: 8,
+        pageLabel: '08 / 25',
+        type: 'points',
+        groupId: 2,
+        eyebrow: '思考二：資產活化',
+        title: '解密成交真相：這筆錢不是原本就在的',
+        points: [
+          { num: '01', text: '2,500 萬源自顧問五年前協助活化死資產的成果，非客戶原本即有的現款' },
+          { num: '02', text: '30 年信任為基礎，先解決客戶資產困局，再啟動傳承規劃' }
+        ]
+      },
+      {
+        num: 9,
+        pageLabel: '09 / 25',
+        type: 'points',
+        groupId: 2,
+        eyebrow: '思考二：資產活化',
+        title: '五年前第一步：華南銀行「以房養老」創造現金流',
+        points: [
+          { num: '01', text: '老宅破敗且長達 5 年無法出租，老夫妻退休缺乏穩定現金流' },
+          { num: '02', text: '華南銀行鑑價 2,300 萬、貸 1,471 萬、利率 1.94%，辦理 20 年以房養老，每月給付約 6 萬元' }
+        ]
+      },
+      {
+        num: 10,
+        pageLabel: '10 / 25',
+        type: 'points',
+        groupId: 2,
+        eyebrow: '思考二：資產活化',
+        title: '五年前第二步：修繕加包租代管，月現金流突破 10 萬',
+        points: [
+          { num: '01', text: '投入小額費用修繕老宅，引進長期合作之專業包租代管業者' },
+          { num: '02', text: '簽訂 5 年合約，每月保證租金 42,000 元；兩筆金流合計每月破 10 萬元' }
+        ]
+      },
+      {
+        num: 11,
+        pageLabel: '11 / 25',
+        type: 'points',
+        groupId: 2,
+        eyebrow: '思考二：資產活化',
+        title: '五年合約期滿：老宅 2,860 萬獲利出場',
+        points: [
+          { num: '01', text: '老宅以 2,860 萬售出，五年間上漲之房價全數清償以房養老借貸本息與稅費' },
+          { num: '02', text: '處分淨結餘 2,000 多萬，加上存款匯聚為 2,500 萬元現金' }
+        ]
+      },
+      {
+        num: 12,
+        pageLabel: '12 / 25',
+        type: 'overview',
+        groupId: 3,
+        eyebrow: '思考方向導覽',
+        title: '思考三：金流落地——移轉金流路徑與高齡網銀實務攻防',
+        focusHeader: ['THINKING 03', 'FOCUS POINTS', '本思考方向共包含 3 項核心關鍵剖析。'],
+        focusItems: [
+          { targetSlide: 13, text: '01  移轉第一步：善用配偶免稅，將母親資金拆分至父親' },
+          { targetSlide: 14, text: '02  移轉第二步：雙親分年贈與兒子，設定孝親生活費回流' },
+          { targetSlide: 15, text: '03  移轉第三步：突破銀行高齡網銀的「防詐阻詐審查」' }
+        ]
+      },
+      {
+        num: 13,
+        pageLabel: '13 / 25',
+        type: 'points',
+        groupId: 3,
+        eyebrow: '思考三：金流落地',
+        title: '移轉第一步：善用配偶免稅，將母親資金拆分至父親',
+        points: [
+          { num: '01', text: '售屋款全數集中於母親帳戶，首步透過「配偶相互贈與免稅」拆分至父親' },
+          { num: '02', text: '雙親每人每年各 244 萬免稅額，倍增為每年 488 萬元免稅贈與額度' }
+        ]
+      },
+      {
+        num: 14,
+        pageLabel: '14 / 25',
+        type: 'points',
+        groupId: 3,
+        eyebrow: '思考三：金流落地',
+        title: '移轉第二步：雙親分年贈與兒子，設定孝親生活費回流',
+        points: [
+          { num: '01', text: '雙親每年分批將資金匯入大兒子帳戶，作為保費與資產傳承主體' },
+          { num: '02', text: '大兒子帳戶每月定期轉帳生活費給父母，落實「名義傳承，實質奉養」' }
+        ]
+      },
+      {
+        num: 15,
+        pageLabel: '15 / 25',
+        type: 'points',
+        groupId: 3,
+        eyebrow: '思考三：金流落地',
+        title: '移轉第三步：突破銀行高齡網銀的「防詐阻詐審查」',
+        points: [
+          { num: '01', text: '高齡長輩不擅網銀須由兒子代操；但長輩臨櫃開大額約轉極易遭防詐阻擋' },
+          { num: '02', text: '實務對策：兒子親自陪同，指名長期往來、深具信任之行庫分行事前溝通' }
+        ]
+      },
+      {
+        num: 16,
+        pageLabel: '16 / 25',
+        type: 'overview',
+        groupId: 4,
+        eyebrow: '思考方向導覽',
+        title: '思考四：契約架構——AUALE 保單傳承配置五大核心',
+        focusHeader: ['THINKING 04', 'FOCUS POINTS', ''],
+        focusItems: [
+          { targetSlide: 17, text: '01  要保人／被保人配置：合法阻隔遺產稅' },
+          { targetSlide: 18, text: '02  還本受益人配置：名義移轉，養老生活費主控權不失' },
+          { targetSlide: 19, text: '03  身故受益人配置：嚴防白髮人送黑髮人' },
+          { targetSlide: 20, text: '04  法律效益：架構性瓦解代位繼承特留分' },
+          { targetSlide: 21, text: '05  世代傳承：孫子生日紅包 ＋ 醫療保費由還本金代繳' }
+        ]
+      },
+      {
+        num: 17,
+        pageLabel: '17 / 25',
+        type: 'points',
+        groupId: 4,
+        eyebrow: '思考四：契約架構',
+        title: '【關係人配置一】要保人／被保人＝兒子：合法阻隔遺產稅',
+        points: [
+          { num: '01', text: '父母分年贈與現金給兒子，由兒子自任要保人以自有資金投保 6 年期 AUALE' },
+          { num: '02', text: '保單權利全屬兒子，未來父母身後，保單價值完全不計入父母遺產總額' }
+        ]
+      },
+      {
+        num: 18,
+        pageLabel: '18 / 25',
+        type: 'points',
+        groupId: 4,
+        eyebrow: '思考四：契約架構',
+        title: '【關係人配置二】還本受益人＝父母：資產名義移轉，養老主控權不失',
+        points: [
+          { num: '01', text: '6 年期 AUALE 定期給付還本金，生存還本第一順位指定為父母' },
+          { num: '02', text: '還本金定期匯入老人家帳戶，確保生前終身握有生活現金流掌控權' }
+        ]
+      },
+      {
+        num: 19,
+        pageLabel: '19 / 25',
+        type: 'points',
+        groupId: 4,
+        eyebrow: '思考四：契約架構',
+        title: '【關係人配置三】身故受益人＝父母：嚴防「白髮人送黑髮人」',
+        points: [
+          { num: '01', text: '身故受益人第一順位特別指定為父母，封鎖人身意外風險' },
+          { num: '02', text: '萬一兒子不幸早逝，身故保險金回流父母手中，避免資產落入兒媳導致長輩無依無靠' }
+        ]
+      },
+      {
+        num: 20,
+        pageLabel: '20 / 25',
+        type: 'points',
+        groupId: 4,
+        eyebrow: '思考四：契約架構',
+        title: '【法律效益四】架構性瓦解特留分：生前移轉斷絕家族紛爭',
+        points: [
+          { num: '01', text: '透過 4～5 年生前分年贈與結合 6 年期保單，將身後遺產池在生前化整為零' },
+          { num: '02', text: '身後無大額遺產可供分配，徹底瓦解另一房依法爭取 500 萬特留分的法律空間' }
+        ]
+      },
+      {
+        num: 21,
+        pageLabel: '21 / 25',
+        type: 'points',
+        groupId: 4,
+        eyebrow: '思考四：契約架構',
+        title: '【世代傳承五】孫子專屬生日紅包 ＋ 20 年醫療險保費安排',
+        points: [
+          { num: '01', text: '孫子生日紅包：配置小額 AUALE，還本金約定於生日前夕匯入孫子帳戶，代代相傳' },
+          { num: '02', text: '醫療保費由還本金代繳：補強兒子 10 年期、孫子 20 年期終身實支醫療，由 6 年期美元還本金長期代繳孫子保費，確保長輩年邁時繳費無虞' }
+        ]
+      },
+      {
+        num: 22,
+        pageLabel: '22 / 25',
+        type: 'overview',
+        groupId: 5,
+        eyebrow: '思考方向導覽',
+        title: '思考五：成交關鍵——共有持分處分與顧問成交護城河',
+        focusHeader: ['THINKING 05', 'FOCUS POINTS', '本思考方向共包含 2 項核心關鍵剖析。'],
+        focusItems: [
+          { targetSlide: 23, text: '01  終局佈局：以受贈累積現金，買回共有不動產持分' },
+          { targetSlide: 24, text: '02  成交心法：信任 60% vs. 專業 40% 的黃金比例' }
+        ]
+      },
+      {
+        num: 23,
+        pageLabel: '23 / 25',
+        type: 'points',
+        groupId: 5,
+        eyebrow: '思考五：成交關鍵',
+        title: '終局佈局：以受贈累積現金，買回共有不動產持分',
+        points: [
+          { num: '01', text: '父母現存之自住共有老屋，未來由老大運用受贈累積現金向另一房買回持分' },
+          { num: '02', text: '徹底消滅不動產共有狀態，避免家族產權糾紛延續至第三代' }
+        ]
+      },
+      {
+        num: 24,
+        pageLabel: '24 / 25',
+        type: 'points',
+        groupId: 5,
+        eyebrow: '思考五：成交關鍵',
+        title: '成交心法剖析：信任 60% ＋ 專業 40%',
+        points: [
+          { num: '01', text: '信任佔 60%：客戶深信你才能拿到入場券；缺乏信任，再好方案客戶也不敢採納' },
+          { num: '02', text: '專業佔 40%：整合銀行、租賃、稅制與保單架構，讓成交勝率穩拿八成以上' },
+          { num: '03', text: '核心結語：專業讓你走得深，但信任讓你走得遠' }
+        ]
+      },
+      {
+        num: 25,
+        pageLabel: '25 / 25',
+        type: 'steps',
+        groupId: 0,
+        eyebrow: '幕後製作示範',
+        title: '這份簡報是怎麼做出來的？——示範利用 Gemini Notebook 打造演講投影片',
+        steps: [
+          '第 1 步【語音直錄】：  隨口錄下 30 年老客戶實戰案例，自動轉錄精準逐字稿',
+          '第 2 步【時間軸梳理】：  AI 自動去除口語贅字，提煉出清晰的因果脈絡',
+          '第 3 步【思考方向架構】：  人機協同碰撞出「五大思考方向」，嚴格落實一頁一重點',
+          '第 4 步【演講簡報生成】：  快速將顧問實戰經驗轉化為結構嚴謹的簡報大綱'
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // Application State & Navigation
+    // =========================================================================
+    let currentSlideNum = 1;
+    let isTransitioning = false;
+    let chartScenario = 'compare';
+    let isChartOpen = false;
+    let visitHistory = [{ type: 'slide', num: 1 }];
+    let historyIndex = 0;
+
+    function recordVisit(entry) {
+      const cur = visitHistory[historyIndex];
+      if (cur && cur.type === entry.type && cur.num === entry.num) return;
+      if (historyIndex < visitHistory.length - 1) {
+        visitHistory = visitHistory.slice(0, historyIndex + 1);
+      }
+      visitHistory.push(entry);
+      historyIndex = visitHistory.length - 1;
+    }
+
+    function navigateHistory(delta) {
+      const nextIdx = historyIndex + delta;
+      if (nextIdx < 0 || nextIdx >= visitHistory.length) return;
+      historyIndex = nextIdx;
+      const target = visitHistory[historyIndex];
+      if (target.type === 'chart') {
+        currentSlideNum = target.num;
+        isChartOpen = true;
+        renderHeaderAndFooter(getSlide(currentSlideNum));
+        renderInheritanceChartPage(chartScenario, false);
+      } else if (target.type === 'cashflow') {
+        currentSlideNum = target.num;
+        isChartOpen = true;
+        renderHeaderAndFooter(getSlide(currentSlideNum));
+        renderCashflowDiagramPage(false);
+      } else {
+        isChartOpen = false;
+        goToSlide(target.num, true, false);
+      }
+    }
+
+    const stageEl = document.getElementById('slide-stage');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const headerPageBadge = document.getElementById('header-page-badge');
+    const flowDotsEl = document.getElementById('flow-dots');
+    const progressBarEl = document.getElementById('progress-bar');
+    const footerContextEl = document.getElementById('footer-context-actions');
+    const curtainEl = document.getElementById('transition-curtain');
+    const curtainContentEl = document.getElementById('curtain-content');
+    const tocModal = document.getElementById('toc-modal');
+    const tocList = document.getElementById('toc-list');
+    const btnToc = document.getElementById('btn-toc');
+    const btnCloseToc = document.getElementById('btn-close-toc');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+    const iconFsEnter = document.getElementById('icon-fs-enter');
+    const iconFsExit = document.getElementById('icon-fs-exit');
+
+    function getSlide(num) {
+      return SLIDES.find(s => s.num === num) || SLIDES[0];
+    }
+
+    function getGroup(groupId) {
+      return THINKING_GROUPS.find(g => g.id === groupId) || null;
+    }
+
+    // Smooth animated transition when entering a Thinking Direction
+    function enterThinkingGroup(groupId, targetSlide = null) {
+      if (isTransitioning) return;
+      const group = getGroup(groupId);
+      if (!group) return;
+
+      isTransitioning = true;
+      const dest = targetSlide || group.startSlide;
+
+      curtainContentEl.innerHTML = `
+        <div class="curtain-badge inline-flex flex-col items-center">
+          <span class="font-num text-xs font-bold tracking-[0.22em] px-4 py-1.5 rounded-full mb-3"
+                style="background:${group.softBg}; color:${group.accent}; border: 1px solid ${group.accent}30;">
+            ${group.tag}
+          </span>
+          <h2 class="font-serif-tc text-2xl sm:text-3xl font-bold text-[#2B332E] leading-snug">
+            ${group.shortTitle}
+          </h2>
+          <p class="mt-2 text-sm text-[#647068]">正在進入簡報流程（第 ${group.startSlide}–${group.endSlide} 頁）</p>
+        </div>
+      `;
+
+      curtainEl.classList.add('active');
+
+      setTimeout(() => {
+        isChartOpen = false;
+        currentSlideNum = dest;
+        recordVisit({ type: 'slide', num: dest });
+        renderSlide();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 280);
+
+      setTimeout(() => {
+        curtainEl.classList.remove('active');
+        isTransitioning = false;
+      }, 620);
+    }
+
+    function goToSlide(num, useQuickFade = true, shouldRecord = true) {
+      if (num < 1 || num > 25) return;
+      if (num === currentSlideNum && !isChartOpen) return;
+
+      if (shouldRecord) {
+        recordVisit({ type: 'slide', num });
+      }
+      isChartOpen = false;
+
+      if (useQuickFade) {
+        stageEl.style.opacity = '0';
+        stageEl.style.transform = 'translateY(8px)';
+        stageEl.style.transition = 'opacity 0.16s ease, transform 0.16s ease';
+        setTimeout(() => {
+          currentSlideNum = num;
+          renderSlide();
+          stageEl.style.opacity = '1';
+          stageEl.style.transform = 'translateY(0)';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 150);
+      } else {
+        currentSlideNum = num;
+        renderSlide();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function renderHeaderAndFooter(slide) {
+      headerPageBadge.textContent = slide.pageLabel;
+      progressBarEl.style.width = `${(slide.num / 25) * 100}%`;
+
+      const group = getGroup(slide.groupId);
+      if (group) {
+        // Render step dots for current thinking direction
+        flowDotsEl.innerHTML = group.slides.map((sNum, idx) => {
+          const isActive = sNum === slide.num;
+          return `
+            <button type="button" data-slide-jump="${sNum}"
+              class="h-2.5 rounded-full transition-all duration-300 cursor-pointer ${isActive ? 'w-7 bg-[#3A5A40]' : 'w-2.5 bg-[#D4CCC0] hover:bg-[#A3B18A]'}"
+              title="第 ${sNum} 頁">
+            </button>
+          `;
+        }).join('');
+      } else {
+        flowDotsEl.innerHTML = '';
+      }
+
+      // Prev / Next buttons follow clicked visit history order
+      btnPrev.disabled = historyIndex <= 0;
+      btnNext.disabled = historyIndex >= visitHistory.length - 1;
+      if (historyIndex > 0) {
+        const prevEntry = visitHistory[historyIndex - 1];
+        btnPrev.title = prevEntry.type === 'chart' ? '上一頁：3,000 萬圖表說明' : (prevEntry.type === 'cashflow' ? '上一頁：資金流程圖' : `上一頁：第 ${String(prevEntry.num).padStart(2, '0')} 頁`);
+      } else {
+        btnPrev.title = '沒有上一頁瀏覽紀錄';
+      }
+      if (historyIndex < visitHistory.length - 1) {
+        const nextEntry = visitHistory[historyIndex + 1];
+        btnNext.title = nextEntry.type === 'chart' ? '下一頁：3,000 萬圖表說明' : (nextEntry.type === 'cashflow' ? '下一頁：資金流程圖' : `下一頁：第 ${String(nextEntry.num).padStart(2, '0')} 頁`);
+      } else {
+        btnNext.title = '沒有下一頁瀏覽紀錄';
+      }
+
+      // Contextual Footer Actions
+      let footerHtml = '';
+
+      if (group && slide.num === group.endSlide && group.id < 5) {
+        const nextGroup = getGroup(group.id + 1);
+        footerHtml += `
+          <button type="button" data-enter-group="${nextGroup.id}"
+            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-[#F9EFE4] text-[#9E6240] border border-[#E8D5C1] hover:bg-[#C87D55] hover:text-white transition-colors cursor-pointer">
+            <span>進入 ${nextGroup.shortTitle}</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+        `;
+      }
+
+      footerContextEl.innerHTML = footerHtml;
+    }
+
+    function renderSlide() {
+      const slide = getSlide(currentSlideNum);
+      renderHeaderAndFooter(slide);
+
+      if (slide.type === 'hub') {
+        renderHubSlide(slide);
+      } else if (slide.type === 'background') {
+        renderBackgroundSlide(slide);
+      } else if (slide.type === 'overview') {
+        renderOverviewSlide(slide);
+      } else if (slide.type === 'points') {
+        renderPointsSlide(slide);
+      } else if (slide.type === 'steps') {
+        renderStepsSlide(slide);
+      }
+      applyCustomButtonsToDOM();
+    }
+
+    function renderCashflowDiagramPage(shouldRecord = true) {
+      isChartOpen = true;
+      if (shouldRecord) {
+        recordVisit({ type: 'cashflow', num: 12 });
+      }
+      renderHeaderAndFooter(getSlide(12));
+
+      stageEl.innerHTML = `
+        <div class="space-y-6">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E6DFD3] pb-4 anim-up delay-1">
+            <div>
+              <div class="inline-flex items-center gap-2 text-xs font-semibold tracking-wider px-3 py-1 rounded-full mb-2.5 bg-[#EEF3EC] text-[#3A5A40] border border-[#D4E0D1]">
+                <span>思考三：金流落地 ｜ 資金流程圖</span>
+              </div>
+              <h1 class="font-serif-tc text-xl sm:text-3xl font-bold text-[#2B332E] leading-snug">
+                2,500 萬資金流程：夫妻贈與免稅與 115–119 年分年贈與金流
+              </h1>
+            </div>
+            <button type="button" data-action="close-cashflow-chart" data-btn-id="btn-back-s17"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-white border border-[#3A5A40]/40 text-[#3A5A40] hover:bg-[#3A5A40] hover:text-white transition-colors cursor-pointer shrink-0 shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>返回第 12 頁</span>
+            </button>
+          </div>
+
+          <!-- Flowchart Container -->
+          <div class="literary-card rounded-3xl p-5 sm:p-7 anim-up delay-2">
+            <div class="flex flex-col items-center space-y-4">
+
+              <!-- Step 0: Mother holds 2,500萬 -->
+              <div class="w-full max-w-lg px-6 py-4 rounded-2xl bg-[#F9EFE4] border-2 border-[#C87D55] text-center shadow-sm">
+                <div class="text-xs font-bold tracking-wider text-[#9E6240]">起點 ｜ 資金現況</div>
+                <div class="text-lg sm:text-xl font-bold text-[#2B332E] mt-1">母親帳戶</div>
+                <div class="font-num text-sm sm:text-base font-bold text-[#B54B35] mt-1">目前持有現金 2,500 萬元</div>
+              </div>
+
+              <!-- Arrow Down: Every year Mother -> Father first -->
+              <div class="flex flex-col items-center">
+                <div class="w-0.5 h-3.5 bg-[#C87D55]"></div>
+                <div class="px-4 py-1.5 rounded-full bg-[#FFF8EE] border border-[#E8D5C1] text-xs sm:text-sm font-bold text-[#9E6240] shadow-sm text-center">
+                  ↓ 每年第一步：先從母親帳戶匯「當年個人免稅額」至父親帳戶（夫妻贈與免稅）
+                </div>
+                <div class="w-0.5 h-3.5 bg-[#C87D55]"></div>
+                <div class="w-48 sm:w-80 h-0.5 bg-[#588157]"></div>
+                <div class="w-48 sm:w-80 flex justify-between">
+                  <div class="w-0.5 h-3.5 bg-[#588157]"></div>
+                  <div class="w-0.5 h-3.5 bg-[#588157]"></div>
+                </div>
+              </div>
+
+              <!-- Step 1 Split: Mother & Father -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 w-full max-w-2xl">
+                <div class="px-5 py-4 rounded-2xl bg-[#EEF3EC] border-2 border-[#3A5A40] text-center shadow-sm">
+                  <div class="text-xs font-bold text-[#3A5A40]">母親帳戶匯出免稅額</div>
+                  <div class="font-num text-sm font-bold text-[#2B332E] mt-1">115 年：244 萬</div>
+                  <div class="font-num text-sm font-bold text-[#3A5A40]">116–119 年：272 萬／年</div>
+                </div>
+                <div class="px-5 py-4 rounded-2xl bg-[#EEF3EC] border-2 border-[#588157] text-center shadow-sm">
+                  <div class="text-xs font-bold text-[#588157]">父親帳戶匯出免稅額（先由母匯入）</div>
+                  <div class="font-num text-sm font-bold text-[#2B332E] mt-1">115 年：244 萬</div>
+                  <div class="font-num text-sm font-bold text-[#588157]">116–119 年：272 萬／年</div>
+                </div>
+              </div>
+
+              <!-- Merge Arrow Down -->
+              <div class="flex flex-col items-center w-full max-w-2xl">
+                <div class="w-48 sm:w-80 flex justify-between">
+                  <div class="w-0.5 h-3.5 bg-[#3A5A40]"></div>
+                  <div class="w-0.5 h-3.5 bg-[#3A5A40]"></div>
+                </div>
+                <div class="w-48 sm:w-80 h-0.5 bg-[#3A5A40]"></div>
+                <div class="w-0.5 h-3.5 bg-[#3A5A40]"></div>
+                <div class="px-5 py-2 rounded-full bg-[#3A5A40] text-white text-xs sm:text-sm font-bold shadow-md text-center">
+                  ↓ 每年第二步：父母各匯免稅額入子女帳戶（115 年合計 488 萬 ｜ 116–119 年合計 544 萬／年）
+                </div>
+                <div class="w-0.5 h-4 bg-[#3A5A40]"></div>
+              </div>
+
+              <!-- Step 2: Child Account -->
+              <div class="w-full max-w-2xl px-6 py-4 rounded-2xl bg-white border-2 border-[#3A5A40] shadow-sm text-center">
+                <div class="text-xs font-bold tracking-wider text-[#588157]">終點 ｜ 約 5 年完成資金贈與兒子流程</div>
+                <div class="text-lg sm:text-xl font-bold text-[#2B332E] mt-1">子女（大兒子）帳戶</div>
+                <p class="text-sm text-[#647068] mt-1 leading-relaxed">
+                  由兒子以受贈之自有資金自任「要保人／被保人」投保 6 年期 AUALE，保單價值不計入父母遺產總額。
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 115 - 119 Year-by-Year Breakdown -->
+          <div class="literary-card rounded-3xl p-5 sm:p-6 anim-up delay-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <h2 class="text-sm sm:text-base font-bold text-[#2B332E]">115–119 年逐年免稅贈與金流明細（約 5 年完成 2,500 萬移轉）</h2>
+              <span class="font-num text-xs font-semibold px-3 py-1 rounded-full bg-[#F9EFE4] text-[#9E6240]">5 年累計免稅額度上限：2,664 萬</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div class="rounded-2xl p-3.5 bg-[#FAF7F2] border border-[#E6DFD3] text-center">
+                <div class="font-num text-xs font-bold text-[#588157]">115 年</div>
+                <div class="font-num text-base font-bold text-[#2B332E] mt-1">488 萬</div>
+                <div class="font-num text-[11px] text-[#647068] mt-0.5">244 萬 × 2 人</div>
+                <div class="font-num text-[11px] font-semibold text-[#3A5A40] mt-1">累計 488 萬</div>
+              </div>
+              <div class="rounded-2xl p-3.5 bg-[#FAF7F2] border border-[#E6DFD3] text-center">
+                <div class="font-num text-xs font-bold text-[#588157]">116 年</div>
+                <div class="font-num text-base font-bold text-[#2B332E] mt-1">544 萬</div>
+                <div class="font-num text-[11px] text-[#647068] mt-0.5">272 萬 × 2 人</div>
+                <div class="font-num text-[11px] font-semibold text-[#3A5A40] mt-1">累計 1,032 萬</div>
+              </div>
+              <div class="rounded-2xl p-3.5 bg-[#FAF7F2] border border-[#E6DFD3] text-center">
+                <div class="font-num text-xs font-bold text-[#588157]">117 年</div>
+                <div class="font-num text-base font-bold text-[#2B332E] mt-1">544 萬</div>
+                <div class="font-num text-[11px] text-[#647068] mt-0.5">272 萬 × 2 人</div>
+                <div class="font-num text-[11px] font-semibold text-[#3A5A40] mt-1">累計 1,576 萬</div>
+              </div>
+              <div class="rounded-2xl p-3.5 bg-[#FAF7F2] border border-[#E6DFD3] text-center">
+                <div class="font-num text-xs font-bold text-[#588157]">118 年</div>
+                <div class="font-num text-base font-bold text-[#2B332E] mt-1">544 萬</div>
+                <div class="font-num text-[11px] text-[#647068] mt-0.5">272 萬 × 2 人</div>
+                <div class="font-num text-[11px] font-semibold text-[#3A5A40] mt-1">累計 2,120 萬</div>
+              </div>
+              <div class="col-span-2 sm:col-span-1 rounded-2xl p-3.5 bg-[#EEF3EC] border border-[#3A5A40]/40 text-center">
+                <div class="font-num text-xs font-bold text-[#3A5A40]">119 年（完成）</div>
+                <div class="font-num text-base font-bold text-[#3A5A40] mt-1">544 萬</div>
+                <div class="font-num text-[11px] text-[#647068] mt-0.5">272 萬 × 2 人（餘 380 萬）</div>
+                <div class="font-num text-[11px] font-bold text-[#3A5A40] mt-1">2,500 萬達標</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      applyCustomButtonsToDOM();
+    }
+
+    // Slide 01: Main Hub (2500萬主頁 0)
+    function renderHubSlide(slide) {
+      const cardsHtml = slide.items.map((item, idx) => {
+        const group = getGroup(item.groupId);
+        const delayClass = `delay-${idx + 2}`;
+        return `
+          <button type="button" data-enter-group="${item.groupId}"
+            class="w-full text-left literary-card literary-card-hover hub-thinking-card rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4 group cursor-pointer anim-up ${delayClass}">
+            <div class="flex items-center gap-4 min-w-0">
+              <div class="w-1.5 h-10 sm:h-11 rounded-full shrink-0 transition-all duration-300 group-hover:h-12"
+                   style="background:${group.accent}"></div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-num text-[11px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-md"
+                        style="background:${group.softBg}; color:${group.accent}">
+                    ${group.tag}
+                  </span>
+                  <span class="font-num text-xs text-[#647068]">第 ${String(group.startSlide).padStart(2, '0')}–${String(group.endSlide).padStart(2, '0')} 頁</span>
+                </div>
+                <p class="hub-thinking-text text-base sm:text-lg font-semibold text-[#2B332E] leading-snug">
+                  ${escapeHtml(item.text)}
+                </p>
+              </div>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-[#FAF7F2] border border-[#E6DFD3] flex items-center justify-center shrink-0 text-[#647068] group-hover:bg-[#3A5A40] group-hover:text-white group-hover:border-[#3A5A40] transition-all">
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      stageEl.innerHTML = `
+        <div class="space-y-6">
+          <!-- Header Block -->
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E6DFD3] pb-5 anim-up delay-1">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F9EFE4] border border-[#E8D5C1] text-[#9E6240] text-xs font-semibold tracking-wider mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#C87D55]"></span>
+                <span>${escapeHtml(slide.eyebrow)}</span>
+              </div>
+              <h1 class="font-serif-tc text-2xl sm:text-4xl font-bold text-[#2B332E] leading-tight">
+                ${escapeHtml(slide.title)}
+              </h1>
+            </div>
+            <div class="font-num text-sm font-semibold text-[#647068] shrink-0">
+              ${escapeHtml(slide.pageLabel)}
+            </div>
+          </div>
+
+          <!-- 5 Major Thinking Directions -->
+          <div class="space-y-3">
+            ${cardsHtml}
+          </div>
+
+          <!-- Quick Access Pills for Slide 02 (Background) & Slide 25 (Behind the Scenes) -->
+          <div class="pt-2 flex flex-wrap items-center justify-between gap-3 anim-up delay-6">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" data-slide-jump="2"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-medium bg-white border border-[#E6DFD3] text-[#2B332E] hover:border-[#3A5A40] hover:text-[#3A5A40] transition-all cursor-pointer shadow-sm">
+                <span class="font-num text-xs font-bold text-[#588157]">02</span>
+                <span>背景說明：個案緣起</span>
+              </button>
+              <button type="button" data-slide-jump="25"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-medium bg-white border border-[#E6DFD3] text-[#2B332E] hover:border-[#C87D55] hover:text-[#9E6240] transition-all cursor-pointer shadow-sm">
+                <span class="font-num text-xs font-bold text-[#C87D55]">25</span>
+                <span>幕後製作示範</span>
+              </button>
+            </div>
+            <p class="text-xs text-[#647068]">點選任一思考方向即可進入該主題簡報流程</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Slide 02: Background
+    function renderBackgroundSlide(slide) {
+      const sectionsHtml = slide.sections.map((sec, idx) => `
+        <div class="literary-card rounded-2xl p-6 flex flex-col justify-between anim-up delay-${idx + 2}">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EEF3EC] text-[#3A5A40] text-xs font-bold tracking-wider mb-4">
+              <span>0${idx + 1}</span>
+              <span>${escapeHtml(sec.heading)}</span>
+            </div>
+            <div class="space-y-3">
+              ${sec.bullets.map(b => `
+                <p class="text-base sm:text-[17px] text-[#2B332E] leading-relaxed font-medium">
+                  ${escapeHtml(b)}
+                </p>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      stageEl.innerHTML = `
+        <div class="space-y-7">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E6DFD3] pb-5 anim-up delay-1">
+            <div>
+              <span class="inline-block text-xs font-semibold tracking-widest uppercase text-[#588157] bg-[#EEF3EC] px-3 py-1 rounded-full mb-3">
+                ${escapeHtml(slide.eyebrow)}
+              </span>
+              <h1 class="font-serif-tc text-2xl sm:text-4xl font-bold text-[#2B332E] leading-tight">
+                ${escapeHtml(slide.title)}
+              </h1>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0"><button type="button" data-action="go-home" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#EEF3EC] text-[#3A5A40] border border-[#D4E0D1] hover:bg-[#3A5A40] hover:text-white transition-colors cursor-pointer shrink-0"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg><span>回主頁</span></button><span class="font-num text-sm font-semibold text-[#647068]">${escapeHtml(slide.pageLabel)}</span></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            ${sectionsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // Slides 03, 07, 12, 16, 22: Thinking Direction Overview
+    function renderOverviewSlide(slide) {
+      const group = getGroup(slide.groupId);
+      const [tag, subtitle, desc] = slide.focusHeader;
+
+      const itemsHtml = slide.focusItems.map((item, idx) => `
+        <button type="button" data-slide-jump="${item.targetSlide}"
+          class="w-full text-left literary-card literary-card-hover overview-focus-card rounded-2xl px-5 py-4 flex items-center justify-between gap-4 group cursor-pointer anim-up delay-${idx + 2}">
+          <span class="overview-focus-text text-base sm:text-lg font-semibold text-[#2B332E]">
+            ${escapeHtml(item.text)}
+          </span>
+          <span class="overview-focus-meta inline-flex items-center gap-1 text-xs font-medium text-[#647068] shrink-0 transition-colors">
+            <span class="font-num">P.${String(item.targetSlide).padStart(2, '0')}</span>
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
+        </button>
+      `).join('');
+
+      stageEl.innerHTML = `
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E6DFD3] pb-5 anim-up delay-1">
+            <div>
+              <span class="inline-block text-xs font-semibold tracking-wider text-[#9E6240] bg-[#F9EFE4] border border-[#E8D5C1] px-3 py-1 rounded-full mb-3">
+                ${escapeHtml(slide.eyebrow)}
+              </span>
+              <h1 class="font-serif-tc text-2xl sm:text-3xl font-bold text-[#2B332E] leading-snug">
+                ${escapeHtml(slide.title)}
+              </h1>
+            </div>
+            <span class="font-num text-sm font-semibold text-[#647068] shrink-0">${escapeHtml(slide.pageLabel)}</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Left Editorial Focus Card -->
+            <div class="lg:col-span-4 literary-card rounded-3xl p-6 sm:p-7 bg-gradient-to-br from-white to-[#EEF3EC]/65 anim-right delay-1">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="font-num text-xs font-bold tracking-[0.2em] text-[#588157] mb-1">
+                    ${escapeHtml(tag)}
+                  </div>
+                  <div class="font-num text-2xl font-bold text-[#2B332E] tracking-tight mb-4">
+                    ${escapeHtml(subtitle)}
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-end gap-2 shrink-0">
+                  ${slide.groupId === 3 ? `
+                    <button type="button" data-action="open-cashflow-chart" data-btn-id="btn-cashflow-diagram"
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#3A5A40] text-white border border-[#3A5A40] hover:bg-[#2F4A34] transition-colors cursor-pointer shrink-0 shadow-sm">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span>資金流程</span>
+                    </button>
+                  ` : ''}
+                  ${slide.groupId === 4 ? `
+                    <button type="button" data-action="planning-case" data-btn-id="btn-planning-case"
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[#F9EFE4] text-[#9E6240] border border-[#E8D5C1] hover:bg-[#C87D55] hover:text-white transition-colors cursor-pointer shrink-0 shadow-sm"
+                      title="左鍵開啟連結；右鍵編輯名稱與網址">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>規劃案例</span>
+                    </button>
+                  ` : ''}
+                  <button type="button" data-action="go-home" data-btn-id="btn-go-home-overview"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#EEF3EC] text-[#3A5A40] border border-[#D4E0D1] hover:bg-[#3A5A40] hover:text-white transition-colors cursor-pointer shrink-0 shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>回主頁</span>
+                  </button>
+                </div>
+              </div>
+              <div class="w-10 h-1 rounded-full ${desc ? 'mb-4' : ''}" style="background:${group ? group.accent : '#3A5A40'}"></div>
+              ${desc ? `<p class="text-sm sm:text-base text-[#647068] leading-relaxed">${escapeHtml(desc)}</p>` : ''}
+            </div>
+
+            <!-- Right Focus Items -->
+            <div class="lg:col-span-8 space-y-3">
+              ${itemsHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Standard Points Slides (04-06, 08-11, 13-15, 17-21, 23-24)
+    function renderPointsSlide(slide) {
+      const group = getGroup(slide.groupId);
+      const pointsHtml = slide.points.map((pt, idx) => `
+        <div class="literary-card rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row items-start gap-4 sm:gap-6 anim-up delay-${idx + 2}">
+          <div class="font-num w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-bold shrink-0 shadow-sm"
+               style="background:${group ? group.softBg : '#EEF3EC'}; color:${group ? group.accent : '#3A5A40'}; border: 1px solid ${group ? group.accent : '#3A5A40'}25;">
+            ${escapeHtml(pt.num)}
+          </div>
+          <p class="text-lg sm:text-xl font-medium text-[#2B332E] leading-relaxed pt-1">
+            ${escapeHtml(pt.text)}
+          </p>
+        </div>
+      `).join('');
+
+      stageEl.innerHTML = `
+        <div class="space-y-7">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E6DFD3] pb-5 anim-up delay-1">
+            <div>
+              <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-wider px-3 py-1 rounded-full mb-3"
+                    style="background:${group ? group.softBg : '#EEF3EC'}; color:${group ? group.accent : '#3A5A40'};">
+                <span class="w-1.5 h-1.5 rounded-full" style="background:${group ? group.accent : '#3A5A40'}"></span>
+                <span>${escapeHtml(slide.eyebrow)}</span>
+              </span>
+              <h1 class="font-serif-tc text-2xl sm:text-3xl font-bold text-[#2B332E] leading-snug">
+                ${escapeHtml(slide.title)}
+              </h1>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0"><button type="button" data-action="go-home" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#EEF3EC] text-[#3A5A40] border border-[#D4E0D1] hover:bg-[#3A5A40] hover:text-white transition-colors cursor-pointer shrink-0"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg><span>回主頁</span></button><span class="font-num text-sm font-semibold text-[#647068] shrink-0">${escapeHtml(slide.pageLabel)}</span></div>
+          </div>
+
+          <div class="space-y-4">
+            ${pointsHtml}
+          </div>
+          ${slide.hasChartButton ? `
+            <div class="pt-2 anim-up delay-4">
+              <button type="button" data-action="open-inheritance-chart"
+                class="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl text-sm sm:text-base font-semibold bg-[#3A5A40] text-white hover:bg-[#2F4A34] shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group">
+                <svg class="w-5 h-5 text-[#F9EFE4] transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>展開圖表說明：3,000 萬法定應繼分 vs. 遺囑特留分試算</span>
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderInheritanceChartPage(mode = 'compare', shouldRecord = true) {
+      chartScenario = mode;
+      isChartOpen = true;
+      if (shouldRecord) {
+        recordVisit({ type: 'chart', num: 5 });
+      }
+      renderHeaderAndFooter(getSlide(5));
+      const isStatutoryFocus = mode === 'statutory';
+      const isWillFocus = mode === 'will';
+
+      stageEl.innerHTML = `
+        <div class="space-y-6">
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E6DFD3] pb-4 anim-up delay-1">
+            <div>
+              <div class="inline-flex items-center gap-2 text-xs font-semibold tracking-wider px-3 py-1 rounded-full mb-2.5 bg-[#F9EFE4] text-[#9E6240] border border-[#E8D5C1]">
+                <span>思考一：風險診斷 ｜ 互動圖表說明</span>
+              </div>
+              <h1 class="font-serif-tc text-xl sm:text-3xl font-bold text-[#2B332E] leading-snug">
+                父親名下 3,000 萬遺產（市值）應繼分與特留分圖解
+              </h1>
+            </div>
+            <button type="button" data-action="close-inheritance-chart"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-white border border-[#3A5A40]/40 text-[#3A5A40] hover:bg-[#3A5A40] hover:text-white transition-colors cursor-pointer shrink-0 shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>返回第 05 頁</span>
+            </button>
+          </div>
+
+          <!-- Top: Family Inheritance Relationship Diagram -->
+          <div class="literary-card rounded-3xl p-5 sm:p-6 anim-up delay-2">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+              <h2 class="text-sm sm:text-base font-bold text-[#2B332E] flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#3A5A40]"></span>
+                <span>家族繼承結構與代位繼承關係圖</span>
+              </h2>
+              <span class="font-num text-xs font-semibold px-3 py-1 rounded-full bg-[#EEF3EC] text-[#3A5A40]">
+                父親遺產總額（市值）：3,000 萬元
+              </span>
+            </div>
+
+            <!-- 3-Tier Family Tree -->
+            <div class="flex flex-col items-center space-y-3">
+              <!-- Tier 1: Parents -->
+              <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-8 w-full">
+                <div class="px-5 py-3 rounded-2xl bg-[#F9EFE4] border-2 border-[#C87D55] text-center min-w-[165px] shadow-sm">
+                  <div class="text-[11px] font-bold text-[#9E6240] tracking-wider">被繼承人（已故）</div>
+                  <div class="text-base font-bold text-[#2B332E] mt-0.5">父親</div>
+                  <div class="font-num text-xs font-semibold text-[#9E6240] mt-1">名下遺產 3,000 萬</div>
+                </div>
+                <div class="text-[#A3B18A] font-bold text-lg hidden sm:block">═══</div>
+                <div class="px-5 py-3 rounded-2xl bg-[#EEF3EC] border-2 border-[#3A5A40] text-center min-w-[165px] shadow-sm">
+                  <div class="text-[11px] font-bold text-[#3A5A40] tracking-wider">配偶（健在）</div>
+                  <div class="text-base font-bold text-[#2B332E] mt-0.5">母親</div>
+                  <div class="font-num text-xs font-semibold text-[#588157] mt-1">法定應繼分 1/3</div>
+                </div>
+              </div>
+
+              <!-- Connector down -->
+              <div class="flex flex-col items-center">
+                <div class="w-0.5 h-4 bg-[#C8C0B4]"></div>
+                <div class="w-48 sm:w-80 h-0.5 bg-[#C8C0B4]"></div>
+                <div class="w-48 sm:w-80 flex justify-between">
+                  <div class="w-0.5 h-4 bg-[#C8C0B4]"></div>
+                  <div class="w-0.5 h-4 bg-[#C8C0B4]"></div>
+                </div>
+              </div>
+
+              <!-- Tier 2: Two Sons -->
+              <div class="grid grid-cols-2 gap-4 sm:gap-12 w-full max-w-xl">
+                <div class="px-4 py-3 rounded-2xl bg-[#EEF3EC] border-2 border-[#588157] text-center shadow-sm">
+                  <div class="text-[11px] font-bold text-[#3A5A40]">生存</div>
+                  <div class="text-base font-bold text-[#2B332E] mt-0.5">大兒子</div>
+                  <div class="font-num text-xs font-semibold text-[#588157] mt-1">法定應繼分 1/3</div>
+                </div>
+
+                <div class="px-4 py-3 rounded-2xl bg-[#F4F1EC] border-2 border-dashed border-[#9E6240]/60 text-center opacity-90">
+                  <div class="text-[11px] font-bold text-[#9E6240]">身故（早逝）</div>
+                  <div class="text-base font-bold text-[#647068] line-through mt-0.5">二兒子</div>
+                  <div class="text-[11px] font-semibold text-[#9E6240] mt-1">由其一對子女「代位繼承」</div>
+                </div>
+              </div>
+
+              <!-- Connector to Grandchildren under Second Son -->
+              <div class="grid grid-cols-2 gap-4 sm:gap-12 w-full max-w-xl">
+                <div></div>
+                <div class="flex flex-col items-center">
+                  <div class="w-0.5 h-3 bg-[#C87D55]"></div>
+                  <span class="text-[11px] font-bold text-[#9E6240] bg-[#F9EFE4] px-2.5 py-0.5 rounded-full border border-[#E8D5C1]">
+                    代位繼承 1/3 份額
+                  </span>
+                  <div class="w-0.5 h-3 bg-[#C87D55]"></div>
+                  <div class="w-32 sm:w-44 h-0.5 bg-[#C87D55]"></div>
+                  <div class="w-32 sm:w-44 flex justify-between">
+                    <div class="w-0.5 h-3 bg-[#C87D55]"></div>
+                    <div class="w-0.5 h-3 bg-[#C87D55]"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tier 3: Two Grandchildren -->
+              <div class="grid grid-cols-2 gap-4 sm:gap-12 w-full max-w-xl">
+                <div></div>
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div class="px-2.5 py-2.5 rounded-xl bg-white border border-[#C87D55] text-center shadow-sm">
+                    <div class="text-xs font-bold text-[#2B332E]">孫子女 A</div>
+                    <div class="font-num text-[11px] text-[#9E6240] font-semibold mt-0.5">應繼分 500 萬</div>
+                    <div class="font-num text-[11px] text-[#B54B35] font-bold">特留分 250 萬</div>
+                  </div>
+                  <div class="px-2.5 py-2.5 rounded-xl bg-white border border-[#C87D55] text-center shadow-sm">
+                    <div class="text-xs font-bold text-[#2B332E]">孫子女 B</div>
+                    <div class="font-num text-[11px] text-[#9E6240] font-semibold mt-0.5">應繼分 500 萬</div>
+                    <div class="font-num text-[11px] text-[#B54B35] font-bold">特留分 250 萬</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario Filter Buttons -->
+          <div class="flex flex-wrap items-center justify-between gap-3 anim-up delay-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" data-chart-mode="compare"
+                class="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${mode === 'compare' ? 'bg-[#3A5A40] text-white border-[#3A5A40] shadow-sm' : 'bg-white text-[#2B332E] border-[#E6DFD3] hover:border-[#3A5A40]'}">
+                並排對比兩種情境
+              </button>
+              <button type="button" data-chart-mode="statutory"
+                class="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${isStatutoryFocus ? 'bg-[#588157] text-white border-[#588157] shadow-sm' : 'bg-white text-[#2B332E] border-[#E6DFD3] hover:border-[#588157]'}">
+                僅看：法定繼承（應繼分）
+              </button>
+              <button type="button" data-chart-mode="will"
+                class="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${isWillFocus ? 'bg-[#C87D55] text-white border-[#C87D55] shadow-sm' : 'bg-white text-[#2B332E] border-[#E6DFD3] hover:border-[#C87D55]'}">
+                僅看：預立遺囑（特留分）
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom: Proportional Bar Charts -->
+          <div class="grid grid-cols-1 ${mode === 'compare' ? 'lg:grid-cols-2' : ''} gap-5 anim-up delay-4">
+            ${(!isWillFocus) ? `
+              <div class="literary-card rounded-3xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold tracking-wider px-2.5 py-1 rounded-full bg-[#EEF3EC] text-[#3A5A40]">情境一：未立遺囑</span>
+                  <span class="font-num text-xs font-semibold text-[#647068]">總計 3,000 萬</span>
+                </div>
+                <h3 class="font-serif-tc text-lg font-bold text-[#2B332E]">法定繼承：母、大兒子、2 位孫子女各 1/3</h3>
+
+                <!-- Stacked Visual Bar -->
+                <div class="w-full h-10 rounded-xl overflow-hidden flex text-xs font-bold text-white shadow-inner">
+                  <div class="bg-[#3A5A40] flex items-center justify-center transition-all duration-500" style="width: 33.33%">母 1,000萬</div>
+                  <div class="bg-[#588157] flex items-center justify-center transition-all duration-500" style="width: 33.33%">大兒子 1,000萬</div>
+                  <div class="bg-[#C87D55] flex items-center justify-center transition-all duration-500" style="width: 33.34%">孫子女 1,000萬</div>
+                </div>
+
+                <div class="space-y-2 pt-1 text-sm">
+                  <div class="flex justify-between items-center py-1.5 border-b border-[#F0EAE0]">
+                    <span class="text-[#2B332E] font-medium">母親（應繼分 1/3）</span>
+                    <span class="font-num font-bold text-[#3A5A40]">1,000 萬元</span>
+                  </div>
+                  <div class="flex justify-between items-center py-1.5 border-b border-[#F0EAE0]">
+                    <span class="text-[#2B332E] font-medium">大兒子（應繼分 1/3）</span>
+                    <span class="font-num font-bold text-[#588157]">1,000 萬元</span>
+                  </div>
+                  <div class="flex justify-between items-center py-1.5">
+                    <span class="text-[#2B332E] font-medium">2 位孫子女代位繼承（合計 1/3）</span>
+                    <span class="font-num font-bold text-[#C87D55]">1,000 萬元（每人 500 萬）</span>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+
+            ${(!isStatutoryFocus) ? `
+              <div class="literary-card rounded-3xl p-6 space-y-4 border-[#E8D5C1]">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold tracking-wider px-2.5 py-1 rounded-full bg-[#F9EFE4] text-[#9E6240]">情境二：生前預立遺囑</span>
+                  <span class="font-num text-xs font-semibold text-[#647068]">總計 3,000 萬</span>
+                </div>
+                <h3 class="font-serif-tc text-lg font-bold text-[#2B332E]">預立遺囑：孫子女仍依法主張特留分 500 萬</h3>
+
+                <!-- Stacked Visual Bar -->
+                <div class="w-full h-10 rounded-xl overflow-hidden flex text-xs font-bold text-white shadow-inner">
+                  <div class="bg-[#3A5A40] flex items-center justify-center transition-all duration-500" style="width: 83.33%">遺囑可自由分配給母與大兒子：2,500 萬</div>
+                  <div class="bg-[#B54B35] flex items-center justify-center transition-all duration-500" style="width: 16.67%">特留分 500萬</div>
+                </div>
+
+                <div class="space-y-2 pt-1 text-sm">
+                  <div class="flex justify-between items-center py-1.5 border-b border-[#F0EAE0]">
+                    <span class="text-[#2B332E] font-medium">母親與大兒子（遺囑可支配部分）</span>
+                    <span class="font-num font-bold text-[#3A5A40]">2,500 萬元</span>
+                  </div>
+                  <div class="flex justify-between items-center py-1.5 border-b border-[#F0EAE0]">
+                    <span class="text-[#B54B35] font-semibold">孫子女特留分（應繼分 1,000 萬 × 1/2）</span>
+                    <span class="font-num font-bold text-[#B54B35]">500 萬元</span>
+                  </div>
+                  <div class="flex justify-between items-center py-1.5">
+                    <span class="text-[#647068] font-medium">2 位孫子女每人可主張金額</span>
+                    <span class="font-num font-bold text-[#B54B35]">每人各 250 萬元</span>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // Slide 25: Steps (Behind the scenes)
+    function renderStepsSlide(slide) {
+      const stepsHtml = slide.steps.map((stepText, idx) => `
+        <div class="literary-card rounded-2xl p-5 sm:p-6 flex items-center gap-4 anim-up delay-${idx + 2}">
+          <div class="font-num w-10 h-10 rounded-full bg-[#F9EFE4] border border-[#E8D5C1] text-[#9E6240] font-bold flex items-center justify-center shrink-0">
+            ${idx + 1}
+          </div>
+          <p class="text-base sm:text-lg font-medium text-[#2B332E] leading-relaxed">
+            ${escapeHtml(stepText)}
+          </p>
+        </div>
+      `).join('');
+
+      stageEl.innerHTML = `
+        <div class="space-y-7">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E6DFD3] pb-5 anim-up delay-1">
+            <div>
+              <span class="inline-block text-xs font-semibold tracking-wider text-[#9E6240] bg-[#F9EFE4] border border-[#E8D5C1] px-3 py-1 rounded-full mb-3">
+                ${escapeHtml(slide.eyebrow)}
+              </span>
+              <h1 class="font-serif-tc text-2xl sm:text-3xl font-bold text-[#2B332E] leading-snug">
+                ${escapeHtml(slide.title)}
+              </h1>
+            </div>
+            <div class="flex items-center gap-2.5 shrink-0"><button type="button" data-action="go-home" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#EEF3EC] text-[#3A5A40] border border-[#D4E0D1] hover:bg-[#3A5A40] hover:text-white transition-colors cursor-pointer shrink-0"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg><span>回主頁</span></button><span class="font-num text-sm font-semibold text-[#647068] shrink-0">${escapeHtml(slide.pageLabel)}</span></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${stepsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderToc() {
+      tocList.innerHTML = SLIDES.map(s => {
+        const isCurrent = s.num === currentSlideNum;
+        const group = getGroup(s.groupId);
+        return `
+          <button type="button" data-toc-slide="${s.num}"
+            class="w-full text-left px-4 py-3 rounded-2xl border transition-all flex items-center justify-between gap-3 cursor-pointer ${isCurrent ? 'bg-[#EEF3EC] border-[#3A5A40]' : 'bg-white border-[#E6DFD3] hover:border-[#A3B18A]'}">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="font-num text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 ${isCurrent ? 'bg-[#3A5A40] text-white' : 'bg-[#FAF7F2] text-[#647068]'}">
+                ${s.pageLabel}
+              </span>
+              <div class="min-w-0">
+                <div class="text-[11px] font-semibold text-[#588157] truncate">${escapeHtml(s.eyebrow)}</div>
+                <div class="text-sm font-semibold text-[#2B332E] truncate">${escapeHtml(s.title)}</div>
+              </div>
+            </div>
+            ${group ? `<span class="hidden sm:inline-block font-num text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0" style="background:${group.softBg}; color:${group.accent}">${group.tag}</span>` : ''}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Event Delegation for dynamic elements
+    document.addEventListener('click', (e) => {
+      const groupBtn = e.target.closest('[data-enter-group]');
+      if (groupBtn) {
+        const gid = Number(groupBtn.getAttribute('data-enter-group'));
+        enterThinkingGroup(gid);
+        return;
+      }
+
+      const jumpBtn = e.target.closest('[data-slide-jump]');
+      if (jumpBtn) {
+        const num = Number(jumpBtn.getAttribute('data-slide-jump'));
+        goToSlide(num);
+        return;
+      }
+
+      const homeAction = e.target.closest('[data-action="go-home"]');
+      if (homeAction) {
+        goToSlide(1);
+        return;
+      }
+
+      const openCashflowBtn = e.target.closest('[data-action="open-cashflow-chart"]');
+      if (openCashflowBtn) {
+        renderCashflowDiagramPage(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const closeCashflowBtn = e.target.closest('[data-action="close-cashflow-chart"]');
+      if (closeCashflowBtn) {
+        goToSlide(12, true, true);
+        return;
+      }
+
+      const openChartBtn = e.target.closest('[data-action="open-inheritance-chart"]');
+      if (openChartBtn) {
+        renderInheritanceChartPage('compare');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const closeChartBtn = e.target.closest('[data-action="close-inheritance-chart"]');
+      if (closeChartBtn) {
+        goToSlide(5, true, true);
+        return;
+      }
+
+      const chartModeBtn = e.target.closest('[data-chart-mode]');
+      if (chartModeBtn) {
+        const mode = chartModeBtn.getAttribute('data-chart-mode');
+        renderInheritanceChartPage(mode, false);
+        return;
+      }
+
+      const tocJump = e.target.closest('[data-toc-slide]');
+      if (tocJump) {
+        const num = Number(tocJump.getAttribute('data-toc-slide'));
+        tocModal.classList.add('hidden');
+        tocModal.classList.remove('flex');
+        goToSlide(num);
+      }
+    });
+
+    btnPrev.addEventListener('click', () => navigateHistory(-1));
+    btnNext.addEventListener('click', () => navigateHistory(1));
+
+    btnToc.addEventListener('click', () => {
+      renderToc();
+      tocModal.classList.remove('hidden');
+      tocModal.classList.add('flex');
+    });
+
+    btnCloseToc.addEventListener('click', () => {
+      tocModal.classList.add('hidden');
+      tocModal.classList.remove('flex');
+    });
+
+    tocModal.addEventListener('click', (e) => {
+      if (e.target === tocModal) {
+        tocModal.classList.add('hidden');
+        tocModal.classList.remove('flex');
+      }
+    });
+
+    btnFullscreen.addEventListener('click', () => {
+      try {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      } catch (err) {
+        // Ignore if fullscreen is blocked by embed container
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      const isFs = Boolean(document.fullscreenElement);
+      iconFsEnter.classList.toggle('hidden', isFs);
+      iconFsExit.classList.toggle('hidden', !isFs);
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (tocModal.classList.contains('flex')) {
+        if (e.key === 'Escape') {
+          tocModal.classList.add('hidden');
+          tocModal.classList.remove('flex');
+        }
+        return;
+      }
+
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        navigateHistory(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        navigateHistory(-1);
+      } else if (e.key === 'Escape' || e.key === 'Home' || e.key === '0') {
+        e.preventDefault();
+        goToSlide(1);
+      } else if (['1', '2', '3', '4', '5'].includes(e.key)) {
+        e.preventDefault();
+        enterThinkingGroup(Number(e.key));
+      }
+    });
+
+    // =========================================================================
+    // Button Customization (Right-Click Edit) & Gear Save-As HTML
+    // =========================================================================
+    const STORAGE_KEY = 'wealth_transfer_custom_buttons_v1';
+    let customButtons = {};
+    let editingBtnKey = null;
+    let editingDefaultLabel = '';
+
+    function loadCustomButtons() {
+      try {
+        const embeddedEl = document.getElementById('embedded-button-config');
+        const embedded = embeddedEl && embeddedEl.textContent.trim() ? JSON.parse(embeddedEl.textContent) : {};
+        const saved = localStorage.getItem(STORAGE_KEY);
+        const localData = saved ? JSON.parse(saved) : {};
+        customButtons = { ...embedded, ...localData };
+      } catch (err) {
+        customButtons = {};
+      }
+    }
+
+    function persistCustomButtons() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(customButtons));
+      } catch (err) {
+        // Ignore storage restrictions
+      }
+      const embeddedEl = document.getElementById('embedded-button-config');
+      if (embeddedEl) {
+        embeddedEl.textContent = JSON.stringify(customButtons);
+      }
+    }
+
+    function getButtonKey(btn) {
+      if (btn.dataset.btnId) return btn.dataset.btnId;
+      if (btn.id) return btn.id;
+      if (btn.dataset.enterGroup) return `group-${btn.dataset.enterGroup}`;
+      if (btn.dataset.slideJump) return `jump-${btn.dataset.slideJump}`;
+      if (btn.dataset.action) return `action-${btn.dataset.action}`;
+      if (btn.dataset.chartMode) return `chart-${btn.dataset.chartMode}`;
+      return `btn-${(btn.innerText || '').trim().slice(0, 24)}`;
+    }
+
+    function getButtonLabelSpan(btn) {
+      return btn.querySelector('.hub-thinking-text, .overview-focus-text, span:last-of-type, span') || btn;
+    }
+
+    function applyCustomButtonsToDOM() {
+      document.querySelectorAll('button').forEach((btn) => {
+        if (btn.closest('#btn-edit-modal') || btn.id === 'btn-close-toc') return;
+        const key = getButtonKey(btn);
+        if (!btn.dataset.defaultLabel) {
+          const span = getButtonLabelSpan(btn);
+          btn.dataset.defaultLabel = (span.textContent || '').trim();
+        }
+        const cfg = customButtons[key];
+        if (cfg) {
+          const span = getButtonLabelSpan(btn);
+          if (cfg.label && span) {
+            span.textContent = cfg.label;
+          }
+          if (cfg.url) {
+            btn.dataset.customUrl = cfg.url;
+          } else {
+            delete btn.dataset.customUrl;
+          }
+        }
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('app-toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2800);
+    }
+
+    const editModal = document.getElementById('btn-edit-modal');
+    const editForm = document.getElementById('btn-edit-form');
+    const editLabelInput = document.getElementById('edit-btn-label');
+    const editUrlInput = document.getElementById('edit-btn-url');
+    const btnCloseEdit = document.getElementById('btn-close-edit');
+    const btnCancelEdit = document.getElementById('btn-cancel-edit');
+    const btnResetEdit = document.getElementById('btn-reset-edit');
+    const btnSaveHtml = document.getElementById('btn-save-html');
+
+    function openEditModal(btn) {
+      const key = getButtonKey(btn);
+      const span = getButtonLabelSpan(btn);
+      editingBtnKey = key;
+      editingDefaultLabel = btn.dataset.defaultLabel || (span.textContent || '').trim();
+      const cfg = customButtons[key] || {};
+      editLabelInput.value = cfg.label || editingDefaultLabel;
+      editUrlInput.value = cfg.url || '';
+      editModal.classList.remove('hidden');
+      editModal.classList.add('flex');
+      editLabelInput.focus();
+    }
+
+    function closeEditModal() {
+      editModal.classList.add('hidden');
+      editModal.classList.remove('flex');
+      editingBtnKey = null;
+    }
+
+    document.addEventListener('contextmenu', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn || btn.closest('#btn-edit-modal') || btn.id === 'btn-close-toc') return;
+      e.preventDefault();
+      openEditModal(btn);
+    });
+
+    editForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!editingBtnKey) return;
+      const label = editLabelInput.value.trim();
+      const url = editUrlInput.value.trim();
+      customButtons[editingBtnKey] = {
+        label: label || editingDefaultLabel,
+        url
+      };
+      persistCustomButtons();
+      renderSlide();
+      applyCustomButtonsToDOM();
+      closeEditModal();
+      showToast('已更新按鈕設定（記得點擊上方齒輪可另存新 HTML 檔案）');
+    });
+
+    btnResetEdit.addEventListener('click', () => {
+      if (!editingBtnKey) return;
+      delete customButtons[editingBtnKey];
+      persistCustomButtons();
+      renderSlide();
+      applyCustomButtonsToDOM();
+      closeEditModal();
+      showToast('已恢復此按鈕預設值');
+    });
+
+    btnCloseEdit.addEventListener('click', closeEditModal);
+    btnCancelEdit.addEventListener('click', closeEditModal);
+    editModal.addEventListener('click', (e) => {
+      if (e.target === editModal) closeEditModal();
+    });
+
+    // Capture-phase click handler for buttons with custom hyperlink URLs or 規劃案例
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn || btn.closest('#btn-edit-modal')) return;
+      const key = getButtonKey(btn);
+      const cfg = customButtons[key];
+      if (cfg && cfg.url) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        window.open(cfg.url, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      if (btn.dataset.action === 'planning-case') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        showToast('請按滑鼠右鍵指向「規劃案例」編輯超連結網址');
+      }
+    }, true);
+
+    async function saveUpdatedHtmlFile() {
+      persistCustomButtons();
+      const embeddedEl = document.getElementById('embedded-button-config');
+      if (embeddedEl) {
+        embeddedEl.textContent = JSON.stringify(customButtons);
+      }
+      // Ensure modals are closed in the exported snapshot
+      editModal.classList.add('hidden');
+      editModal.classList.remove('flex');
+      tocModal.classList.add('hidden');
+      tocModal.classList.remove('flex');
+
+      const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+
+      if (window.showSaveFilePicker) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: 'wealth-transfer-presentation.html',
+            types: [{ description: 'HTML 簡報檔', accept: { 'text/html': ['.html'] } }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          showToast('已成功覆蓋並儲存修改後的 HTML 檔案！');
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+        }
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'wealth-transfer-presentation.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('已另存並下載修改後的新 HTML 檔案！');
+    }
+
+    btnSaveHtml.addEventListener('click', saveUpdatedHtmlFile);
+
+    loadCustomButtons();
+    // =========================================================================
+    // Initial render
+    renderSlide();
+    applyCustomButtonsToDOM();
+  </script>
+</body>
+</html>
