@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>東京四大租屋物件全方位深度比較分析儀表板</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Noto Sans TC & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, #fffdf7 0%, #fff9eb 50%, #fff5f5 100%);
+      color: #1f2937;
+    }
+
+    /* 溫暖亮黃色面板邊框 + 柔和紅黃雙色外發光 */
+    .glow-panel {
+      background-color: #ffffff;
+      border: 2px solid #facc15;
+      box-shadow:
+        0 8px 24px -4px rgba(250, 204, 21, 0.28),
+        0 4px 16px -2px rgba(244, 63, 94, 0.14);
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* 滑鼠滑過任一框架時：亮綠色外框 + 綠色外發光 */
+    .glow-panel:hover {
+      border-color: #10b981 !important;
+      box-shadow:
+        0 0 0 3px rgba(16, 185, 129, 0.35),
+        0 12px 30px -2px rgba(16, 185, 129, 0.45),
+        0 4px 16px rgba(52, 211, 153, 0.3) !important;
+    }
+
+    /* 物件總覽卡片專屬：懸停立體微浮起＋翡翠綠外框與綠色發光 */
+    .overview-card {
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s ease, box-shadow 0.25s ease;
+    }
+    .overview-card:hover {
+      transform: translateY(-4px);
+      border-color: #10b981 !important;
+      box-shadow:
+        0 0 0 3.5px rgba(16, 185, 129, 0.42),
+        0 14px 32px -2px rgba(16, 185, 129, 0.5),
+        0 6px 18px rgba(52, 211, 153, 0.35) !important;
+    }
+
+    /* 需求推薦高亮狀態 */
+    .highlight-active {
+      border-color: #ef4444 !important;
+      background: linear-gradient(180deg, #fffbeb 0%, #fff1f2 100%) !important;
+      box-shadow:
+        0 0 0 3px rgba(250, 204, 21, 0.65),
+        0 14px 34px rgba(239, 68, 68, 0.32) !important;
+      transform: translateY(-4px) scale(1.015);
+    }
+
+    .col-highlight {
+      background-color: #fef3c7 !important;
+      box-shadow: inset 0 0 0 2px #f59e0b;
+    }
+
+    /* 互動按鈕微縮放與綠色發光懸停效果 */
+    .btn-micro {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease, border-color 0.22s ease, background-color 0.2s ease;
+    }
+    .btn-micro:hover {
+      transform: scale(1.045);
+      border-color: #10b981 !important;
+      box-shadow:
+        0 0 0 3px rgba(16, 185, 129, 0.42),
+        0 8px 24px rgba(16, 185, 129, 0.5),
+        0 0 12px rgba(52, 211, 153, 0.35) !important;
+    }
+    .btn-micro:active {
+      transform: scale(0.98);
+    }
+
+    /* 內層子資訊卡、規格框、提示子框架與族群卡片懸停綠色發光 */
+    .sub-card-glow {
+      transition: border-color 0.22s ease, box-shadow 0.24s ease, transform 0.22s ease, background-color 0.22s ease;
+    }
+    .sub-card-glow:hover {
+      border-color: #10b981 !important;
+      box-shadow:
+        0 0 0 3px rgba(16, 185, 129, 0.36),
+        0 10px 26px rgba(16, 185, 129, 0.42),
+        0 0 10px rgba(52, 211, 153, 0.28) !important;
+      transform: translateY(-2px);
+    }
+
+    /* 分頁按鈕啟用樣式 */
+    .tab-active {
+      background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow:
+        0 6px 18px rgba(245, 158, 11, 0.4),
+        0 3px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    /* 自訂捲軸 */
+    ::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fef9c3;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f59e0b;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- 頂部橫幅 Header -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b-2 border-yellow-400 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-rose-500 text-white shadow-sm">
+            TOKYO 23 WARDS RENTAL ANALYTICS
+          </span>
+          <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">
+            4間精選1K公寓深度對照
+          </span>
+        </div>
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 mt-1 tracking-tight">
+          東京四大租屋物件全方位深度比較分析儀表板
+        </h1>
+      </div>
+
+      <!-- 幣別切換與匯率提示 -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="text-xs text-gray-600 bg-yellow-50 border border-yellow-300 px-3 py-1.5 rounded-xl">
+          參考匯率：<span class="font-bold text-rose-600">1 JPY ≈ 0.215 TWD</span>
+        </div>
+        <div class="inline-flex rounded-xl p-1 bg-amber-100/80 border border-amber-300">
+          <button id="btn-jpy" onclick="setCurrency('JPY')" class="btn-micro px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-amber-500 text-white shadow">
+            🇯🇵 日圓 (JPY)
+          </button>
+          <button id="btn-twd" onclick="setCurrency('TWD')" class="btn-micro px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-amber-900 hover:bg-amber-200/70">
+            🇹🇼 台幣約當 (TWD)
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8">
+
+    <!-- 區塊 1：智慧需求一鍵推薦亮燈器 -->
+    <section class="glow-panel rounded-2xl p-5 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-extrabold text-gray-900 flex items-center gap-2">
+            <span>🎯</span> 一鍵需求智慧配對（點擊條件自動亮燈推薦最適合物件）
+          </h2>
+          <p class="text-xs sm:text-sm text-gray-600 mt-0.5">
+            點選您最在意的居住或通勤條件，下方物件卡片與比較表欄位將自動亮起紅黃雙色光框標示！
+          </p>
+        </div>
+        <button onclick="selectPersona('all')" class="btn-micro self-start sm:self-auto text-xs font-bold px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300">
+          🔄 重置篩選
+        </button>
+      </div>
+
+      <div id="persona-buttons" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <button onclick="selectPersona('highFloor')" data-persona="highFloor" class="persona-btn btn-micro p-3 rounded-xl border-2 border-amber-300 bg-amber-50/70 text-left">
+          <div class="text-base mb-1">🏙️ 高樓景觀派</div>
+          <div class="text-xs text-gray-600 leading-snug">重視視野防潮、安靜隱私、免禮金直達池袋新宿</div>
+        </button>
+        <button onclick="selectPersona('sunlightFurniture')" data-persona="sunlightFurniture" class="persona-btn btn-micro p-3 rounded-xl border-2 border-amber-300 bg-amber-50/70 text-left">
+          <div class="text-base mb-1">☀️ 採光拎包入住</div>
+          <div class="text-xs text-gray-600 leading-snug">稀有雙面採光＋附全套家具家電，直達新宿澀谷</div>
+        </button>
+        <button onclick="selectPersona('corePetNew')" data-persona="corePetNew" class="persona-btn btn-micro p-3 rounded-xl border-2 border-amber-300 bg-amber-50/70 text-left">
+          <div class="text-base mb-1">🐾 核心新屋養寵</div>
+          <div class="text-xs text-gray-600 leading-snug">23區正核心文教區、築1年最新屋、可養寵物</div>
+        </button>
+        <button onclick="selectPersona('budgetSpace')" data-persona="budgetSpace" class="persona-btn btn-micro p-3 rounded-xl border-2 border-amber-300 bg-amber-50/70 text-left">
+          <div class="text-base mb-1">💰 高CP大空間</div>
+          <div class="text-xs text-gray-600 leading-snug">月費10萬出頭、9.5帖超大臥室、居家辦公首選</div>
+        </button>
+        <button onclick="selectPersona('fengshuiHealth')" data-persona="fengshuiHealth" class="persona-btn btn-micro p-3 rounded-xl border-2 border-amber-300 bg-amber-50/70 text-left">
+          <div class="text-base mb-1">🌿 風水健康最佳</div>
+          <div class="text-xs text-gray-600 leading-snug">中高樓層避濕氣噪音、雙面通風或開闊採光</div>
+        </button>
+        <button onclick="selectPersona('commuteHub')" data-persona="commuteHub" class="persona-btn btn-micro p-3 rounded-xl border-2 border-amber-300 bg-amber-50/70 text-left">
+          <div class="text-base mb-1">🚃 極致通勤效率</div>
+          <div class="text-xs text-gray-600 leading-snug">步行5分內到站、10分鐘圈直達東京/新宿/池袋</div>
+        </button>
+      </div>
+
+      <!-- 動態推薦說明橫幅 -->
+      <div id="persona-banner" class="hidden mt-4 p-3.5 rounded-xl bg-gradient-to-r from-amber-100 via-yellow-50 to-rose-100 border border-rose-300 text-sm text-gray-800 flex items-start gap-2.5">
+        <span class="text-lg">💡</span>
+        <div id="persona-banner-text" class="font-medium leading-relaxed"></div>
+      </div>
+    </section>
+
+    <!-- 區塊 2：四大物件總覽卡片 -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg sm:text-xl font-extrabold text-gray-900">🏢 四大物件核心概覽卡片</h2>
+        <span class="text-xs text-gray-500">皆為 1K 獨立衛浴（乾濕分離）公寓</span>
+      </div>
+      <div id="overview-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        <!-- 由 JS 動態渲染 -->
+      </div>
+    </section>
+
+    <!-- 區塊 3：多維度深度分析分頁切換 -->
+    <section class="space-y-5">
+      <!-- 分頁導覽列 -->
+      <div class="glow-panel rounded-2xl p-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2">
+        <button onclick="switchTab('specs')" id="tab-specs" class="tab-btn btn-micro py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold border border-amber-200 tab-active">
+          📋 (A) 基本規格與月費
+        </button>
+        <button onclick="switchTab('tenMonths')" id="tab-tenMonths" class="tab-btn btn-micro py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold border border-amber-200 bg-amber-50/60 text-gray-800">
+          💸 (B) 住10個月退租總成本
+        </button>
+        <button onclick="switchTab('convenience')" id="tab-convenience" class="tab-btn btn-micro py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold border border-amber-200 bg-amber-50/60 text-gray-800">
+          🛒 (C) 500m車站與超市超商
+        </button>
+        <button onclick="switchTab('charts')" id="tab-charts" class="tab-btn btn-micro py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold border border-amber-200 bg-amber-50/60 text-gray-800">
+          📊 (D) 雷達與支出結構圖
+        </button>
+        <button onclick="switchTab('fengshui')" id="tab-fengshui" class="tab-btn btn-micro py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold border border-amber-200 bg-amber-50/60 text-gray-800">
+          ☯️ (E) 風水與陽光空氣水
+        </button>
+        <button onclick="switchTab('audience')" id="tab-audience" class="tab-btn btn-micro py-2.5 px-3 rounded-xl text-xs sm:text-sm font-extrabold border border-amber-200 bg-amber-50/60 text-gray-800">
+          👥 (F) 適合族群總結
+        </button>
+      </div>
+
+      <!-- 日文房產格局用語雙語對照速查列 -->
+      <div class="glow-panel rounded-2xl px-4 py-3 bg-gradient-to-r from-amber-50/90 via-yellow-50/80 to-rose-50/80">
+        <div class="text-xs font-extrabold text-amber-900 mb-2 flex items-center gap-1.5">
+          <span>🈶</span> 日本租屋網頁常見日文專有名詞 × 繁體中文對照速查：
+        </div>
+        <div class="flex flex-wrap gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>1K</strong>（1房1獨立廚房）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>洋室</strong>（西式木地板臥室）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>玄関</strong>（玄關落塵區）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>リビング/ダイニング</strong>（客廳／餐廳）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>バルコニー</strong>（陽台）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>バス・トイレ別</strong>（衛浴分離）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>オートロック</strong>（自動門禁鎖）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>フローリング</strong>（木質地板）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>敷金なし</strong>（免押金）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>礼金なし</strong>（免禮金）</span>
+          <span class="sub-card-glow cursor-default px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-gray-800"><strong>1帖</strong>（約0.5坪／1張榻榻米大）</span>
+        </div>
+      </div>
+
+      <!-- 分頁內容 (A)：基本規格與成本比較表 -->
+      <div id="panel-specs" class="tab-panel glow-panel rounded-2xl p-4 sm:p-6 overflow-hidden">
+        <div class="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div>
+            <h3 class="text-lg sm:text-xl font-extrabold text-gray-900">📋 基本規格、交通距離與租金成本完整比較表</h3>
+            <p class="text-xs sm:text-sm text-gray-600 mt-1">橫向完整對照四間物件的日文原名＋繁體中文翻譯、車站距離、月支出明細與設備標籤。</p>
+          </div>
+          <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-lg border border-amber-300 self-start sm:self-auto">
+            📱 手機版可左右滑動表格（首欄已固定）
+          </span>
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-amber-300">
+          <table class="w-full text-left border-collapse min-w-[920px]">
+            <thead>
+              <tr class="bg-gradient-to-r from-amber-100 via-yellow-100 to-rose-100 text-gray-900 border-b-2 border-amber-400">
+                <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm w-36 sm:w-44 sticky left-0 bg-amber-100 z-10 border-r border-amber-300">比較維度</th>
+                <th id="th-specs-0" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200 transition-colors">
+                  <span class="inline-block px-2 py-0.5 rounded bg-amber-500 text-white text-xs mr-1">物件 ①</span>
+                  スカイコートパレス板橋<br>
+                  <span class="text-xs font-bold text-amber-900">（Sky Court Palace 板橋｜702室）</span>
+                </th>
+                <th id="th-specs-1" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200 transition-colors">
+                  <span class="inline-block px-2 py-0.5 rounded bg-rose-500 text-white text-xs mr-1">物件 ②</span>
+                  LEXE明大前<br>
+                  <span class="text-xs font-bold text-rose-900">（LEXE 明大前｜501室）</span>
+                </th>
+                <th id="th-specs-2" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200 transition-colors">
+                  <span class="inline-block px-2 py-0.5 rounded bg-amber-600 text-white text-xs mr-1">物件 ③</span>
+                  プラザ・デル・ソル<br>
+                  <span class="text-xs font-bold text-amber-900">（Plaza Del Sol 太陽廣場｜303室）</span>
+                </th>
+                <th id="th-specs-3" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm transition-colors">
+                  <span class="inline-block px-2 py-0.5 rounded bg-orange-500 text-white text-xs mr-1">物件 ④</span>
+                  アークシティ 野方<br>
+                  <span class="text-xs font-bold text-orange-900">（Arc City 野方｜3階／3樓）</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="specs-table-body" class="divide-y divide-amber-200 text-xs sm:text-sm">
+              <!-- 由 JS 動態生成 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 新增分頁內容 (B)：住滿 10 個月退租全成本試算比較 -->
+      <div id="panel-tenMonths" class="tab-panel hidden space-y-6">
+        <div class="glow-panel rounded-2xl p-4 sm:p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="text-lg sm:text-xl font-extrabold text-gray-900">💸 居住 10 個月後退租「全生命週期總支出」深度精算表</h3>
+              <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                依據日本一般 2 年制租賃契約慣例，完整計入<strong>初期簽約費＋10 個月固定支出（含網路費差額）＋未滿 1 年短期解約違約金與退租清潔費</strong>。
+              </p>
+            </div>
+            <!-- 短期解約違約金情境切換 -->
+            <div class="flex flex-wrap items-center gap-2 bg-amber-50 border border-amber-300 p-2 rounded-xl">
+              <span class="text-xs font-bold text-amber-900">違約金條款假設：</span>
+              <button id="btn-penalty-yes" onclick="setPenaltyMode(true)" class="btn-micro px-3 py-1 rounded-lg text-xs font-bold bg-rose-500 text-white shadow">
+                未滿1年罰1個月租金（日本常態）
+              </button>
+              <button id="btn-penalty-no" onclick="setPenaltyMode(false)" class="btn-micro px-3 py-1 rounded-lg text-xs font-bold text-amber-900 hover:bg-amber-200/70">
+                無短期違約金條款
+              </button>
+            </div>
+          </div>
+
+          <!-- 10個月總支出對比長條圖 -->
+          <div class="mb-6 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
+            <div class="text-xs font-extrabold text-gray-800 mb-2">📊 10 個月全成本結構拆解圖（初期費用 vs 10個月月費 vs 退租違約與清潔）</div>
+            <div class="relative h-[260px] sm:h-[310px] w-full">
+              <canvas id="tenMonthChart"></canvas>
+            </div>
+          </div>
+
+          <!-- 10個月全成本詳細對照表 -->
+          <div class="overflow-x-auto rounded-xl border border-amber-300">
+            <table class="w-full text-left border-collapse min-w-[940px]">
+              <thead>
+                <tr class="bg-gradient-to-r from-amber-100 via-yellow-100 to-rose-100 text-gray-900 border-b-2 border-amber-400">
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm w-44 sticky left-0 bg-amber-100 z-10 border-r border-amber-300">費用階段與明細項目</th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">
+                    <span class="inline-block px-2 py-0.5 rounded bg-amber-500 text-white text-xs mr-1">物件 ①</span>
+                    スカイコートパレス板橋<br><span class="text-xs font-semibold text-gray-700">（板橋｜702室）</span>
+                  </th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">
+                    <span class="inline-block px-2 py-0.5 rounded bg-rose-500 text-white text-xs mr-1">物件 ②</span>
+                    LEXE明大前<br><span class="text-xs font-semibold text-gray-700">（明大前｜501室）</span>
+                  </th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">
+                    <span class="inline-block px-2 py-0.5 rounded bg-amber-600 text-white text-xs mr-1">物件 ③</span>
+                    プラザ・デル・ソル<br><span class="text-xs font-semibold text-gray-700">（本鄉三丁目｜303室）</span>
+                  </th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm">
+                    <span class="inline-block px-2 py-0.5 rounded bg-orange-500 text-white text-xs mr-1">物件 ④</span>
+                    アークシティ 野方<br><span class="text-xs font-semibold text-gray-700">（野方｜3樓）</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="ten-month-table-body" class="divide-y divide-amber-200 text-xs sm:text-sm">
+                <!-- 由 JS 動態生成 -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 10個月短期居住關鍵洞察卡片 -->
+          <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="sub-card-glow p-4 rounded-xl bg-amber-50 border border-amber-300">
+              <div class="text-xs font-extrabold text-amber-900">🥇 10個月總支出最省冠軍：④ 野方</div>
+              <p class="text-xs text-gray-700 mt-1.5 leading-relaxed">
+                雖然 ④ 野方有 14.1 萬円禮金，但因月租僅 9.4 萬円＋<strong>網路免費</strong>，住滿 10 個月含違約金總花費約 <strong>136.4 萬円</strong>（平均每月 13.64 萬円），比最貴的 ② 明大前足足省下超過 <strong>36 萬円（約台幣 7.8 萬元）</strong>！
+              </p>
+            </div>
+            <div class="sub-card-glow p-4 rounded-xl bg-rose-50 border border-rose-300">
+              <div class="text-xs font-extrabold text-rose-900">🛋️ 隱藏家具家電省錢王：② 明大前</div>
+              <p class="text-xs text-gray-700 mt-1.5 leading-relaxed">
+                ② 明大前帳面 10 個月總支出約 172.7 萬円看似最高，但<strong>附全套床架、書桌椅、電視與窗簾</strong>；其他三間空屋若自購基本家電家具＋退租粗大垃圾清運約需 <strong>15～22 萬円</strong>，扣除此成本後 ② 與 ①、③ 實際差距大幅縮小。
+              </p>
+            </div>
+            <div class="sub-card-glow p-4 rounded-xl bg-yellow-50 border border-yellow-400">
+              <div class="text-xs font-extrabold text-amber-950">⚠️ 日本 10 個月退租必看合約重點</div>
+              <p class="text-xs text-gray-700 mt-1.5 leading-relaxed">
+                日本一般租約為 2 年制，<strong>未滿 1 年解約通常會收取「短期解約違約金（賃料1個月）」</strong>，且須提前 1～2 個月提出退租通知（解約予告）。若確定只住 10 個月，簽約前務必請仲介確認違約金條款！
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 新增分頁內容 (C)：離車站 500 公尺以內與超市、便利商店生活機能比較 -->
+      <div id="panel-convenience" class="tab-panel hidden space-y-6">
+        <div class="glow-panel rounded-2xl p-4 sm:p-6">
+          <div class="mb-4">
+            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 mb-1.5">
+              ✅ 4 間物件全部符合「距離車站 500 公尺以內（徒歩4～5分）」條件！
+            </div>
+            <h3 class="text-lg sm:text-xl font-extrabold text-gray-900">🛒 500m 車站步行距離 × 回家沿途超市、便利商店完整實測對照</h3>
+            <p class="text-xs sm:text-sm text-gray-600 mt-1">
+              針對「下班出站順路採買生鮮熟食、半夜步行 2 分鐘買超商」的日常動線進行深度比對。
+            </p>
+          </div>
+
+          <!-- 4間物件 500m 生活圈評比卡片 -->
+          <div id="convenience-cards" class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+            <!-- 由 JS 動態生成 -->
+          </div>
+
+          <!-- 超市與超商詳細對照表 -->
+          <div class="overflow-x-auto rounded-xl border border-amber-300">
+            <table class="w-full text-left border-collapse min-w-[920px]">
+              <thead>
+                <tr class="bg-gradient-to-r from-amber-100 via-yellow-100 to-rose-100 text-gray-900 border-b-2 border-amber-400">
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm w-40 sticky left-0 bg-amber-100 z-10 border-r border-amber-300">採買與距離指標</th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">① スカイコートパレス板橋<br><span class="text-xs font-semibold text-gray-700">（板橋站／新板橋站）</span></th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">② LEXE明大前<br><span class="text-xs font-semibold text-gray-700">（明大前站）</span></th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">③ プラザ・デル・ソル<br><span class="text-xs font-semibold text-gray-700">（本鄉三丁目站）</span></th>
+                  <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm">④ アークシティ 野方<br><span class="text-xs font-semibold text-gray-700">（野方站）</span></th>
+                </tr>
+              </thead>
+              <tbody id="convenience-table-body" class="divide-y divide-amber-200 text-xs sm:text-sm">
+                <!-- 由 JS 動態生成 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分頁內容 (D)：Chart.js 雷達圖與長條圖 -->
+      <div id="panel-charts" class="tab-panel hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- 五維度雷達圖 -->
+          <div class="glow-panel rounded-2xl p-4 sm:p-6">
+            <h3 class="text-base sm:text-lg font-extrabold text-gray-900 mb-1">🕸️ 五維度綜合競爭力雷達圖</h3>
+            <p class="text-xs text-gray-600 mb-4">評分維度（滿分 10 分）：交通核心度、採光通風、空間寬敞度、價格CP值、屋齡設備</p>
+            <div class="relative h-[300px] sm:h-[380px] w-full">
+              <canvas id="radarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- 月支出結構堆疊長條圖 -->
+          <div class="glow-panel rounded-2xl p-4 sm:p-6">
+            <h3 class="text-base sm:text-lg font-extrabold text-gray-900 mb-1">💴 每月固定居住支出結構對比</h3>
+            <p class="text-xs text-gray-600 mb-4">拆解「基本月租金（賃料）」與「管理費／共益費」</p>
+            <div class="relative h-[300px] sm:h-[380px] w-full">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 數據解讀摘要卡 -->
+        <div class="glow-panel rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-gradient-to-r from-amber-50/70 to-rose-50/70">
+          <div class="sub-card-glow p-3.5 rounded-xl bg-white border border-amber-300">
+            <div class="text-xs font-bold text-amber-700">🏆 租金與空間 CP 值冠軍</div>
+            <div class="text-sm sm:text-base font-black text-gray-900 mt-1">④ アークシティ 野方（Arc City 野方）</div>
+            <p class="text-xs text-gray-600 mt-1">月總額僅 10.09 萬日圓，卻擁有最大 28.60㎡（9.5帖／約4.75坪主臥），每坪單價最低。</p>
+          </div>
+          <div class="sub-card-glow p-3.5 rounded-xl bg-white border border-amber-300">
+            <div class="text-xs font-bold text-rose-600">☀️ 採光通風與便利冠軍</div>
+            <div class="text-sm sm:text-base font-black text-gray-900 mt-1">② LEXE明大前（LEXE 明大前）</div>
+            <p class="text-xs text-gray-600 mt-1">全場唯一角部屋（邊間）「二面採光（雙面開窗）」＋家具家電付き（附全套家具家電）。</p>
+          </div>
+          <div class="sub-card-glow p-3.5 rounded-xl bg-white border border-amber-300">
+            <div class="text-xs font-bold text-amber-700">🏙️ 屋齡與核心地段冠軍</div>
+            <div class="text-sm sm:text-base font-black text-gray-900 mt-1">③ プラザ・デル・ソル（太陽廣場）</div>
+            <p class="text-xs text-gray-600 mt-1">文京區本鄉23區正核心，築1年（屋齡1年）最新設備且ペット共生（可養寵物）。</p>
+          </div>
+          <div class="sub-card-glow p-3.5 rounded-xl bg-white border border-amber-300">
+            <div class="text-xs font-bold text-rose-600">⚖️ 綜合平衡與景觀冠軍</div>
+            <div class="text-sm sm:text-base font-black text-gray-900 mt-1">① スカイコートパレス板橋（7樓）</div>
+            <p class="text-xs text-gray-600 mt-1">最高 7 樓視野無遮蔽、礼金なし（免禮金），搭埼京線 3 分鐘到池袋、9 分鐘到新宿。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分頁內容 (E)：風水格局 × 陽光空氣水 × 樓層健康 -->
+      <div id="panel-fengshui" class="tab-panel hidden glow-panel rounded-2xl p-4 sm:p-6">
+        <div class="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div>
+            <h3 class="text-lg sm:text-xl font-extrabold text-gray-900">☯️ 風水格局 × 陽光空氣水 × 樓層身心健康深度對照表</h3>
+            <p class="text-xs sm:text-sm text-gray-600 mt-1">從傳統居家風水、自然採光對流、給排水防潮到樓層對睡眠與健康的影響逐項解析。</p>
+          </div>
+          <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-lg border border-amber-300 self-start sm:self-auto">
+            📱 手機版可左右滑動表格
+          </span>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-amber-300">
+          <table class="w-full text-left border-collapse min-w-[920px]">
+            <thead>
+              <tr class="bg-gradient-to-r from-amber-100 via-yellow-100 to-rose-100 text-gray-900 border-b-2 border-amber-400">
+                <th class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm w-36 sm:w-44 sticky left-0 bg-amber-100 z-10 border-r border-amber-300">評估構面</th>
+                <th id="th-fengshui-0" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">① スカイコートパレス板橋<br><span class="text-xs font-semibold text-gray-700">（Sky Court Palace 板橋｜7樓）</span></th>
+                <th id="th-fengshui-1" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">② LEXE明大前<br><span class="text-xs font-semibold text-gray-700">（LEXE 明大前｜5樓）</span></th>
+                <th id="th-fengshui-2" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm border-r border-amber-200">③ プラザ・デル・ソル<br><span class="text-xs font-semibold text-gray-700">（太陽廣場｜3樓・築1年）</span></th>
+                <th id="th-fengshui-3" class="p-3 sm:p-3.5 font-extrabold text-xs sm:text-sm">④ アークシティ 野方<br><span class="text-xs font-semibold text-gray-700">（Arc City 野方｜3樓）</span></th>
+              </tr>
+            </thead>
+            <tbody id="fengshui-table-body" class="divide-y divide-amber-200 text-xs sm:text-sm">
+              <!-- 由 JS 動態生成 -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 共通風水與設備安心提示卡 -->
+        <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="sub-card-glow p-4 rounded-xl bg-amber-50 border border-amber-300">
+            <h4 class="font-extrabold text-amber-900 text-sm flex items-center gap-1.5">
+              <span>🧭</span> 四間物件共通的「風水優點」
+            </h4>
+            <ul class="text-xs text-gray-700 mt-2 space-y-1.5 list-disc list-inside leading-relaxed">
+              <li><strong>藏風聚氣無穿堂煞：</strong>四間皆為標準「1K 格局」，玄關走廊與臥室之間設有實體隔間門，徹底避免開門見床、開門見窗的漏財與隱私外洩問題。</li>
+              <li><strong>方正格局易靠實牆：</strong>臥室皆為標準長方形，無斜角或大柱切角，床頭與書桌皆能穩靠實牆（風水上「有靠山」）。</li>
+            </ul>
+          </div>
+          <div class="sub-card-glow p-4 rounded-xl bg-rose-50 border border-rose-300">
+            <h4 class="font-extrabold text-rose-900 text-sm flex items-center gap-1.5">
+              <span>⚠️</span> 入住後的「風水擺設微調建議」
+            </h4>
+            <ul class="text-xs text-gray-700 mt-2 space-y-1.5 list-disc list-inside leading-relaxed">
+              <li><strong>避開冷氣橫樑壓頂：</strong>落地窗上方或側牆有結構橫樑（冷氣安裝處），建議床頭靠向無橫樑的實牆一側，提升深層睡眠安定感。</li>
+              <li><strong>廚房水火調和與鏡位：</strong>走廊一字型廚房流理台緊鄰爐具，保持乾燥整潔即可；物件②書桌附鏡子，擺床時須避免鏡面正對床鋪。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分頁內容 (F)：適合居住族群與決策總結 -->
+      <div id="panel-audience" class="tab-panel hidden space-y-6">
+        <div class="glow-panel rounded-2xl p-5 sm:p-6">
+          <h3 class="text-lg sm:text-xl font-extrabold text-gray-900 mb-1">👥 預算門檻與適合居住族群深度分析</h3>
+          <p class="text-xs sm:text-sm text-gray-600 mb-5">
+            在東京單身市場中，月支出 <strong>10萬～13.6萬日圓</strong> 屬於追求「獨立衛浴、門禁安全、車站徒步5分內」的中高階 1K 級距（依日本租屋「月租不超過月收1/3」法則，建議年收約 <strong>420萬～580萬日圓</strong> 以上）。
+          </p>
+
+          <div id="audience-cards" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- 由 JS 動態渲染 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 text-center text-xs text-gray-500">
+    <p>東京四大租屋物件全方位深度比較分析儀表板 ｜ 資料依據 LIFULL HOME'S & いい部屋ネット 公開物件資訊整理</p>
+  </footer>
+
+  <script>
+    // 全域狀態變數
+    const JPY_TO_TWD = 0.215;
+    let currentCurrency = 'JPY';
+    let currentPersona = 'all';
+    let includeShortTermPenalty = true;
+
+    // 完整四大物件資料結構（含日文原名＋繁體中文完整對照、10個月退租精算、500m超市超商資訊）
+    const properties = [
+      {
+        id: 0,
+        badge: '物件 ①',
+        badgeColor: 'bg-amber-500',
+        name: 'スカイコートパレス板橋',
+        nameZh: 'Sky Court Palace 板橋',
+        room: '702号室（702室 / 7樓）',
+        ward: '東京都板橋区板橋1丁目（東京都板橋區板橋1丁目）',
+        station: 'JR埼京線「板橋駅（板橋站）」/ 都営三田線「新板橋駅（新板橋站）」徒歩4分（步行4分）',
+        coreCommute: '池袋 3分｜新宿 9分｜渋谷（澀谷）15分｜大手町直達',
+        rentJpy: 114600,
+        mgmtJpy: 8400,
+        totalJpy: 123000,
+        depositJpy: 114600, // 敷金1個月（無標註敷金なし）
+        keyMoneyJpy: 0,     // 礼金なし（免禮金）
+        internetMonthlyJpy: 4500, // 需自辦網路預估
+        cleaningFeeJpy: 44000,    // 1K 退租專業清潔費預估
+        initialPerk: '礼金なし（免禮金，省下1個月禮金）',
+        jpTags: ['礼金なし（免禮金）', 'バス・トイレ別（衛浴分離）', 'オートロック（自動門禁鎖）', 'フローリング（木質地板）', '2階以上（2樓以上）'],
+        layout: '1K（1房1獨立廚房）',
+        areaSqm: 25.71,
+        areaTsubo: 7.78,
+        floor: '7階 / 9階建（7樓／共9層）',
+        age: '築9年（屋齡9年・2017年建）',
+        highlights: ['7樓高樓層視野無遮蔽', '礼金なし（免禮金）初期省錢', '山手線池袋站下一站（僅3分）'],
+        personas: ['highFloor', 'fengshuiHealth', 'commuteHub'],
+        convenience: {
+          distanceMeters: '約 280～320 公尺（徒歩4分，完全符合 500m 內）',
+          supermarkets: [
+            'ライフ 板橋店（LIFE 大型生鮮超市・開到深夜24:00，出板橋站西口順路必經）',
+            'マルエツ 板橋駅前店（Maruetsu 24小時/深夜超市，下班再晚都能買生鮮便當）',
+            'まいばすけっと（My Basket 小型連鎖生鮮超市，步行2分內）'
+          ],
+          konbini: '7-Eleven、FamilyMart 全家、Lawson 沿路密集分布（步行1～2分鐘即達）',
+          routeDesc: '【採買便利度：★★★★★ 滿分】JR板橋站與都營新板橋站之間就是超大型生鮮超市戰區，出站回家路上順手買菜、買熟食完全不繞路，且物價比市中心便宜許多。'
+        },
+        scores: {
+          center: 8.5,
+          lightAir: 8.5,
+          space: 7.5,
+          cpValue: 8.2,
+          newness: 8.2
+        },
+        fengshui: {
+          layoutQi: '標準1K獨立玄關門（玄関門），有效阻隔走廊廚房油煙與穿堂煞；リビング/ダイニング（客臥室）方正無缺角，易於擺設床位靠實牆。',
+          sunAir: '【採光優】7樓高度超越周邊低矮建築，無遮擋日照充足；配備24小時機械換氣系統保持空氣清新。',
+          waterDamp: 'バス・トイレ別（衛浴三點獨立分離：浴室/廁所/獨立洗面台），屋齡9年管線新穎，高樓層遠離地面濕氣，防潮極佳。',
+          healthFloor: '【健康快適度極高】7樓大幅過濾馬路噪音、汽車廢氣與餐飲油煙，視野開闊有助減壓與深層睡眠。'
+        },
+        audience: {
+          title: '副都心通勤白領・重視景觀隱私者',
+          income: '建議年收：480 萬日圓以上',
+          fitReasons: [
+            '每天需往返池袋、新宿、渋谷（澀谷）或大手町上班的上班族，雙線利用極具彈性。',
+            '對噪音敏感、怕潮濕過敏，喜歡高樓層開闊視野與高隱私性的居住者。',
+            '希望降低簽約初期礼金（禮金）負擔，同時享受 10 年內現代化管理公寓的人。'
+          ],
+          watchOut: '單面バルコニー（陽台）落地窗設計，開窗對流需搭配門縫或24小時換氣扇循環。'
+        }
+      },
+      {
+        id: 1,
+        badge: '物件 ②',
+        badgeColor: 'bg-rose-500',
+        name: 'LEXE明大前',
+        nameZh: 'LEXE 明大前',
+        room: '501号室（501室 / 5樓）',
+        ward: '東京都世田谷区松原1丁目（東京都世田谷區松原1丁目）',
+        station: '京王線・井の頭線「明大前駅（明大前站）」徒歩4分（步行4分）',
+        coreCommute: '新宿 7分｜渋谷（澀谷）8分｜吉祥寺 12分',
+        rentJpy: 125000,
+        mgmtJpy: 11000,
+        totalJpy: 136000,
+        depositJpy: 0,      // 敷金なし（免押金）
+        keyMoneyJpy: 125000,// 禮金1個月預估
+        internetMonthlyJpy: 4500, // 需自辦網路預估
+        cleaningFeeJpy: 45000,
+        initialPerk: '敷金なし（免押金）＋ 家具家電付き（附全套家具家電）',
+        jpTags: ['敷金なし（免押金）', '角部屋・二面採光（邊間・雙面採光）', '家具家電付き（附家具家電）', 'オートロック（自動門禁鎖）', 'バス・トイレ別（衛浴分離）'],
+        layout: '1K（1房1獨立廚房）',
+        areaSqm: 25.43,
+        areaTsubo: 7.69,
+        floor: '5階 / 8階建（5樓／共8層）',
+        age: '築11年（屋齡11年・2015年建）',
+        highlights: ['稀有角部屋・二面採光（邊間雙面採光）', '家具家電付き（附床組/桌椅/電視/窗簾）', '直達新宿7分・渋谷（澀谷）8分'],
+        personas: ['sunlightFurniture', 'fengshuiHealth', 'commuteHub'],
+        convenience: {
+          distanceMeters: '約 300～340 公尺（徒歩4分，完全符合 500m 內）',
+          supermarkets: [
+            'フレンテ明大前（Frente 明大前車站共構商場，內有生鮮超市與熟食街）',
+            '京王ストア 代田橋店 / まいばすけっと 明大前店（步行3～4分生鮮超市）',
+            '業務スーパー 松原店（業務超市，大份量平價採買首選）'
+          ],
+          konbini: 'FamilyMart 全家、7-Eleven、Lawson（車站出口到松原1丁目沿線 3 間以上）',
+          routeDesc: '【採買便利度：★★★★☆ 4.5星】明大前站為學生與年輕人商圈，出站就有共構商場與藥妝店、平價定食屋、手搖飲，買外食與日用品極度方便，但大型綜合超市規模略小於板橋。'
+        },
+        scores: {
+          center: 8.8,
+          lightAir: 9.8,
+          space: 7.4,
+          cpValue: 7.2,
+          newness: 7.8
+        },
+        fengshui: {
+          layoutQi: '1K門廊隔斷藏風聚氣；須留意書桌附帶化妝鏡，擺床時避免鏡面正對床頭或床尾以安神。',
+          sunAir: '【全場採光通風冠軍】罕見角部屋（邊間）「二面採光（雙面開窗：落地窗＋側牆高窗）」，白天室內極明亮，開窗即形成自然對流。',
+          waterDamp: 'バス・トイレ別（衛浴分離）設計，雙面開窗加速室內濕氣排出，配合浴室乾燥機，發霉機率極低。',
+          healthFloor: '【身心愉悅度最高】5樓中高樓層兼具抗噪與充足自然日照，有助維持生理時鐘與血清素分泌，心情開朗。'
+        },
+        audience: {
+          title: '剛赴日留學/外派・免買家具拎包入住族',
+          income: '建議年收：520 萬日圓以上',
+          fitReasons: [
+            '剛到東京工作或留學（如明治大學、東大駒場校區），不想花數十萬買家具與退租處理大型垃圾者。',
+            '極度重視屋內陽光與自然風對流，拒絕陰暗潮濕房間的陽光愛好者。',
+            '主要生活圈在新宿、渋谷（澀谷）、下北沢（下北澤）或吉祥寺的時尚年輕族群。'
+          ],
+          watchOut: '總月費 13.6 萬日圓為四間最高，且明大前駅（明大前站）周邊學生與人潮較多、夜晚較熱鬧。'
+        }
+      },
+      {
+        id: 2,
+        badge: '物件 ③',
+        badgeColor: 'bg-amber-600',
+        name: 'プラザ・デル・ソル',
+        nameZh: 'Plaza Del Sol 太陽廣場',
+        room: '303号室（303室 / 3樓）',
+        ward: '東京都文京区本郷3丁目（東京都文京區本鄉3丁目）',
+        station: '丸ノ内線・大江戸線「本郷三丁目駅（本鄉三丁目站）」徒歩4~5分（步行4~5分）',
+        coreCommute: '東京駅（東京站）/ 銀座 10分｜新宿 18分｜JR御茶ノ水駅（御茶之水站）步行11分',
+        rentJpy: 122000,
+        mgmtJpy: 8100,
+        totalJpy: 130100,
+        depositJpy: 0,      // 截圖明確顯示 敷金 0円
+        keyMoneyJpy: 122000,// 截圖明確顯示 礼金 1ヶ月
+        internetMonthlyJpy: 0,    // 截圖明確顯示 インターネット無料
+        cleaningFeeJpy: 45000,
+        initialPerk: '敷金なし（免押金）＋ インターネット無料（網路免費）＋ ペット共生（可養寵物）',
+        jpTags: ['築1年（屋齡1年新成屋）', 'ペット共生（可養寵物）', 'インターネット無料（網路免費）', '敷金なし（免押金）', '即入居可（可立即入住）'],
+        layout: '1K（洋室7.0帖｜西式臥室約3.5坪）',
+        areaSqm: 26.18,
+        areaTsubo: 7.92,
+        floor: '3階（3樓）',
+        age: '築1年（屋齡1年・最新成屋）',
+        highlights: ['23區正核心文教文京區', '築1年（屋齡1年）最新設備・網路免費', 'ペット共生（可飼養寵物）'],
+        personas: ['corePetNew', 'commuteHub'],
+        convenience: {
+          distanceMeters: '大江戶線出口 260m（徒歩4分）／丸之內線出口 360m（徒歩5分）',
+          supermarkets: [
+            'ライフ 本郷三丁目駅前店（LIFE 生鮮超市，就在本鄉三丁目站旁，下班順路採買極方便）',
+            'マルエツ プチ 本郷三丁目店（Maruetsu Petit 都市型生鮮超市，步行2～3分）',
+            'まいばすけっと 本郷2丁目店（小型生鮮超市，補充牛奶水果超近）'
+          ],
+          konbini: '7-Eleven、FamilyMart 全家、Lawson 遍布本鄉通與春日通沿線（步行1～2分）',
+          routeDesc: '【採買便利度：★★★★★ 滿分】本鄉三丁目站十字路口旁就有大型 LIFE 超市與 Maruetsu Petit，回家路上 100% 順路，且文教區街道寬敞乾淨、治安極佳。'
+        },
+        scores: {
+          center: 9.8,
+          lightAir: 7.2,
+          space: 8.0,
+          cpValue: 7.8,
+          newness: 9.9
+        },
+        fengshui: {
+          layoutQi: '洋室7.0帖（約3.5坪）方正寬敞，玄関（玄關）動線流暢無穿堂煞；新屋氣場清新旺盛，注意床頭避開上方橫樑冷氣處。',
+          sunAir: '【採光中上】3樓受市中心周邊大樓棟距影響，直射陽光較中高樓層短，但大面落地窗與全新24小時換氣系統維持空氣極佳。',
+          waterDamp: '【給排水最新】築1年（屋齡1年）全新管線、衛浴與廚具，完全無水垢、異味或老舊滲水風險，衛生條件滿分。',
+          healthFloor: '【治安與抗震安心】3樓地震搖晃感小、上下樓快速；文京區治安為東京23區之冠，夜間步行回家心理壓力最小。'
+        },
+        audience: {
+          title: '市中心菁英・東大研究學者・毛孩飼主',
+          income: '建議年收：500 萬日圓以上（含省下約4,500円網路費）',
+          fitReasons: [
+            '在東京駅（東京站）、大手町、銀座或本鄉醫療/學術圈工作，追求極致短通勤與文教治安環境者。',
+            '有潔癖、偏愛「築1年（屋齡1年新成屋）」最新衛浴廚具與智慧門禁設備的人。',
+            '有飼養貓咪或小型犬需求（東京市中心ペット共生・可養寵的新築 1K 極為稀缺）。'
+          ],
+          watchOut: '3樓窗外對面建築距離較近，白天拉開窗簾時需留意視線隱私與室內補光。'
+        }
+      },
+      {
+        id: 3,
+        badge: '物件 ④',
+        badgeColor: 'bg-orange-500',
+        name: 'アークシティ 野方',
+        nameZh: 'Arc City 野方',
+        room: '3階（3樓）',
+        ward: '東京都中野区野方6丁目（東京都中野區野方6丁目）',
+        station: '西武新宿線「野方駅（野方站）」徒歩5分（步行5分）／「都立家政駅（都立家政站）」徒歩12分',
+        coreCommute: '高田馬場 9分｜西武新宿 13分',
+        rentJpy: 94000,
+        mgmtJpy: 6900,
+        totalJpy: 100900,
+        depositJpy: 0,       // 截圖明確顯示 敷金 0円
+        keyMoneyJpy: 141000, // 截圖明確顯示 礼金 141,000円（1.5個月）
+        internetMonthlyJpy: 0,     // 截圖明確顯示 インターネット無料
+        cleaningFeeJpy: 44000,
+        initialPerk: '敷金なし（免押金）＋ インターネット無料（網路免費）｜礼金（禮金）14.1萬円',
+        jpTags: ['洋室9.5帖（約4.75坪大主臥）', 'インターネット無料（網路免費）', '浴室乾燥機（浴室乾燥機）', '独立洗面台（獨立洗手台）', '敷金なし（免押金）'],
+        layout: '1K（洋室9.5帖｜超大西式臥室約4.75坪）',
+        areaSqm: 28.60,
+        areaTsubo: 8.65,
+        floor: '3階 / 6階建（3樓／共6層）',
+        age: '築15年（屋齡15年）',
+        highlights: ['全場最大 28.6㎡ / 洋室9.5帖（約4.75坪）', '月費僅 10.09 萬超高CP值', 'インターネット無料（網路免費）＋豐富收納'],
+        personas: ['budgetSpace'],
+        convenience: {
+          distanceMeters: '約 370 公尺（徒歩5分，截圖實測 0.37km，符合 500m 內）',
+          supermarkets: [
+            'サカガミ 野方店（Sakagami 精緻生鮮超市，野方站北口出站即達）',
+            '丸正食品 / まいばすけっと 野方駅北口店（沿著商店街回家路上順路採買）',
+            '野方駅前商店街（蔬果店、肉舖、熟食炸物店林立，物價全場最親民）'
+          ],
+          konbini: 'FamilyMart 全家、7-Eleven、Lawson 分布在野方站北口至野方6丁目沿線',
+          routeDesc: '【採買便利度：★★★★☆ 4.5星】出野方站北口沿著熱鬧的「野方商店街」走 370 公尺就到家，沿途有傳統蔬果店、超市與超商，生活感十足且食材價格最便宜！'
+        },
+        scores: {
+          center: 7.0,
+          lightAir: 7.6,
+          space: 9.8,
+          cpValue: 9.6,
+          newness: 7.0
+        },
+        fengshui: {
+          layoutQi: '【空間氣場最寬裕】洋室9.5帖（約4.75坪）超大矩形臥室，家具擺設自由度極高，不會產生空間狹小帶來的壓迫煞氣，收納櫃充足易保持整潔。',
+          sunAir: '【採光良好】前方多為低矮住宅屋頂（見照片窗景），3樓視野未被高樓完全擋死，自然光線柔和均勻。',
+          waterDamp: '配備浴室乾燥機（浴室烘乾機）、洗面化粧台（獨立洗面化妝台）與衛浴分離；屋齡15年RC鋼筋混凝土建築，看房時建議確認排水孔防臭蓋狀態。',
+          healthFloor: '【寬敞減壓居家辦公】9.5帖空間可輕鬆規劃獨立工作區與睡眠區，避免在家工作造成的精神緊繃，純住宅區夜晚安靜。'
+        },
+        audience: {
+          title: '高CP值精算族・居家辦公(WFH)・衣物收納控',
+          income: '建議年收：400 萬日圓以上即可輕鬆負擔',
+          fitReasons: [
+            '每月比其他三間省下 2.2萬～3.5萬日圓租金，同時インターネット無料（網路免費），一年可多存下 30 萬日圓以上。',
+            '衣物多、有大型書桌/電競設備或健身器材，無法接受東京一般 6 帖（3坪）小鳥籠套房的人。',
+            '喜歡東京下町懷舊商店街氛圍、物價親民，且主要在新宿/高田馬場沿線活動者。'
+          ],
+          watchOut: '西武新宿線未與JR山手線直通運行（轉乘需在馬場或新宿步行轉線），且礼金（禮金）需 14.1 萬日圓。'
+        }
+      }
+    ];
+
+    // 計算每間物件「住滿 10 個月退租」所有成本明細
+    function calcTenMonthCosts(p) {
+      // 1. 初期不可退還沉沒成本：禮金 + 仲介手續費(1.1個月含稅) + 保證公司(0.5個月) + 火災保險(1.8萬) + 換鎖費(2.2萬)
+      const agencyFee = Math.round(p.rentJpy * 1.1);
+      const guarantorFee = Math.round(p.totalJpy * 0.5);
+      const insuranceAndKey = 40000;
+      const initialSunk = p.keyMoneyJpy + agencyFee + guarantorFee + insuranceAndKey;
+
+      // 2. 10 個月固定月費：10 * (月租 + 管理費) + 10 * 自費網路費（③與④免費為0）
+      const tenMonthsRentMgmt = p.totalJpy * 10;
+      const tenMonthsInternet = p.internetMonthlyJpy * 10;
+
+      // 3. 退租清算費用：未滿1年短期解約違約金(1個月賃料，可切換) + 專業退租清潔費（敷金扣抵後淨支出）
+      const shortTermPenalty = includeShortTermPenalty ? p.rentJpy : 0;
+      const moveOutCleaning = p.cleaningFeeJpy;
+
+      const grandTotal = initialSunk + tenMonthsRentMgmt + tenMonthsInternet + shortTermPenalty + moveOutCleaning;
+      const avgMonthly = Math.round(grandTotal / 10);
+
+      return {
+        depositAdvance: p.depositJpy, // 簽約時需先預繳的敷金（退租可退回，不計入淨沉沒成本）
+        keyMoneyJpy: p.keyMoneyJpy,
+        agencyFee,
+        guarantorFee,
+        insuranceAndKey,
+        initialSunk,
+        tenMonthsRentMgmt,
+        tenMonthsInternet,
+        shortTermPenalty,
+        moveOutCleaning,
+        grandTotal,
+        avgMonthly
+      };
+    }
+
+    // 切換短期違約金模式
+    function setPenaltyMode(hasPenalty) {
+      includeShortTermPenalty = hasPenalty;
+      const btnYes = document.getElementById('btn-penalty-yes');
+      const btnNo = document.getElementById('btn-penalty-no');
+      if (hasPenalty) {
+        btnYes.className = 'btn-micro px-3 py-1 rounded-lg text-xs font-bold bg-rose-500 text-white shadow';
+        btnNo.className = 'btn-micro px-3 py-1 rounded-lg text-xs font-bold text-amber-900 hover:bg-amber-200/70';
+      } else {
+        btnNo.className = 'btn-micro px-3 py-1 rounded-lg text-xs font-bold bg-amber-500 text-white shadow';
+        btnYes.className = 'btn-micro px-3 py-1 rounded-lg text-xs font-bold text-amber-900 hover:bg-amber-200/70';
+      }
+      renderTenMonthTable();
+      updateTenMonthChart();
+    }
+
+    // 渲染 (B) 10 個月退租全成本比較表
+    function renderTenMonthTable() {
+      const tbody = document.getElementById('ten-month-table-body');
+      if (!tbody) return;
+      const costs = properties.map(p => calcTenMonthCosts(p));
+
+      const rows = [
+        {
+          label: '① 簽約預繳敷金（押金）<br><span class="text-[11px] font-normal text-gray-500">退租無損壞可退還（僅影響初期現金流）</span>',
+          render: (p, c) => c.depositAdvance === 0
+            ? `<span class="text-emerald-700 font-bold">¥ 0（敷金なし免押金）</span>`
+            : `<span class="text-gray-700 font-semibold">${formatMoney(c.depositAdvance)}（退租可退）</span>`
+        },
+        {
+          label: '② 初期禮金（礼金・不退還）',
+          render: (p, c) => c.keyMoneyJpy === 0
+            ? `<span class="text-emerald-700 font-bold">¥ 0（礼金なし免禮金）</span>`
+            : `<span class="text-rose-700 font-bold">${formatMoney(c.keyMoneyJpy)}</span>`
+        },
+        {
+          label: '③ 仲介費＋保證公司＋保險換鎖<br><span class="text-[11px] font-normal text-gray-500">日本簽約標準規費（不退還）</span>',
+          render: (p, c) => `${formatMoney(c.agencyFee + c.guarantorFee + c.insuranceAndKey)}`
+        },
+        {
+          label: '📦 【小計 A】初期沉沒總費用',
+          render: (p, c) => `<span class="font-extrabold text-amber-900 bg-amber-100 px-2 py-0.5 rounded">${formatMoney(c.initialSunk)}</span>`
+        },
+        {
+          label: '④ 10 個月房租＋管理費總額',
+          render: (p, c) => `<span class="font-bold text-gray-900">${formatMoney(c.tenMonthsRentMgmt)}</span><br><span class="text-[11px] text-gray-500">(${formatManYen(p.totalJpy)} × 10月)</span>`
+        },
+        {
+          label: '⑤ 10 個月寬頻網路費總額',
+          render: (p, c) => c.tenMonthsInternet === 0
+            ? `<span class="text-emerald-700 font-bold">¥ 0（インターネット無料免費）</span>`
+            : `<span class="text-gray-700">${formatMoney(c.tenMonthsInternet)}（預估4,500円/月）</span>`
+        },
+        {
+          label: '⑥ 10個月退租：短期解約違約金<br><span class="text-[11px] font-normal text-gray-500">2年約未滿1年退租罰1個月賃料</span>',
+          render: (p, c) => c.shortTermPenalty === 0
+            ? `<span class="text-emerald-700 font-bold">¥ 0（不計違約金）</span>`
+            : `<span class="text-rose-600 font-bold">${formatMoney(c.shortTermPenalty)}</span>`
+        },
+        {
+          label: '⑦ 10個月退租：專業清潔費<br><span class="text-[11px] font-normal text-gray-500">ハウスクリーニング退租必扣清潔費</span>',
+          render: (p, c) => `${formatMoney(c.moveOutCleaning)}`
+        },
+        {
+          label: '🏆 10 個月退租「總淨支出合計」',
+          render: (p, c) => `<span class="inline-block px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 font-black text-xs sm:text-sm border border-rose-300">${formatManYen(c.grandTotal)}</span>`
+        },
+        {
+          label: '📅 攤提後「每月真實平均成本」',
+          render: (p, c) => `<strong class="text-gray-900 text-sm">${formatManYen(c.avgMonthly)} / 月</strong>`
+        }
+      ];
+
+      tbody.innerHTML = rows.map(row => `
+        <tr class="hover:bg-amber-50/60 transition-colors">
+          <td class="p-3 font-bold text-gray-800 bg-amber-50/95 sticky left-0 z-10 border-r border-amber-300">
+            ${row.label}
+          </td>
+          ${properties.map((p, idx) => `
+            <td class="p-3 text-gray-700 border-r border-amber-200 last:border-r-0 leading-relaxed">
+              ${row.render(p, costs[idx])}
+            </td>
+          `).join('')}
+        </tr>
+      `).join('');
+    }
+
+    // 渲染 (C) 500m 車站圈與超市、便利商店生活機能比較
+    function renderConvenienceSection() {
+      const cardsContainer = document.getElementById('convenience-cards');
+      const tbody = document.getElementById('convenience-table-body');
+      if (!cardsContainer || !tbody) return;
+
+      cardsContainer.innerHTML = properties.map(p => `
+        <div class="sub-card-glow rounded-2xl p-4 sm:p-5 border-2 border-amber-300 bg-white">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold text-white ${p.badgeColor}">
+              ${p.badge} ${p.name}（${p.nameZh}）
+            </span>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+              🚶 ${p.convenience.distanceMeters}
+            </span>
+          </div>
+          <div class="mt-2 p-3 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-gray-800 leading-relaxed">
+            ${p.convenience.routeDesc}
+          </div>
+          <div class="mt-3 space-y-2 text-xs">
+            <div>
+              <strong class="text-amber-900 block mb-1">🛒 車站旁／回家沿途生鮮超市：</strong>
+              <ul class="list-disc list-inside text-gray-700 space-y-1">
+                ${p.convenience.supermarkets.map(s => `<li>${s}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="pt-1">
+              <strong class="text-rose-800">🏪 24H 便利商店：</strong>
+              <span class="text-gray-700">${p.convenience.konbini}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      const rows = [
+        { label: '📏 車站出口實測距離', key: p => `<strong class="text-emerald-700">${p.convenience.distanceMeters}</strong>` },
+        {
+          label: '🛒 沿途大型/生鮮超市',
+          key: p => `<ul class="list-disc list-inside space-y-1">${p.convenience.supermarkets.map(s => `<li>${s}</li>`).join('')}</ul>`
+        },
+        { label: '🏪 便利商店密集度', key: p => p.convenience.konbini },
+        { label: '🛍️ 下班回家順路度總評', key: p => p.convenience.routeDesc }
+      ];
+
+      tbody.innerHTML = rows.map(row => `
+        <tr class="hover:bg-amber-50/60 transition-colors">
+          <td class="p-3 font-bold text-gray-900 bg-amber-50/95 sticky left-0 z-10 border-r border-amber-300 align-top">
+            ${row.label}
+          </td>
+          ${properties.map(p => `
+            <td class="p-3 text-gray-700 border-r border-amber-200 last:border-r-0 leading-relaxed align-top">
+              ${row.key(p)}
+            </td>
+          `).join('')}
+        </tr>
+      `).join('');
+    }
+
+    // 切換幣別
+    function setCurrency(curr) {
+      currentCurrency = curr;
+      const btnJpy = document.getElementById('btn-jpy');
+      const btnTwd = document.getElementById('btn-twd');
+      if (curr === 'JPY') {
+        btnJpy.className = 'btn-micro px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-amber-500 text-white shadow';
+        btnTwd.className = 'btn-micro px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-amber-900 hover:bg-amber-200/70';
+      } else {
+        btnTwd.className = 'btn-micro px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-rose-500 text-white shadow';
+        btnJpy.className = 'btn-micro px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-amber-900 hover:bg-amber-200/70';
+      }
+      renderOverviewCards();
+      renderSpecsTable();
+      renderTenMonthTable();
+      if (barChartInstance) updateBarChartCurrency();
+      if (tenMonthChartInstance) updateTenMonthChart();
+    }
+
+    // 格式化金額顯示（支援日圓 / 台幣切換）
+    function formatMoney(jpyAmount) {
+      if (currentCurrency === 'JPY') {
+        return `¥ ${jpyAmount.toLocaleString()} 円`;
+      } else {
+        const twd = Math.round(jpyAmount * JPY_TO_TWD);
+        return `NT$ ${twd.toLocaleString()} 元`;
+      }
+    }
+
+    function formatManYen(jpyAmount) {
+      if (currentCurrency === 'JPY') {
+        return `${(jpyAmount / 10000).toFixed(2).replace(/\.00$/, '')} 萬円`;
+      } else {
+        const twd = Math.round(jpyAmount * JPY_TO_TWD);
+        return `約 NT$ ${twd.toLocaleString()}`;
+      }
+    }
+
+    // 渲染頂部四大物件總覽卡片
+    function renderOverviewCards() {
+      const container = document.getElementById('overview-cards');
+      container.innerHTML = properties.map(p => {
+        const isHighlighted = currentPersona !== 'all' && p.personas.includes(currentPersona);
+        return `
+          <div id="card-${p.id}" class="glow-panel overview-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between ${isHighlighted ? 'highlight-active' : ''}">
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2">
+                <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold text-white ${p.badgeColor} shadow-sm">
+                  ${p.badge} ｜ ${p.room}
+                </span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300">
+                  ${p.age}
+                </span>
+              </div>
+
+              <h3 class="text-base sm:text-lg font-black text-gray-900 leading-snug">${p.name}</h3>
+              <div class="text-xs font-bold text-amber-800 mt-0.5">（中文：${p.nameZh}）</div>
+              <p class="text-xs text-gray-600 mt-1">📍 ${p.ward}</p>
+
+              <!-- 總月費區塊 -->
+              <div class="sub-card-glow mt-3 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-rose-50 border border-amber-300">
+                <div class="text-[11px] font-bold text-gray-600">每月總支出（賃料租金＋管理費）</div>
+                <div class="text-xl sm:text-2xl font-black text-rose-600 tracking-tight mt-0.5">
+                  ${formatManYen(p.totalJpy)}
+                </div>
+                <div class="text-[11px] text-gray-600 mt-0.5">
+                  明細：${formatMoney(p.rentJpy)} ＋ 管理費 ${formatMoney(p.mgmtJpy)}
+                </div>
+              </div>
+
+              <!-- 規格小標籤 -->
+              <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
+                <div class="sub-card-glow p-2 rounded-lg bg-gray-50 border border-gray-200">
+                  <span class="text-gray-500 block">間取り（格局與面積）</span>
+                  <strong class="text-gray-900">${p.layout}</strong>
+                  <span class="text-[11px] text-gray-600 block">${p.areaSqm}㎡ (約 ${p.areaTsubo} 坪)</span>
+                </div>
+                <div class="sub-card-glow p-2 rounded-lg bg-gray-50 border border-gray-200">
+                  <span class="text-gray-500 block">階数（所在樓層）</span>
+                  <strong class="text-gray-900">${p.floor}</strong>
+                  <span class="text-[11px] text-amber-700 font-semibold block">バス・トイレ別（衛浴分離）</span>
+                </div>
+              </div>
+
+              <!-- 日文原站標籤＋中文翻譯 -->
+              <div class="mt-3 flex flex-wrap gap-1">
+                ${p.jpTags.map(tag => `
+                  <span class="sub-card-glow cursor-default text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200">
+                    ${tag}
+                  </span>
+                `).join('')}
+              </div>
+
+              <!-- 核心亮點清單 -->
+              <ul class="mt-3 space-y-1.5">
+                ${p.highlights.map(h => `
+                  <li class="text-xs font-semibold text-gray-800 flex items-start gap-1.5">
+                    <span class="text-amber-500 mt-0.5">✦</span> <span>${h}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-amber-200">
+              <div class="text-[11px] font-bold text-rose-600">🎁 初期優惠：${p.initialPerk}</div>
+              <div class="text-[11px] text-gray-600 mt-1">🚃 ${p.coreCommute}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 渲染 (A) 基本規格與成本比較表
+    function renderSpecsTable() {
+      const rows = [
+        { label: '住所（行政區與地址）', key: p => `<span class="font-bold text-gray-900">${p.ward}</span>` },
+        { label: '交通（最近車站與步行）', key: p => p.station },
+        { label: '都心アクセス（市中心通勤）', key: p => `<span class="font-semibold text-rose-700">${p.coreCommute}</span>` },
+        { label: '賃料（基本月租金）', key: p => `<span class="font-bold text-gray-900">${formatMoney(p.rentJpy)}</span>` },
+        { label: '管理費・共益費（管理費）', key: p => formatMoney(p.mgmtJpy) },
+        {
+          label: '月額合計（每月固定總支出）',
+          key: p => `<span class="inline-block px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 font-black text-xs sm:text-sm border border-rose-300">${formatManYen(p.totalJpy)}</span>`
+        },
+        { label: '初期費用特典（初期減免/附設備）', key: p => `<span class="font-bold text-amber-800">${p.initialPerk}</span>` },
+        { label: '間取り・広さ（格局與面積）', key: p => `<strong>${p.layout}</strong><br>${p.areaSqm} ㎡（約 ${p.areaTsubo} 坪）` },
+        { label: '階数・築年数（樓層與屋齡）', key: p => `${p.floor}<br><strong>${p.age}</strong>` },
+        {
+          label: '設備タグ（日文設備標籤翻譯）',
+          key: p => `<div class="flex flex-wrap gap-1">${p.jpTags.map(t => `<span class="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-[11px] font-semibold text-gray-800">${t}</span>`).join('')}</div>`
+        }
+      ];
+
+      const tbody = document.getElementById('specs-table-body');
+      tbody.innerHTML = rows.map(row => `
+        <tr class="hover:bg-amber-50/60 transition-colors">
+          <td class="p-3 sm:p-3.5 font-bold text-gray-800 bg-amber-50/95 sticky left-0 z-10 border-r border-amber-300">
+            ${row.label}
+          </td>
+          ${properties.map(p => {
+            const isColHighlight = currentPersona !== 'all' && p.personas.includes(currentPersona);
+            return `
+              <td class="p-3 sm:p-3.5 text-gray-700 border-r border-amber-200 last:border-r-0 leading-relaxed ${isColHighlight ? 'col-highlight' : ''}">
+                ${row.key(p)}
+              </td>
+            `;
+          }).join('')}
+        </tr>
+      `).join('');
+    }
+
+    // 渲染 (C) 風水 × 陽光空氣水 × 樓層健康對照表
+    function renderFengshuiTable() {
+      const rows = [
+        {
+          label: '☯️ 風水格局與氣場<br><span class="text-xs font-normal text-gray-500">(藏風聚氣/鏡位樑柱)</span>',
+          key: p => p.fengshui.layoutQi
+        },
+        {
+          label: '☀️ 陽光採光與通風<br><span class="text-xs font-normal text-gray-500">(開窗面數/棟距/換氣)</span>',
+          key: p => p.fengshui.sunAir
+        },
+        {
+          label: '💧 給排水與防潮抗黴<br><span class="text-xs font-normal text-gray-500">(管線屋齡/乾濕分離)</span>',
+          key: p => p.fengshui.waterDamp
+        },
+        {
+          label: '🏥 樓層與身心健康<br><span class="text-xs font-normal text-gray-500">(噪音/過敏/抗震隱私)</span>',
+          key: p => p.fengshui.healthFloor
+        }
+      ];
+
+      const tbody = document.getElementById('fengshui-table-body');
+      tbody.innerHTML = rows.map(row => `
+        <tr class="hover:bg-amber-50/60 transition-colors">
+          <td class="p-3.5 font-bold text-gray-900 bg-amber-50/90 sticky left-0 z-10 border-r border-amber-300 align-top">
+            ${row.label}
+          </td>
+          ${properties.map(p => {
+            const isColHighlight = currentPersona !== 'all' && p.personas.includes(currentPersona);
+            return `
+              <td class="p-3.5 text-gray-700 border-r border-amber-200 last:border-r-0 leading-relaxed align-top ${isColHighlight ? 'col-highlight' : ''}">
+                ${row.key(p)}
+              </td>
+            `;
+          }).join('')}
+        </tr>
+      `).join('');
+    }
+
+    // 渲染 (D) 適合居住族群推薦卡片
+    function renderAudienceCards() {
+      const container = document.getElementById('audience-cards');
+      container.innerHTML = properties.map(p => {
+        const isHighlighted = currentPersona !== 'all' && p.personas.includes(currentPersona);
+        return `
+          <div class="sub-card-glow rounded-2xl p-4 sm:p-5 border-2 border-amber-300 bg-white shadow-sm transition-all ${isHighlighted ? 'highlight-active' : ''}">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-extrabold text-white ${p.badgeColor}">
+                ${p.badge} ${p.name}（${p.nameZh}）
+              </span>
+              <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200">
+                ${p.audience.income}
+              </span>
+            </div>
+            <h4 class="text-base sm:text-lg font-black text-gray-900 mt-1">
+              🎯 最適合：${p.audience.title}
+            </h4>
+            <ul class="mt-3 space-y-2 text-xs sm:text-sm text-gray-700">
+              ${p.audience.fitReasons.map(r => `
+                <li class="flex items-start gap-2 leading-relaxed">
+                  <span class="text-emerald-600 font-bold mt-0.5">✔</span>
+                  <span>${r}</span>
+                </li>
+              `).join('')}
+            </ul>
+            <div class="mt-4 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950">
+              <strong>📌 決策小提醒：</strong> ${p.audience.watchOut}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 需求配對高亮邏輯
+    const personaDescriptions = {
+      highFloor: '已為您亮燈標示【① スカイコートパレス板橋（Sky Court Palace 板橋）】：擁有全場最高 7 樓開闊視野、遠離地面濕氣噪音，且礼金なし（免禮金）、一站直達池袋駅（池袋站）僅 3 分鐘！',
+      sunlightFurniture: '已為您亮燈標示【② LEXE明大前（LEXE 明大前）】：全場唯一角部屋（邊間）「二面採光（雙面開窗）」，並家具家電付き（附全套床組、書桌椅與電視），真正拎包入住且直達新宿 7 分鐘！',
+      corePetNew: '已為您亮燈標示【③ プラザ・デル・ソル（Plaza Del Sol 太陽廣場）】：位於東京 23 區正核心「文京區本鄉」，築 1 年（屋齡 1 年）最新成屋、ペット共生（可飼養寵物）且インターネット無料（網路免費）！',
+      budgetSpace: '已為您亮燈標示【④ アークシティ 野方（Arc City 野方）】：月總支出僅 10.09 萬日圓，卻擁有全場最大 28.60㎡（洋室 9.5 帖／約 4.75 坪超大臥室），居家辦公與收納 CP 值最高！',
+      fengshuiHealth: '已為您亮燈標示【① 板橋 (7樓)】與【② 明大前 (5樓)】：中高樓層隔絕廢氣與潮濕，搭配開闊日照或二面採光（雙面自然對流），對睡眠與呼吸道健康最友善！',
+      commuteHub: '已為您亮燈標示【① 板橋】、【② 明大前】與【③ 本鄉三丁目】：三者皆徒歩 5 分（步行 5 分鐘）內到站，並可在 10 分鐘左右直達東京站、新宿、池袋或澀谷！'
+    };
+
+    function selectPersona(persona) {
+      currentPersona = persona;
+
+      // 更新按鈕外觀
+      document.querySelectorAll('.persona-btn').forEach(btn => {
+        if (btn.dataset.persona === persona) {
+          btn.classList.add('border-rose-500', 'bg-gradient-to-br', 'from-amber-100', 'to-rose-100', 'ring-2', 'ring-amber-400');
+          btn.classList.remove('border-amber-300', 'bg-amber-50/70');
+        } else {
+          btn.classList.remove('border-rose-500', 'bg-gradient-to-br', 'from-amber-100', 'to-rose-100', 'ring-2', 'ring-amber-400');
+          btn.classList.add('border-amber-300', 'bg-amber-50/70');
+        }
+      });
+
+      // 更新說明橫幅
+      const banner = document.getElementById('persona-banner');
+      const bannerText = document.getElementById('persona-banner-text');
+      if (persona === 'all') {
+        banner.classList.add('hidden');
+      } else {
+        banner.classList.remove('hidden');
+        bannerText.textContent = personaDescriptions[persona] || '';
+      }
+
+      // 更新表頭高亮
+      properties.forEach(p => {
+        const active = persona !== 'all' && p.personas.includes(persona);
+        ['specs', 'fengshui'].forEach(prefix => {
+          const th = document.getElementById(`th-${prefix}-${p.id}`);
+          if (th) {
+            if (active) th.classList.add('bg-amber-300', 'text-rose-900');
+            else th.classList.remove('bg-amber-300', 'text-rose-900');
+          }
+        });
+      });
+
+      renderOverviewCards();
+      renderSpecsTable();
+      renderFengshuiTable();
+      renderAudienceCards();
+    }
+
+    // 分頁切換
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+      document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('bg-amber-50/60', 'text-gray-800');
+      });
+      const activeBtn = document.getElementById(`tab-${tabName}`);
+      activeBtn.classList.add('tab-active');
+      activeBtn.classList.remove('bg-amber-50/60', 'text-gray-800');
+
+      if (tabName === 'charts') {
+        initCharts();
+      } else if (tabName === 'tenMonths') {
+        initTenMonthChart();
+      }
+    }
+
+    // Chart.js 圖表實例
+    let radarChartInstance = null;
+    let barChartInstance = null;
+    let tenMonthChartInstance = null;
+
+    function initTenMonthChart() {
+      const canvas = document.getElementById('tenMonthChart');
+      if (!canvas) return;
+      const costs = properties.map(p => calcTenMonthCosts(p));
+
+      if (!tenMonthChartInstance) {
+        const ctx = canvas.getContext('2d');
+        tenMonthChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['① 板橋 (702)', '② 明大前 (501)', '③ 本鄉三丁目 (303)', '④ 野方 (3階)'],
+            datasets: [
+              {
+                label: '初期簽約沉沒費用',
+                data: costs.map(c => c.initialSunk),
+                backgroundColor: '#f59e0b',
+                borderRadius: 4
+              },
+              {
+                label: '10個月租金＋管理費＋網路',
+                data: costs.map(c => c.tenMonthsRentMgmt + c.tenMonthsInternet),
+                backgroundColor: '#fbbf24',
+                borderRadius: 4
+              },
+              {
+                label: '退租違約金＋專業清潔費',
+                data: costs.map(c => c.shortTermPenalty + c.moveOutCleaning),
+                backgroundColor: '#f43f5e',
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { stacked: true, ticks: { font: { weight: 'bold', size: 12 } } },
+              y: {
+                stacked: true,
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return currentCurrency === 'JPY'
+                      ? (value / 10000) + ' 萬円'
+                      : 'NT$ ' + Math.round(value * JPY_TO_TWD).toLocaleString();
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' } } },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    return `${ctx.dataset.label}：${formatMoney(ctx.raw)}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      } else {
+        updateTenMonthChart();
+      }
+    }
+
+    function updateTenMonthChart() {
+      if (!tenMonthChartInstance) return;
+      const costs = properties.map(p => calcTenMonthCosts(p));
+      tenMonthChartInstance.data.datasets[0].data = costs.map(c => c.initialSunk);
+      tenMonthChartInstance.data.datasets[1].data = costs.map(c => c.tenMonthsRentMgmt + c.tenMonthsInternet);
+      tenMonthChartInstance.data.datasets[2].data = costs.map(c => c.shortTermPenalty + c.moveOutCleaning);
+      tenMonthChartInstance.update();
+    }
+
+    function initCharts() {
+      if (!radarChartInstance) {
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        radarChartInstance = new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: ['市中心距離便利', '採光與通風對流', '室內空間大小', '租金預算 CP 值', '屋齡與設備新穎'],
+            datasets: [
+              {
+                label: '① 板橋 (7樓)',
+                data: [8.5, 8.5, 7.5, 8.2, 8.2],
+                borderColor: '#f59e0b',
+                backgroundColor: 'rgba(245, 158, 11, 0.18)',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#f59e0b'
+              },
+              {
+                label: '② 明大前 (5樓)',
+                data: [8.8, 9.8, 7.4, 7.2, 7.8],
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.18)',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#ef4444'
+              },
+              {
+                label: '③ 本鄉三丁目 (3樓)',
+                data: [9.8, 7.2, 8.0, 7.8, 9.9],
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.16)',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#10b981'
+              },
+              {
+                label: '④ 野方 (3樓)',
+                data: [7.0, 7.6, 9.8, 9.6, 7.0],
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.16)',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#6366f1'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                min: 5,
+                max: 10,
+                ticks: { stepSize: 1, backdropColor: 'transparent', font: { size: 11 } },
+                pointLabels: { font: { size: 12, weight: 'bold' }, color: '#1f2937' },
+                grid: { color: 'rgba(245, 158, 11, 0.25)' },
+                angleLines: { color: 'rgba(245, 158, 11, 0.25)' }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { font: { size: 12, weight: 'bold' }, usePointStyle: true }
+              }
+            }
+          }
+        });
+      }
+
+      if (!barChartInstance) {
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        barChartInstance = new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: ['① 板橋 (702)', '② 明大前 (501)', '③ 本鄉三丁目 (303)', '④ 野方 (3階)'],
+            datasets: [
+              {
+                label: '基本月租金',
+                data: properties.map(p => p.rentJpy),
+                backgroundColor: '#fbbf24',
+                borderColor: '#d97706',
+                borderWidth: 1.5,
+                borderRadius: 6
+              },
+              {
+                label: '管理費 / 共益費',
+                data: properties.map(p => p.mgmtJpy),
+                backgroundColor: '#f43f5e',
+                borderColor: '#be123c',
+                borderWidth: 1.5,
+                borderRadius: 6
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                stacked: true,
+                ticks: { font: { weight: 'bold', size: 12 } }
+              },
+              y: {
+                stacked: true,
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return currentCurrency === 'JPY'
+                      ? (value / 10000) + ' 萬円'
+                      : 'NT$ ' + Math.round(value * JPY_TO_TWD).toLocaleString();
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { font: { size: 12, weight: 'bold' } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    const val = ctx.raw;
+                    return `${ctx.dataset.label}：${formatMoney(val)}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function updateBarChartCurrency() {
+      if (!barChartInstance) return;
+      barChartInstance.update();
+    }
+
+    // 頁面載入初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      renderOverviewCards();
+      renderSpecsTable();
+      renderTenMonthTable();
+      renderConvenienceSection();
+      renderFengshuiTable();
+      renderAudienceCards();
+    });
+  </script>
+</body>
+</html>
