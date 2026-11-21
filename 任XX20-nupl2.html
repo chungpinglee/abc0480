@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>20NUPL2 (15萬美元 / 20年期) 保單試算表與動態減額繳清分析</title>
+  <style>
+    :root {
+      --green-dark: #14532d;
+      --green-main: #166534;
+      --green-mid: #15803d;
+      --green-hover: #dcfce7;
+      --green-accent: #bbf7d0;
+      --teal-main: #0f766e;
+      --teal-dark: #115e59;
+      --bg-page: #f4f6f5;
+      --bg-card: #ffffff;
+      --border-color: #cbd5e1;
+      --border-dark: #334155;
+      --row-stripe: #e5e7eb;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --xirr-bg: #fefce8;
+      --xirr-text: #854d0e;
+      --xirr-neg-bg: #fef2f2;
+      --xirr-neg-text: #dc2626;
+      --premium-bg: #f0fdf4;
+      --premium-text: #166534;
+      --roc-bg: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px 16px 48px;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.45;
+    }
+
+    .container {
+      max-width: 1360px;
+      margin: 0 auto;
+    }
+
+    /* Top Bar: 2 Report Switcher Buttons + Chart Icon Button */
+    .top-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .top-nav {
+        grid-template-columns: 1fr 1fr;
+      }
+      .chart-btn {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        min-height: 48px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 10px 32px;
+      }
+      .top-nav {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .report-btn {
+        padding: 12px 14px;
+      }
+      .report-btn-title {
+        font-size: 14.5px;
+      }
+      .report-btn-sub {
+        font-size: 12px;
+      }
+      .sheet-card, .chart-card, .rpu-panel {
+        padding: 14px 12px;
+        margin-bottom: 16px;
+      }
+      .doc-title {
+        font-size: 16.5px;
+      }
+      .doc-header {
+        gap: 8px;
+      }
+      .insured-info {
+        min-width: 0;
+        width: 100%;
+        font-size: 12.5px;
+      }
+      .rpu-controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .rpu-selector-group {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+      .rpu-select {
+        width: 100%;
+        min-height: 44px;
+      }
+      .chart-title {
+        font-size: 15px;
+      }
+      #policyChartSvg {
+        height: 240px;
+      }
+      table {
+        font-size: 12px;
+      }
+      thead th, tbody td {
+        padding: 5px 6px;
+      }
+      .table-wrap {
+        -webkit-overflow-scrolling: touch;
+      }
+      #tableMain thead tr:first-child th:first-child,
+      #tableMain tbody td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+      }
+      #tableMain tbody td:first-child {
+        background-color: #ffffff;
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.06);
+      }
+      #tableMain tbody tr.stripe-5 td:first-child {
+        background-color: var(--row-stripe);
+      }
+    }
+
+    .report-btn {
+      appearance: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 4px;
+      padding: 14px 18px;
+      border: 2px solid var(--green-main);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--green-dark);
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .report-btn:hover {
+      background-color: var(--green-dark);
+      border-color: var(--green-dark);
+      color: #ffffff;
+    }
+
+    .report-btn.active {
+      background-color: var(--green-main);
+      border-color: var(--green-dark);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(22, 101, 52, 0.22);
+    }
+
+    .report-btn.rpu-btn {
+      border-color: var(--teal-main);
+      color: var(--teal-dark);
+    }
+
+    .report-btn.rpu-btn:hover {
+      background-color: var(--teal-dark);
+      border-color: var(--teal-dark);
+      color: #ffffff;
+    }
+
+    .report-btn.rpu-btn.active {
+      background-color: var(--teal-main);
+      border-color: var(--teal-dark);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(15, 118, 110, 0.22);
+    }
+
+    .report-btn-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .report-btn-sub {
+      font-size: 12.5px;
+      opacity: 0.9;
+    }
+
+    .chart-btn {
+      appearance: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 18px;
+      border: 2px solid #b45309;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #92400e;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 156px;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-btn:hover,
+    .chart-btn.active {
+      background-color: #b45309;
+      border-color: #92400e;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(180, 83, 9, 0.22);
+    }
+
+    .chart-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* RPU Control & Summary Panel */
+    .rpu-panel {
+      background: var(--bg-card);
+      border: 1px solid #99f6e4;
+      border-top: 4px solid var(--teal-main);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(15, 118, 110, 0.08);
+    }
+
+    .rpu-controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .rpu-selector-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rpu-selector-group label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--teal-dark);
+    }
+
+    .rpu-select {
+      padding: 7px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 2px solid var(--teal-main);
+      border-radius: 8px;
+      background: #f0fdfa;
+      color: var(--teal-dark);
+      cursor: pointer;
+    }
+
+    .rpu-select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2);
+    }
+
+    .rpu-note-badge {
+      font-size: 12.5px;
+      color: #475569;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 960px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .kpi-card.highlight {
+      background: #f0fdfa;
+      border-color: #5eead4;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .kpi-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .rpu-eval-toggle-btn {
+      appearance: none;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--teal-main);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--teal-dark);
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .rpu-eval-toggle-btn:hover,
+    .rpu-eval-toggle-btn.active {
+      background: var(--teal-main);
+      color: #ffffff;
+    }
+
+    .rpu-eval-wrap {
+      margin-top: 14px;
+      border-top: 1px solid #cbd5e1;
+      padding-top: 12px;
+    }
+
+    .rpu-eval-wrap.hidden {
+      display: none;
+    }
+
+    .rpu-eval-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .rpu-eval-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin: 0;
+    }
+
+    .rpu-eval-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    #tableRpuEval thead th {
+      background-color: var(--teal-main);
+      border-color: var(--teal-dark);
+      font-size: 12.5px;
+      padding: 7px 8px;
+    }
+
+    #tableRpuEval tbody td {
+      font-size: 12.5px;
+      padding: 5px 8px;
+    }
+
+    #tableRpuEval tbody tr.selected-rpu-row td {
+      background-color: #ccfbf1 !important;
+      color: #0f172a !important;
+      font-weight: 700;
+    }
+
+    .rpu-pick-btn {
+      appearance: none;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--teal-main);
+      border-radius: 5px;
+      background: #ffffff;
+      color: var(--teal-dark);
+      cursor: pointer;
+    }
+
+    #tableRpuEval tbody tr.selected-rpu-row .rpu-pick-btn,
+    .rpu-pick-btn:hover {
+      background: var(--teal-main);
+      color: #ffffff;
+    }
+
+    /* Chart Panel */
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-top: 4px solid #b45309;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .chart-card.hidden {
+      display: none;
+    }
+
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .chart-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .chart-svg-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #policyChartSvg {
+      width: 100%;
+      height: 320px;
+      display: block;
+    }
+
+    .chart-tooltip {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-main);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    /* Sheet / Page Card */
+    .sheet-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .doc-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 2px solid var(--border-dark);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .doc-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0 0 6px 0;
+    }
+
+    .mode-pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .mode-pill.rpu {
+      background: #ccfbf1;
+      color: #115e59;
+      border-color: #5eead4;
+    }
+
+    .insured-info {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-main);
+      min-width: 240px;
+    }
+
+    .sub-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 8px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .sub-meta-left div {
+      margin-bottom: 2px;
+    }
+
+    .unit-note {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Table Wrapper */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1.5px solid var(--border-dark);
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    thead th {
+      background-color: var(--green-main);
+      color: #ffffff;
+      font-weight: 700;
+      text-align: center;
+      padding: 8px 8px;
+      border: 1px solid #14532d;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    thead th.col-added-roc {
+      background-color: #1e3a8a;
+      border-color: #1e3a8a;
+    }
+
+    thead th.col-added-premium {
+      background-color: #0f766e;
+      border-color: #115e59;
+    }
+
+    thead th.col-added-xirr {
+      background-color: #b45309;
+      border-color: #92400e;
+    }
+
+    thead th.col-added-deposit {
+      background-color: #0369a1;
+      border-color: #075985;
+    }
+
+    thead th.col-added-deposit-xirr {
+      background-color: #4338ca;
+      border-color: #3730a3;
+    }
+
+    thead th.col-added-fed {
+      background-color: #334155;
+      border-color: #1e293b;
+    }
+
+    tbody td {
+      padding: 5px 8px;
+      border: 1px solid #cbd5e1;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    tbody td.center {
+      text-align: center;
+    }
+
+    tbody td.col-roc {
+      background-color: var(--roc-bg);
+      color: #1e3a8a;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    tbody td.col-premium {
+      background-color: var(--premium-bg);
+      color: var(--premium-text);
+      font-weight: 600;
+    }
+
+    tbody td.col-xirr {
+      background-color: var(--xirr-bg);
+      color: var(--xirr-text);
+      font-weight: 700;
+    }
+
+    tbody td.col-xirr.neg {
+      background-color: var(--xirr-neg-bg);
+      color: var(--xirr-neg-text);
+    }
+
+    tbody td.col-fed {
+      background-color: #f8fafc;
+      color: #334155;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    tbody td.col-deposit-rate {
+      background-color: #f0f9ff;
+      color: #0c4a6e;
+      font-weight: 600;
+      text-align: center;
+      padding: 3px 5px;
+    }
+
+    tbody td.col-deposit-xirr {
+      background-color: #eef2ff;
+      color: #312e81;
+      font-weight: 700;
+    }
+
+    tbody td.surr-breakeven {
+      background-color: #fce7f3;
+      color: #9d174d;
+      font-weight: 700;
+    }
+
+    tbody tr.stripe-5 td.surr-breakeven {
+      background-color: #fbcfe8;
+    }
+
+    tbody td.cleared-cell {
+      color: #94a3b8;
+      text-align: center;
+      background-color: #f8fafc;
+    }
+
+    tbody tr.stripe-5 {
+      background-color: var(--row-stripe);
+    }
+
+    tbody tr.stripe-5 td.col-roc {
+      background-color: #e2e8f0;
+    }
+
+    tbody tr.stripe-5 td.col-premium {
+      background-color: #dcfce7;
+    }
+
+    tbody tr.stripe-5 td.col-xirr {
+      background-color: #fef08a;
+    }
+
+    tbody tr.stripe-5 td.col-xirr.neg {
+      background-color: #fee2e2;
+    }
+
+    tbody tr.stripe-5 td.col-fed {
+      background-color: #e2e8f0;
+    }
+
+    tbody tr.stripe-5 td.col-deposit-rate {
+      background-color: #e0f2fe;
+    }
+
+    tbody tr.stripe-5 td.col-deposit-xirr {
+      background-color: #e0e7ff;
+    }
+
+    tbody tr.rpu-trigger-row td {
+      border-top: 2px solid #0f766e;
+      border-bottom: 2px solid #0f766e;
+      background-color: #f0fdfa;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+
+    tbody tr:hover td {
+      background-color: var(--green-hover) !important;
+      color: #052e16 !important;
+    }
+
+    tbody tr.selected-row td {
+      background-color: var(--green-accent) !important;
+      color: #052e16 !important;
+      font-weight: 700;
+    }
+
+    .rate-input {
+      width: 64px;
+      padding: 2px 4px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-align: right;
+      border: 1px solid #bae6fd;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #0c4a6e;
+    }
+
+    .rate-input:focus {
+      outline: 2px solid #0284c7;
+      border-color: #0284c7;
+    }
+
+    /* Interactive XIRR Inspector */
+    .inspector-box {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid #b45309;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .inspector-title {
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: 6px;
+    }
+
+    .cf-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .cf-pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+    }
+
+    .cf-pill.out {
+      color: #991b1b;
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .cf-pill.zero {
+      color: #475569;
+      border-color: #cbd5e1;
+      background: #f1f5f9;
+    }
+
+    .cf-pill.in {
+      color: #166534;
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .doc-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1.5px solid var(--border-dark);
+      margin-top: 12px;
+      padding-top: 8px;
+    }
+
+    @keyframes pulseRed {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .pulse-red {
+      color: #dc2626;
+      font-weight: 700;
+      animation: pulseRed 1.4s ease-in-out infinite;
+    }
+
+    .pulse-red-th {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background-color: #fef2f2;
+      color: #dc2626;
+      font-size: 11px;
+      font-weight: 700;
+      animation: pulseRed 1.4s ease-in-out infinite;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .top-nav, .inspector-box {
+        display: none !important;
+      }
+      .sheet-card {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+      }
+      thead th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Navigation: 2 Report Buttons + 1 Chart Icon Button -->
+    <div class="top-nav">
+      <button class="report-btn active" id="btnReportOrig" type="button">
+        <span class="report-btn-title">報表一：原保單建議書 (150,000 美元 / 繳 20 年)</span>
+        <span class="report-btn-sub">南山人壽美滿康順2美元終身壽險 (20NUPL2) · 年繳 5,584 美元</span>
+      </button>
+      <button class="report-btn rpu-btn" id="btnReportRpu" type="button">
+        <span class="report-btn-title" id="btnRpuTitle">報表二：第 7 年辦理減額繳清試算</span>
+        <span class="report-btn-sub" id="btnRpuSub">自選減額繳清年度，即時預估已繳保費、保障保額與保單價值</span>
+      </button>
+      <button class="chart-btn" id="btnToggleChart" type="button" title="顯示或隱藏保費、保額、保單價值曲線圖">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 3v18h18" />
+          <path d="M7 15l4-4 4 2 5-7" />
+        </svg>
+        <span>曲線圖表現</span>
+      </button>
+    </div>
+
+    <!-- Dynamic Reduced Paid-Up (減額繳清) Year Selector & Summary Panel -->
+    <section class="rpu-panel" id="rpuPanel">
+      <div class="rpu-controls-row" style="margin-bottom:0;">
+        <div class="rpu-selector-group">
+          <label for="rpuYearSelect">減額繳清試算年度（第幾保單年度末辦理）：</label>
+          <select id="rpuYearSelect" class="rpu-select"></select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Line Chart Panel (Toggled by Chart Button) -->
+    <section class="chart-card hidden" id="chartCard">
+      <div class="chart-header">
+        <h2 class="chart-title" id="chartTitle">保費、壽險保障與保單價值準備金曲線圖（第 1～59 保單年度 / 民國 109～167 年）</h2>
+        <div class="chart-legend" id="chartLegend">
+          <span class="legend-item"><span class="legend-dot" style="background:#16a34a;"></span>累積保險費</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#2563eb;"></span>壽險保障</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span>保單價值準備金</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#d97706;"></span>解約金</span>
+        </div>
+      </div>
+      <div class="chart-svg-wrap">
+        <svg id="policyChartSvg" viewBox="0 0 960 320" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="chart-tooltip" id="chartTooltip">
+        <span>將滑鼠移至曲線圖上方可檢視各年度數值（點擊曲線圖可固定/切換檢視年度）</span>
+      </div>
+    </section>
+
+    <!-- Main Policy Analysis Table Sheet -->
+    <section class="sheet-card" id="sheetMain">
+      <div class="doc-header">
+        <div class="brand-title">
+          <div>
+            <h1 class="doc-title" id="docTitle">利益分析表（南山人壽美滿康順2美元終身壽險 20NUPL2）</h1>
+            <span class="mode-pill" id="modePill">原保單建議書 (150,000 美元 / 20年期)</span>
+          </div>
+        </div>
+        <div class="insured-info">
+          <div>性別/保險年齡：女 / 52 歲</div>
+          <div>職業代碼：R07 &nbsp;|&nbsp; 列印/投保假設日：109/11/26</div>
+        </div>
+      </div>
+
+      <div class="sub-meta" style="justify-content:flex-end;">
+        <div class="unit-note">〈幣別/單位：美元/元〉</div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="tableMain">
+          <thead>
+            <tr>
+              <th>保單年度<br />(末)</th>
+              <th class="col-added-roc">年度<br />(民國)</th>
+              <th class="col-added-premium" id="thPrem">每年保費<br />(20年)</th>
+              <th>保險<br />年齡</th>
+              <th>累積保險費</th>
+              <th id="thLife">壽險保障</th>
+              <th id="thReserve">保單價值<br />準備金</th>
+              <th>年度末<br />領回</th>
+              <th>累積年度末<br />領回</th>
+              <th>減額繳清保險金額<br />(基本保額/投保單位)</th>
+              <th id="thSurr">解約金</th>
+              <th class="col-added-xirr">解約時 XIRR<br />(115年起)</th>
+              <th class="col-added-deposit">美元1年定存<br />平均利率(%)</th>
+              <th class="col-added-fed">FED<br />基準利率</th>
+              <th class="col-added-deposit-xirr">定存複利<br />XIRR</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyMain"></tbody>
+        </table>
+      </div>
+
+      <div class="inspector-box" id="xirrInspector">
+        <div class="inspector-title">XIRR 現金流檢視（點擊表中民國 115 年起任一列可查看該年度解約現金流）</div>
+        <div id="inspectorDetail"></div>
+        <div class="cf-pills" id="inspectorPills"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Exact data from 任少玲NUPL2-15萬美元-20年期.pdf (Pages 3-4, Years 1-59)
+    const origData = [
+      { year: 1,  age: 52, cumPrem: 5584,   life: 150000, reserve: null,   annualReturn: null,   cumReturn: null,   rpu: null,   surr: null },
+      { year: 2,  age: 53, cumPrem: 11168,  life: 150000, reserve: 4560,   annualReturn: null,   cumReturn: null,   rpu: 7305,   surr: 3540 },
+      { year: 3,  age: 54, cumPrem: 16752,  life: 150000, reserve: 9210,   annualReturn: null,   cumReturn: null,   rpu: 15570,  surr: 7260 },
+      { year: 4,  age: 55, cumPrem: 22336,  life: 150000, reserve: 13980,  annualReturn: null,   cumReturn: null,   rpu: 24645,  surr: 11190 },
+      { year: 5,  age: 56, cumPrem: 27920,  life: 150000, reserve: 18840,  annualReturn: null,   cumReturn: null,   rpu: 33525,  surr: 15315 },
+      { year: 6,  age: 57, cumPrem: 33504,  life: 150000, reserve: 23790,  annualReturn: null,   cumReturn: null,   rpu: 42180,  surr: 19635 },
+      { year: 7,  age: 58, cumPrem: 39088,  life: 150000, reserve: 28830,  annualReturn: null,   cumReturn: null,   rpu: 50625,  surr: 24150 },
+      { year: 8,  age: 59, cumPrem: 44672,  life: 150000, reserve: 33960,  annualReturn: null,   cumReturn: null,   rpu: 58875,  surr: 28875 },
+      { year: 9,  age: 60, cumPrem: 50256,  life: 150000, reserve: 39195,  annualReturn: null,   cumReturn: null,   rpu: 66975,  surr: 33810 },
+      { year: 10, age: 61, cumPrem: 55840,  life: 150000, reserve: 44520,  annualReturn: null,   cumReturn: null,   rpu: 74880,  surr: 38955 },
+      { year: 11, age: 62, cumPrem: 61424,  life: 150000, reserve: 49950,  annualReturn: null,   cumReturn: null,   rpu: 82635,  surr: 44340 },
+      { year: 12, age: 63, cumPrem: 67008,  life: 150000, reserve: 55500,  annualReturn: null,   cumReturn: null,   rpu: 90270,  surr: 49950 },
+      { year: 13, age: 64, cumPrem: 72592,  life: 150000, reserve: 61170,  annualReturn: null,   cumReturn: null,   rpu: 97770,  surr: 55830 },
+      { year: 14, age: 65, cumPrem: 78176,  life: 150000, reserve: 66960,  annualReturn: null,   cumReturn: null,   rpu: 105180, surr: 61950 },
+      { year: 15, age: 66, cumPrem: 83760,  life: 150000, reserve: 72855,  annualReturn: null,   cumReturn: null,   rpu: 112440, surr: 68310 },
+      { year: 16, age: 67, cumPrem: 89344,  life: 150000, reserve: 78870,  annualReturn: null,   cumReturn: null,   rpu: 119595, surr: 74940 },
+      { year: 17, age: 68, cumPrem: 94928,  life: 150000, reserve: 85020,  annualReturn: null,   cumReturn: null,   rpu: 126720, surr: 81840 },
+      { year: 18, age: 69, cumPrem: 100512, life: 150000, reserve: 91290,  annualReturn: null,   cumReturn: null,   rpu: 133755, surr: 89010 },
+      { year: 19, age: 70, cumPrem: 106096, life: 150000, reserve: 97725,  annualReturn: null,   cumReturn: null,   rpu: 141225, surr: 96510 },
+      { year: 20, age: 71, cumPrem: 111680, life: 150000, reserve: 104325, annualReturn: null,   cumReturn: null,   rpu: 150000, surr: 104325 },
+      { year: 21, age: 72, cumPrem: 111680, life: 150000, reserve: 106140, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 106140 },
+      { year: 22, age: 73, cumPrem: 111680, life: 150000, reserve: 107925, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 107925 },
+      { year: 23, age: 74, cumPrem: 111680, life: 150000, reserve: 109710, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 109710 },
+      { year: 24, age: 75, cumPrem: 111680, life: 150000, reserve: 111480, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 111480 },
+      { year: 25, age: 76, cumPrem: 111680, life: 150000, reserve: 113220, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 113220 },
+      { year: 26, age: 77, cumPrem: 111680, life: 150000, reserve: 114930, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 114930 },
+      { year: 27, age: 78, cumPrem: 111680, life: 150000, reserve: 116610, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 116610 },
+      { year: 28, age: 79, cumPrem: 111680, life: 150000, reserve: 118275, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 118275 },
+      { year: 29, age: 80, cumPrem: 111680, life: 150000, reserve: 119895, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 119895 },
+      { year: 30, age: 81, cumPrem: 111680, life: 150000, reserve: 121500, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 121500 },
+      { year: 31, age: 82, cumPrem: 111680, life: 150000, reserve: 123060, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 123060 },
+      { year: 32, age: 83, cumPrem: 111680, life: 150000, reserve: 124575, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 124575 },
+      { year: 33, age: 84, cumPrem: 111680, life: 150000, reserve: 126075, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 126075 },
+      { year: 34, age: 85, cumPrem: 111680, life: 150000, reserve: 127530, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 127530 },
+      { year: 35, age: 86, cumPrem: 111680, life: 150000, reserve: 128955, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 128955 },
+      { year: 36, age: 87, cumPrem: 111680, life: 150000, reserve: 130335, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 130335 },
+      { year: 37, age: 88, cumPrem: 111680, life: 150000, reserve: 131685, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 131685 },
+      { year: 38, age: 89, cumPrem: 111680, life: 150000, reserve: 132990, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 132990 },
+      { year: 39, age: 90, cumPrem: 111680, life: 150000, reserve: 134265, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 134265 },
+      { year: 40, age: 91, cumPrem: 111680, life: 150000, reserve: 135480, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 135480 },
+      { year: 41, age: 92, cumPrem: 111680, life: 150000, reserve: 136605, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 136605 },
+      { year: 42, age: 93, cumPrem: 111680, life: 150000, reserve: 137670, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 137670 },
+      { year: 43, age: 94, cumPrem: 111680, life: 150000, reserve: 138690, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 138690 },
+      { year: 44, age: 95, cumPrem: 111680, life: 150000, reserve: 139665, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 139665 },
+      { year: 45, age: 96, cumPrem: 111680, life: 150000, reserve: 140580, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 140580 },
+      { year: 46, age: 97, cumPrem: 111680, life: 150000, reserve: 141435, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 141435 },
+      { year: 47, age: 98, cumPrem: 111680, life: 150000, reserve: 142245, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 142245 },
+      { year: 48, age: 99, cumPrem: 111680, life: 150000, reserve: 143010, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 143010 },
+      { year: 49, age: 100, cumPrem: 111680, life: 150000, reserve: 143730, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 143730 },
+      { year: 50, age: 101, cumPrem: 111680, life: 150000, reserve: 144390, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 144390 },
+      { year: 51, age: 102, cumPrem: 111680, life: 150000, reserve: 145020, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 145020 },
+      { year: 52, age: 103, cumPrem: 111680, life: 150000, reserve: 145590, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 145590 },
+      { year: 53, age: 104, cumPrem: 111680, life: 150000, reserve: 146130, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 146130 },
+      { year: 54, age: 105, cumPrem: 111680, life: 150000, reserve: 146640, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 146640 },
+      { year: 55, age: 106, cumPrem: 111680, life: 150000, reserve: 147090, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 147090 },
+      { year: 56, age: 107, cumPrem: 111680, life: 150000, reserve: 147525, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 147525 },
+      { year: 57, age: 108, cumPrem: 111680, life: 150000, reserve: 147900, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 147900 },
+      { year: 58, age: 109, cumPrem: 111680, life: 150000, reserve: 148155, annualReturn: null,   cumReturn: null,   rpu: null,   surr: 148155 },
+      { year: 59, age: 110, cumPrem: 111680, life: 150000, reserve: 150000, annualReturn: 150000, cumReturn: 150000, rpu: null,   surr: 150000 }
+    ];
+
+    const ANNUAL_PREMIUM = 5584; // 選擇自動轉帳後每期保險費
+    const BASE_SUM_ASSURED = 150000;
+    const ORIG_PAY_YEARS = 20;
+    const START_ROC_YEAR = 109; // 列印日期 109/11/26 -> 第1保單年度為民國109年
+    const BASE_DATE = new Date(2020, 10, 26); // 2020-11-26
+
+    // 各年度美元 1 年期定存平均利率（%）：111~115 年預填參考值，其餘年度可手動補入
+    const usdDepositRatesByRocYear = {
+      111: 3.70,
+      112: 3.85,
+      113: 2.55,
+      114: 1.80,
+      115: 2.11
+    };
+
+    // 美國聯準會 (FED) 聯邦基金目標利率區間（年底水準）
+    const fedTargetRangeByRocYear = {
+      109: "0.00%–0.25%",
+      110: "0.00%–0.25%",
+      111: "4.25%–4.50%",
+      112: "5.25%–5.50%",
+      113: "4.25%–4.50%",
+      114: "3.50%–3.75%",
+      115: "3.75%–4.00%"
+    };
+
+    let activeReport = "orig"; // "orig" | "rpu"
+    let rpuYear = 20;           // 預設第 7 保單年度末 (民國 115 年) 辦理減額繳清
+    let selectedYear = 20;     // XIRR 現金流檢視預設第 20 年
+    let isChartVisible = false;
+
+    function getRocYear(policyYear) {
+      return START_ROC_YEAR + policyYear - 1;
+    }
+
+    function fmtNum(val) {
+      if (val === null || val === undefined) return "—";
+      return val.toLocaleString("en-US");
+    }
+
+    function getRpuContext() {
+      const triggerRow = origData.find((d) => d.year === rpuYear);
+      const rpuAmt = triggerRow ? triggerRow.rpu : 0;
+      const ratio = rpuAmt / BASE_SUM_ASSURED;
+      const paidPrem = ANNUAL_PREMIUM * rpuYear;
+      return { triggerRow, rpuAmt, ratio, paidPrem };
+    }
+
+    function scaleVal(val, ratio) {
+      if (val === null || val === undefined) return null;
+      return Math.round(val * ratio);
+    }
+
+    function getCurrentDataset() {
+      if (activeReport === "orig") return origData;
+      const { rpuAmt, ratio, paidPrem } = getRpuContext();
+      return origData.map((row) => {
+        if (row.year <= rpuYear) {
+          return { ...row };
+        }
+        return {
+          year: row.year,
+          age: row.age,
+          cumPrem: paidPrem,
+          life: rpuAmt,
+          reserve: scaleVal(row.reserve, ratio),
+          annualReturn: scaleVal(row.annualReturn, ratio),
+          cumReturn: scaleVal(row.cumReturn, ratio),
+          rpu: null, // 已辦理減額繳清後，後續年度之減額繳清欄位清空
+          surr: scaleVal(row.surr, ratio)
+        };
+      });
+    }
+
+    function getAnnualPremium(year) {
+      if (activeReport === "orig") {
+        return year <= ORIG_PAY_YEARS ? ANNUAL_PREMIUM : null;
+      }
+      return year <= rpuYear ? ANNUAL_PREMIUM : 0;
+    }
+
+    function getDepositRate(policyYear) {
+      const rocYr = getRocYear(policyYear);
+      const val = usdDepositRatesByRocYear[rocYr];
+      return (val !== undefined && val !== null && Number.isFinite(val)) ? val : null;
+    }
+
+    // Excel-compatible XIRR using 365-day year basis and Newton-Raphson + bisection fallback
+    function calcXIRR(surrenderYear, surrenderValue) {
+      if (getRocYear(surrenderYear) <= 114 || surrenderValue === null || surrenderValue === undefined || surrenderValue <= 0) return null;
+
+      const payYears = activeReport === "orig" ? Math.min(surrenderYear, ORIG_PAY_YEARS) : Math.min(surrenderYear, rpuYear);
+      const flows = [];
+      for (let i = 0; i < payYears; i++) {
+        const dt = new Date(BASE_DATE.getFullYear() + i, BASE_DATE.getMonth(), BASE_DATE.getDate());
+        flows.push({ amount: -ANNUAL_PREMIUM, days: (dt - BASE_DATE) / 86400000 });
+      }
+      const endDt = new Date(BASE_DATE.getFullYear() + surrenderYear, BASE_DATE.getMonth(), BASE_DATE.getDate());
+      flows.push({ amount: surrenderValue, days: (endDt - BASE_DATE) / 86400000 });
+
+      const npv = (r) => {
+        let sum = 0;
+        for (const f of flows) {
+          sum += f.amount / Math.pow(1 + r, f.days / 365);
+        }
+        return sum;
+      };
+
+      const dnpv = (r) => {
+        let sum = 0;
+        for (const f of flows) {
+          const t = f.days / 365;
+          sum -= (t * f.amount) / Math.pow(1 + r, t + 1);
+        }
+        return sum;
+      };
+
+      let r = 0.02;
+      for (let iter = 0; iter < 100; iter++) {
+        const y = npv(r);
+        const dy = dnpv(r);
+        if (Math.abs(y) < 1e-9) return r;
+        if (Math.abs(dy) < 1e-12) break;
+        const next = r - y / dy;
+        if (next <= -0.999 || next > 10 || !Number.isFinite(next)) break;
+        if (Math.abs(next - r) < 1e-10) return next;
+        r = next;
+      }
+
+      let lo = -0.99, hi = 5.0;
+      let fLo = npv(lo);
+      for (let iter = 0; iter < 120; iter++) {
+        const mid = (lo + hi) / 2;
+        const fMid = npv(mid);
+        if (Math.abs(fMid) < 1e-9) return mid;
+        if (fLo * fMid <= 0) {
+          hi = mid;
+        } else {
+          lo = mid;
+          fLo = fMid;
+        }
+      }
+      return (lo + hi) / 2;
+    }
+
+    function calcDepositCompoundXIRR(targetYear) {
+      if (getRocYear(targetYear) <= 114) return null;
+      const payYears = activeReport === "orig" ? Math.min(targetYear, ORIG_PAY_YEARS) : Math.min(targetYear, rpuYear);
+      let balance = 0;
+      for (let yr = 1; yr <= targetYear; yr++) {
+        const r = getDepositRate(yr);
+        if (r === null) return null;
+        const prem = yr <= payYears ? ANNUAL_PREMIUM : 0;
+        balance = (balance + prem) * (1 + r / 100);
+      }
+      return calcXIRR(targetYear, balance);
+    }
+
+    function fmtXIRR(rate) {
+      if (rate === null || rate === undefined || !Number.isFinite(rate)) return "—";
+      return (rate * 100).toFixed(2) + "%";
+    }
+
+    function renderFedCell(policyYear) {
+      const rocYr = getRocYear(policyYear);
+      const val = fedTargetRangeByRocYear[rocYr];
+      return `<td class="col-fed">${val ? val : "—"}</td>`;
+    }
+
+    function renderDepositRateCell(policyYear) {
+      const rocYr = getRocYear(policyYear);
+      const rate = getDepositRate(policyYear);
+      const valAttr = rate !== null ? rate.toFixed(2) : "";
+      return `<td class="col-deposit-rate"><input class="rate-input" type="number" step="0.01" min="0" max="20" data-roc="${rocYr}" value="${valAttr}" placeholder="—" title="民國 ${rocYr} 年美元1年期定存平均利率(%)" /></td>`;
+    }
+
+    function populateRpuSelect() {
+      const select = document.getElementById("rpuYearSelect");
+      const options = origData
+        .filter((d) => d.year >= 2 && d.year <= 19)
+        .map((d) => `<option value="${d.year}">第 ${d.year} 年</option>`)
+        .join("") + '<option value="20">繳費期滿（不做減額繳清）</option>';
+      select.innerHTML = options;
+      select.value = String(rpuYear);
+    }
+
+    function updateRpuSummary() {
+      const { rpuAmt, ratio, paidPrem } = getRpuContext();
+      const pctStr = (ratio * 100).toFixed(2) + "%";
+
+      if (rpuYear === ORIG_PAY_YEARS) {
+        document.getElementById("btnRpuTitle").textContent = "報表二：繳費期滿（不做減額繳清）";
+        document.getElementById("btnRpuSub").textContent = `已繳 $${fmtNum(paidPrem)} → 維持原保額 $${fmtNum(rpuAmt)} (100.00%)`;
+      } else {
+        document.getElementById("btnRpuTitle").textContent = `報表二：第 ${rpuYear} 年辦理減額繳清試算`;
+        document.getElementById("btnRpuSub").textContent = `已繳 $${fmtNum(paidPrem)} → 減額後保額 $${fmtNum(rpuAmt)} (${pctStr})`;
+      }
+    }
+
+    function renderTable() {
+      const data = getCurrentDataset();
+      const tbody = document.getElementById("tbodyMain");
+      const isRpu = activeReport === "rpu";
+
+      tbody.innerHTML = data.map((row) => {
+        const prem = getAnnualPremium(row.year);
+        const xirr = calcXIRR(row.year, row.surr);
+        const negClass = xirr !== null && xirr < 0 ? " neg" : "";
+        const depXirr = calcDepositCompoundXIRR(row.year);
+        const depNegClass = depXirr !== null && depXirr < 0 ? " neg" : "";
+
+        const classes = [];
+        if (row.year % 5 === 0) classes.push("stripe-5");
+        if (isRpu && row.year === rpuYear) classes.push("rpu-trigger-row");
+        const trClass = classes.length ? ` class="${classes.join(" ")}"` : "";
+
+        const isClearedRpu = isRpu && row.year > rpuYear && row.year <= 20;
+        const rpuCell = isClearedRpu
+          ? `<td class="cleared-cell" title="第 ${rpuYear} 年已辦理減額繳清，後續年度清空">—</td>`
+          : `<td>${fmtNum(row.rpu)}</td>`;
+
+        return `<tr${trClass} data-year="${row.year}">
+          <td class="center">${row.year}</td>
+          <td class="col-roc">${getRocYear(row.year)}</td>
+          <td class="col-premium">${fmtNum(prem)}</td>
+          <td class="center">${row.age}</td>
+          <td>${fmtNum(row.cumPrem)}</td>
+          <td>${fmtNum(row.life)}</td>
+          <td>${fmtNum(row.reserve)}</td>
+          <td>${fmtNum(row.annualReturn)}</td>
+          <td>${fmtNum(row.cumReturn)}</td>
+          ${rpuCell}
+          <td${row.surr !== null && row.cumPrem !== null && row.surr >= row.cumPrem ? ' class="surr-breakeven"' : ""}>${fmtNum(row.surr)}</td>
+          <td class="col-xirr${negClass}">${fmtXIRR(xirr)}</td>
+          ${renderDepositRateCell(row.year)}
+          ${renderFedCell(row.year)}
+          <td class="col-deposit-xirr${depNegClass}" title="${depXirr === null && getRocYear(row.year) >= 115 ? '需補齊第1年起各年度定存利率後方可計算連續複利XIRR' : ''}">${fmtXIRR(depXirr)}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function updateInspector(year) {
+      const data = getCurrentDataset();
+      const row = data.find((d) => d.year === year);
+      if (!row || getRocYear(row.year) <= 114 || row.surr === null) return;
+      selectedYear = year;
+
+      const payYears = activeReport === "orig" ? Math.min(row.year, ORIG_PAY_YEARS) : Math.min(row.year, rpuYear);
+      const totalPaid = ANNUAL_PREMIUM * payYears;
+      const xirr = calcXIRR(row.year, row.surr);
+      const netGain = row.surr - totalPaid;
+      const gainStr = netGain >= 0 ? `+$${fmtNum(netGain)}` : `-$${fmtNum(Math.abs(netGain))}`;
+      const xirrHtml = xirr !== null && xirr < 0
+        ? `<span style="color:#dc2626;font-weight:700;">${fmtXIRR(xirr)}</span>`
+        : `<span>${fmtXIRR(xirr)}</span>`;
+
+      document.getElementById("inspectorDetail").innerHTML =
+        `第 ${row.year} 保單年度末（民國 ${getRocYear(row.year)} 年 / 保險年齡 ${row.age} 歲）解約：累積已繳保費 $${fmtNum(totalPaid)} 美元，解約金 $${fmtNum(row.surr)} 美元，淨損益 ${gainStr} 美元，XIRR = ${xirrHtml}`;
+
+      const pills = [];
+      const maxShow = Math.min(row.year, 20);
+      for (let i = 0; i < maxShow; i++) {
+        const rocYr = START_ROC_YEAR + i;
+        if (i < payYears) {
+          pills.push(`<span class="cf-pill out">民國 ${rocYr} 年 (t=${i}): -$${fmtNum(ANNUAL_PREMIUM)}</span>`);
+        } else {
+          pills.push(`<span class="cf-pill zero">民國 ${rocYr} 年 (t=${i}): $0 (已減額繳清)</span>`);
+        }
+      }
+      pills.push(`<span class="cf-pill in">民國 ${getRocYear(row.year)} 年 (t=${row.year}): +$${fmtNum(row.surr)}</span>`);
+      document.getElementById("inspectorPills").innerHTML = pills.join("");
+
+      document.querySelectorAll("#tbodyMain tr").forEach((tr) => {
+        tr.classList.toggle("selected-row", Number(tr.dataset.year) === year);
+      });
+    }
+
+    function updateMetadata() {
+      const isRpu = activeReport === "rpu";
+      const { rpuAmt, ratio, paidPrem } = getRpuContext();
+      const pctStr = (ratio * 100).toFixed(2) + "%";
+      const modePill = document.getElementById("modePill");
+
+      const isFullPay = rpuYear === ORIG_PAY_YEARS;
+      const isScaledRpu = isRpu && !isFullPay;
+
+      modePill.textContent = !isRpu
+        ? "原保單建議書 (150,000 美元 / 20年期)"
+        : isFullPay
+          ? "繳費期滿（不做減額繳清 / 維持原保額 $150,000）"
+          : `第 ${rpuYear} 年減額繳清試算 (保額 $${fmtNum(rpuAmt)} / 繳 ${rpuYear} 年)`;
+      modePill.classList.toggle("rpu", isRpu);
+
+      document.getElementById("docTitle").innerHTML = !isRpu
+        ? "利益分析表（南山人壽美滿康順2美元終身壽險 20NUPL2）"
+        : isFullPay
+          ? "利益分析表 — 繳費期滿（不做減額繳清，維持原保單給付）"
+          : `利益分析表 — 第 ${rpuYear} 年減額繳清預估 <span class="pulse-red">(第 ${rpuYear + 1} 年起為預估值，不保證數據正確)</span>`;
+
+      document.getElementById("thPrem").innerHTML = isScaledRpu
+        ? `每年保費<br />(第${rpuYear + 1}年起為0)`
+        : "每年保費<br />(20年)";
+
+      document.getElementById("thLife").innerHTML = isScaledRpu
+        ? '壽險保障<br /><span class="pulse-red-th">(第' + (rpuYear + 1) + '年起預估)</span>'
+        : "壽險保障";
+
+      document.getElementById("thReserve").innerHTML = isScaledRpu
+        ? '保單價值<br />準備金<br /><span class="pulse-red-th">(僅為預估值)</span>'
+        : "保單價值<br />準備金";
+
+      document.getElementById("thSurr").innerHTML = isScaledRpu
+        ? '解約金<br /><span class="pulse-red-th">(僅為預估值)</span>'
+        : "解約金";
+    }
+
+    function renderChart() {
+      if (!isChartVisible) return;
+      const data = getCurrentDataset();
+      const svg = document.getElementById("policyChartSvg");
+      const titleEl = document.getElementById("chartTitle");
+      const isRpu = activeReport === "rpu";
+      const { rpuAmt } = getRpuContext();
+
+      const isScaledRpuChart = isRpu && rpuYear < ORIG_PAY_YEARS;
+      titleEl.innerHTML = !isRpu
+        ? "保費、壽險保障與保單價值曲線圖 — 原保單建議書 (150,000 美元 / 20年期)"
+        : rpuYear === ORIG_PAY_YEARS
+          ? "保費、壽險保障與保單價值曲線圖 — 繳費期滿（不做減額繳清，150,000 美元）"
+          : `保費、壽險保障與保單價值曲線圖 — 第 ${rpuYear} 年減額繳清試算 (保額 $${fmtNum(rpuAmt)}) <span class="pulse-red">(僅為預估不保證數據正確)</span>`;
+
+      const W = 960, H = 320;
+      const pad = { top: 24, right: 28, bottom: 42, left: 72 };
+      const plotW = W - pad.left - pad.right;
+      const plotH = H - pad.top - pad.bottom;
+
+      const maxVal = Math.max(
+        ...data.map((d) => Math.max(d.cumPrem || 0, d.life || 0, d.reserve || 0, d.surr || 0))
+      );
+      const yMax = Math.ceil(maxVal / 20000) * 20000 || 20000;
+
+      const xPos = (idx) => pad.left + (idx / (data.length - 1)) * plotW;
+      const yPos = (val) => pad.top + plotH - ((val || 0) / yMax) * plotH;
+
+      const makePath = (key) =>
+        data.map((d, i) => `${i === 0 ? "M" : "L"}${xPos(i).toFixed(1)},${yPos(d[key]).toFixed(1)}`).join(" ");
+
+      let gridHtml = "";
+      for (let i = 0; i <= 5; i++) {
+        const val = (yMax / 5) * i;
+        const y = yPos(val).toFixed(1);
+        gridHtml += `<line x1="${pad.left}" y1="${y}" x2="${W - pad.right}" y2="${y}" stroke="#e2e8f0" stroke-width="1" />`;
+        gridHtml += `<text x="${pad.left - 8}" y="${Number(y) + 4}" text-anchor="end" font-size="11" fill="#475569">$${val.toLocaleString("en-US")}</text>`;
+      }
+
+      const xTicks = [1, 10, 20, 30, 40, 50, 59];
+      xTicks.forEach((yr) => {
+        const idx = yr - 1;
+        const x = xPos(idx).toFixed(1);
+        gridHtml += `<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${pad.top + plotH}" stroke="#f1f5f9" stroke-width="1" />`;
+        gridHtml += `<text x="${x}" y="${H - 22}" text-anchor="middle" font-size="11" fill="#334155">第${yr}年</text>`;
+        gridHtml += `<text x="${x}" y="${H - 8}" text-anchor="middle" font-size="10.5" fill="#1e3a8a">(${getRocYear(yr)})</text>`;
+      });
+
+      const pathsHtml = `
+        <path d="${makePath("cumPrem")}" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="6,4" />
+        <path d="${makePath("life")}" fill="none" stroke="#2563eb" stroke-width="2.6" />
+        <path d="${makePath("reserve")}" fill="none" stroke="#dc2626" stroke-width="2.6" />
+        <path d="${makePath("surr")}" fill="none" stroke="#d97706" stroke-width="2.0" stroke-dasharray="3,3" />
+      `;
+
+      const pointsHtml = data.map((d, i) => {
+        const cx = xPos(i).toFixed(1);
+        return `<rect class="chart-hit" data-idx="${i}" x="${(Number(cx) - plotW / data.length / 2).toFixed(1)}" y="${pad.top}" width="${(plotW / data.length).toFixed(1)}" height="${plotH}" fill="transparent" style="cursor:crosshair;" />`;
+      }).join("");
+
+      svg.innerHTML = gridHtml + pathsHtml +
+        `<line id="chartHoverLine" x1="0" y1="${pad.top}" x2="0" y2="${pad.top + plotH}" stroke="#334155" stroke-width="1.8" stroke-dasharray="4,3" visibility="hidden" />` +
+        `<rect id="chartHoverBadgeBg" x="0" y="2" width="84" height="20" rx="5" fill="#1e3a8a" visibility="hidden" />` +
+        `<text id="chartHoverBadgeText" x="0" y="16" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ffffff" visibility="hidden"></text>` +
+        `<circle id="dotPrem" r="4.5" fill="#16a34a" stroke="#fff" stroke-width="1.5" visibility="hidden" />` +
+        `<circle id="dotLife" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.5" visibility="hidden" />` +
+        `<circle id="dotRes" r="4.5" fill="#dc2626" stroke="#fff" stroke-width="1.5" visibility="hidden" />` +
+        `<circle id="dotSurr" r="4" fill="#d97706" stroke="#fff" stroke-width="1.5" visibility="hidden" />` +
+        pointsHtml;
+
+      const updateHover = (idx) => {
+        const d = data[idx];
+        if (!d) return;
+        const cx = xPos(idx);
+        const rocYr = getRocYear(d.year);
+        const line = document.getElementById("chartHoverLine");
+        const badgeBg = document.getElementById("chartHoverBadgeBg");
+        const badgeTxt = document.getElementById("chartHoverBadgeText");
+        const dPrem = document.getElementById("dotPrem");
+        const dLife = document.getElementById("dotLife");
+        const dRes = document.getElementById("dotRes");
+        const dSurr = document.getElementById("dotSurr");
+
+        line.setAttribute("x1", cx);
+        line.setAttribute("x2", cx);
+        line.setAttribute("visibility", "visible");
+
+        const badgeW = 84;
+        const clampedX = Math.max(pad.left + badgeW / 2, Math.min(W - pad.right - badgeW / 2, cx));
+        badgeBg.setAttribute("x", (clampedX - badgeW / 2).toFixed(1));
+        badgeBg.setAttribute("visibility", "visible");
+        badgeTxt.setAttribute("x", clampedX.toFixed(1));
+        badgeTxt.textContent = `民國 ${rocYr} 年`;
+        badgeTxt.setAttribute("visibility", "visible");
+
+        dPrem.setAttribute("cx", cx);
+        dPrem.setAttribute("cy", yPos(d.cumPrem));
+        dPrem.setAttribute("visibility", "visible");
+
+        dLife.setAttribute("cx", cx);
+        dLife.setAttribute("cy", yPos(d.life));
+        dLife.setAttribute("visibility", "visible");
+
+        dRes.setAttribute("cx", cx);
+        dRes.setAttribute("cy", yPos(d.reserve));
+        dRes.setAttribute("visibility", "visible");
+
+        dSurr.setAttribute("cx", cx);
+        dSurr.setAttribute("cy", yPos(d.surr));
+        dSurr.setAttribute("visibility", "visible");
+
+        const estTag = isScaledRpuChart && d.year > rpuYear ? ' <span class="pulse-red">(預估)</span>' : '';
+        document.getElementById("chartTooltip").innerHTML = `
+          <strong>第 ${d.year} 保單年度（民國 ${rocYr} 年 / ${d.age} 歲）</strong>
+          <span style="color:#16a34a;font-weight:700;">累積保險費：$${fmtNum(d.cumPrem)}</span>
+          <span style="color:#2563eb;font-weight:700;">壽險保障：$${fmtNum(d.life)}${estTag}</span>
+          <span style="color:#dc2626;font-weight:700;">保單價值準備金：${d.reserve !== null ? '$' + fmtNum(d.reserve) : '—'}${estTag}</span>
+          <span style="color:#d97706;font-weight:700;">解約金：${d.surr !== null ? '$' + fmtNum(d.surr) : '—'}${estTag}</span>
+        `;
+      };
+
+      svg.querySelectorAll(".chart-hit").forEach((el) => {
+        const idx = Number(el.dataset.idx);
+        el.addEventListener("mouseenter", () => updateHover(idx));
+        el.addEventListener("click", () => updateHover(idx));
+        el.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          updateHover(idx);
+        }, { passive: false });
+      });
+
+      // Default highlight 民國 115 年 (第 7 保單年度, idx = 6)
+      updateHover(6);
+    }
+
+    function renderAll() {
+      updateRpuSummary();
+      renderTable();
+      updateMetadata();
+      updateInspector(selectedYear);
+      renderChart();
+    }
+
+    // Report Switcher
+    const btnReportOrig = document.getElementById("btnReportOrig");
+    const btnReportRpu = document.getElementById("btnReportRpu");
+
+    function setReport(mode) {
+      activeReport = mode;
+      btnReportOrig.classList.toggle("active", mode === "orig");
+      btnReportRpu.classList.toggle("active", mode === "rpu");
+      renderAll();
+    }
+
+    btnReportOrig.addEventListener("click", () => setReport("orig"));
+    btnReportRpu.addEventListener("click", () => setReport("rpu"));
+
+    // RPU Year Selector
+    document.getElementById("rpuYearSelect").addEventListener("change", (e) => {
+      rpuYear = Number(e.target.value);
+      if (activeReport !== "rpu") {
+        setReport("rpu");
+      } else {
+        renderAll();
+      }
+    });
+
+    // Chart Toggle
+    const btnToggleChart = document.getElementById("btnToggleChart");
+    const chartCard = document.getElementById("chartCard");
+    btnToggleChart.addEventListener("click", () => {
+      isChartVisible = !isChartVisible;
+      btnToggleChart.classList.toggle("active", isChartVisible);
+      chartCard.classList.toggle("hidden", !isChartVisible);
+      if (isChartVisible) {
+        renderChart();
+      }
+    });
+
+    // Deposit rate input delegation
+    document.addEventListener("change", (e) => {
+      if (!e.target.classList.contains("rate-input")) return;
+      const rocYr = Number(e.target.dataset.roc);
+      const raw = e.target.value.trim();
+      usdDepositRatesByRocYear[rocYr] = raw === "" ? null : Number(raw);
+      renderTable();
+    });
+
+    // Row click delegation for XIRR inspector
+    document.getElementById("tbodyMain").addEventListener("click", (e) => {
+      const tr = e.target.closest("tr");
+      if (!tr) return;
+      const yr = Number(tr.dataset.year);
+      if (getRocYear(yr) >= 115) updateInspector(yr);
+    });
+
+    // Init
+    populateRpuSelect();
+    renderAll();
+  </script>
+</body>
+</html>
