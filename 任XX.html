@@ -447,6 +447,22 @@
       border-color: #3730a3;
     }
 
+    thead th.col-added-fed {
+      background-color: #334155;
+      border-color: #1e293b;
+    }
+
+    tbody td.col-fed {
+      background-color: #f8fafc;
+      color: #334155;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    tbody tr.stripe-5 td.col-fed {
+      background-color: #e2e8f0;
+    }
+
     tbody td.col-deposit-rate {
       background-color: #f0f9ff;
       color: #0c4a6e;
@@ -744,6 +760,7 @@
               <th>累積總保費</th>
               <th class="col-added-xirr">XIRR<br />(第6年起)</th>
               <th class="col-added-deposit">美元1年定存<br />平均利率(%)</th>
+              <th class="col-added-fed">FED<br />基準利率</th>
               <th class="col-added-deposit-xirr">定存複利<br />XIRR</th>
               <th>累計已領回之<br />生存還本</th>
             </tr>
@@ -785,7 +802,7 @@
               <th rowspan="3" class="col-added-roc">年度<br />(民國)</th>
               <th rowspan="3" class="col-added-premium" id="p2PremHeader">每年保費<br />(6年)</th>
               <th rowspan="3">保險<br />年齡</th>
-              <th colspan="12">保證給付項目</th>
+              <th colspan="13">保證給付項目</th>
             </tr>
             <tr>
               <th rowspan="2">壽險保障</th>
@@ -793,6 +810,7 @@
               <th rowspan="2" id="thP2Surr">解約金</th>
               <th rowspan="2" class="col-added-xirr">解約時 XIRR<br />(第6年起)</th>
               <th rowspan="2" class="col-added-deposit">美元1年定存<br />平均利率(%)</th>
+              <th rowspan="2" class="col-added-fed">FED<br />基準利率</th>
               <th rowspan="2" class="col-added-deposit-xirr">定存複利<br />XIRR</th>
               <th rowspan="2">減額繳清保險<br />基本保額</th>
               <th colspan="3">展期定期保險</th>
@@ -912,6 +930,30 @@
       114: 1.80,
       115: 2.11
     };
+
+    // 美國聯準會 (FED) 聯邦基金目標利率區間（年底水準，2026年為最新9月會議水準）
+    const fedTargetRangeByRocYear = {
+      102: "0.00%–0.25%",
+      103: "0.00%–0.25%",
+      104: "0.25%–0.50%",
+      105: "0.50%–0.75%",
+      106: "1.25%–1.50%",
+      107: "2.25%–2.50%",
+      108: "1.50%–1.75%",
+      109: "0.00%–0.25%",
+      110: "0.00%–0.25%",
+      111: "4.25%–4.50%",
+      112: "5.25%–5.50%",
+      113: "4.25%–4.50%",
+      114: "3.50%–3.75%",
+      115: "3.75%–4.00%"
+    };
+
+    function renderFedCell(policyYear) {
+      const rocYr = getRocYear(policyYear);
+      const val = fedTargetRangeByRocYear[rocYr];
+      return `<td class="col-fed">${val ? val : "—"}</td>`;
+    }
 
     function getDepositRate(policyYear) {
       const rocYr = getRocYear(policyYear);
@@ -1084,6 +1126,7 @@
           <td>${fmtNum(row.cumPrem)}</td>
           <td class="col-xirr${negClass}">${fmtXIRR(xirr)}</td>
           ${renderDepositRateCell(row.year)}
+          ${renderFedCell(row.year)}
           <td class="col-deposit-xirr${depNegClass}" title="${depXirr === null && row.year >= 6 ? '需補齊第1年起各年度定存利率後方可計算連續複利XIRR' : ''}">${fmtXIRR(depXirr)}</td>
           <td class="center">${fmtNum(row.survival)}</td>
         </tr>`;
@@ -1151,6 +1194,7 @@
           <td>${fmtNum(row.surr)}</td>
           <td class="col-xirr${negClass}">${fmtXIRR(xirr)}</td>
           ${renderDepositRateCell(row.year)}
+          ${renderFedCell(row.year)}
           <td class="col-deposit-xirr${depNegClass}" title="${depXirr === null && row.year >= 6 ? '需補齊第1年起各年度定存利率後方可計算連續複利XIRR' : ''}">${fmtXIRR(depXirr)}</td>
           ${rpuCell}
           <td>${fmtNum(row.etiAmt)}</td>
