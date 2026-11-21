@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UIL2IR (15,000美元) 保單試算表與第2年減額繳清分析</title>
+  <style>
+    :root {
+      --green-dark: #14532d;
+      --green-main: #166534;
+      --green-mid: #15803d;
+      --green-hover: #dcfce7;
+      --green-accent: #bbf7d0;
+      --teal-main: #0f766e;
+      --teal-dark: #115e59;
+      --bg-page: #f4f6f5;
+      --bg-card: #ffffff;
+      --border-color: #cbd5e1;
+      --border-dark: #334155;
+      --row-stripe: #e5e7eb;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --xirr-bg: #fefce8;
+      --xirr-text: #854d0e;
+      --xirr-neg-bg: #fef2f2;
+      --xirr-neg-text: #dc2626;
+      --premium-bg: #f0fdf4;
+      --premium-text: #166534;
+      --roc-bg: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px 16px 48px;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.45;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Top Bar: 2 Report Switcher Buttons + Chart Icon Button */
+    .top-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 18px;
+      align-items: stretch;
+    }
+
+    html, body {
+      overflow-x: hidden;
+    }
+
+    @media (max-width: 900px) {
+      .top-nav {
+        grid-template-columns: 1fr 1fr;
+      }
+      .chart-btn {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        min-height: 48px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 10px 32px;
+      }
+      .top-nav {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .report-btn {
+        padding: 12px 14px;
+      }
+      .report-btn-title {
+        font-size: 14.5px;
+      }
+      .report-btn-sub {
+        font-size: 12px;
+      }
+      .sheet-card, .chart-card {
+        padding: 14px 12px;
+        margin-bottom: 16px;
+      }
+      .doc-title {
+        font-size: 17px;
+      }
+      .chart-title {
+        font-size: 15px;
+      }
+      #policyChartSvg {
+        height: 240px;
+      }
+      table {
+        font-size: 12px;
+      }
+      thead th, tbody td {
+        padding: 5px 6px;
+      }
+      .table-wrap {
+        -webkit-overflow-scrolling: touch;
+      }
+      /* Sticky first column on mobile horizontal scroll */
+      #tablePage1 thead th:first-child,
+      #tablePage1 tbody td:first-child,
+      #tablePage2 thead tr:first-child th:first-child,
+      #tablePage2 tbody td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+      }
+      #tablePage1 tbody td:first-child,
+      #tablePage2 tbody td:first-child {
+        background-color: #ffffff;
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.06);
+      }
+      #tablePage1 tbody tr.stripe-5 td:first-child,
+      #tablePage2 tbody tr.stripe-5 td:first-child {
+        background-color: var(--row-stripe);
+      }
+    }
+
+    .report-btn {
+      appearance: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 4px;
+      padding: 14px 18px;
+      border: 2px solid var(--green-main);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--green-dark);
+      cursor: pointer;
+      text-align: left;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .report-btn:hover {
+      background-color: var(--green-dark);
+      border-color: var(--green-dark);
+      color: #ffffff;
+    }
+
+    .report-btn.active {
+      background-color: var(--green-main);
+      border-color: var(--green-dark);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(22, 101, 52, 0.22);
+    }
+
+    .report-btn.rpu-btn {
+      border-color: var(--teal-main);
+      color: var(--teal-dark);
+    }
+
+    .report-btn.rpu-btn:hover {
+      background-color: var(--teal-dark);
+      border-color: var(--teal-dark);
+      color: #ffffff;
+    }
+
+    .report-btn.rpu-btn.active {
+      background-color: var(--teal-main);
+      border-color: var(--teal-dark);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(15, 118, 110, 0.22);
+    }
+
+    .report-btn-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .report-btn-sub {
+      font-size: 12.5px;
+      opacity: 0.9;
+    }
+
+    .chart-btn {
+      appearance: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 18px;
+      border: 2px solid #b45309;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #92400e;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 156px;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-btn:hover,
+    .chart-btn.active {
+      background-color: #b45309;
+      border-color: #92400e;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(180, 83, 9, 0.22);
+    }
+
+    .chart-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Chart Panel */
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-top: 4px solid #b45309;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .chart-card.hidden {
+      display: none;
+    }
+
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .chart-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .chart-svg-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #policyChartSvg {
+      width: 100%;
+      height: 320px;
+      display: block;
+    }
+
+    .chart-tooltip {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-main);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    /* Sheet / Page Card */
+    .sheet-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* PDF-Style Header */
+    .doc-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 2px solid var(--border-dark);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand-badge {
+      background: var(--green-main);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-align: center;
+      line-height: 1.25;
+    }
+
+    .doc-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .mode-pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+
+    .mode-pill.rpu {
+      background: #ccfbf1;
+      color: #115e59;
+      border-color: #5eead4;
+    }
+
+    .insured-info {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-main);
+      min-width: 210px;
+    }
+
+    .sub-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 8px;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .sub-meta-left div {
+      margin-bottom: 2px;
+    }
+
+    .unit-note {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Table Wrapper */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1.5px solid var(--border-dark);
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    thead th {
+      background-color: var(--green-main);
+      color: #ffffff;
+      font-weight: 700;
+      text-align: center;
+      padding: 8px 8px;
+      border: 1px solid #14532d;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    thead th.col-added-roc {
+      background-color: #1e3a8a;
+      border-color: #1e3a8a;
+    }
+
+    thead th.col-added-premium {
+      background-color: #0f766e;
+      border-color: #115e59;
+    }
+
+    thead th.col-added-xirr {
+      background-color: #b45309;
+      border-color: #92400e;
+    }
+
+    thead th.col-added-deposit {
+      background-color: #0369a1;
+      border-color: #075985;
+    }
+
+    thead th.col-added-deposit-xirr {
+      background-color: #4338ca;
+      border-color: #3730a3;
+    }
+
+    tbody td.col-deposit-rate {
+      background-color: #f0f9ff;
+      color: #0c4a6e;
+      font-weight: 600;
+      text-align: center;
+      padding: 3px 5px;
+    }
+
+    tbody td.col-deposit-xirr {
+      background-color: #eef2ff;
+      color: #312e81;
+      font-weight: 700;
+    }
+
+    tbody tr.stripe-5 td.col-deposit-rate {
+      background-color: #e0f2fe;
+    }
+
+    tbody tr.stripe-5 td.col-deposit-xirr {
+      background-color: #e0e7ff;
+    }
+
+    .rate-input {
+      width: 64px;
+      padding: 2px 4px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-align: right;
+      border: 1px solid #bae6fd;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #0c4a6e;
+    }
+
+    .rate-input:focus {
+      outline: 2px solid #0284c7;
+      border-color: #0284c7;
+    }
+
+    tbody td {
+      padding: 5px 8px;
+      border: 1px solid #cbd5e1;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    tbody td.center {
+      text-align: center;
+    }
+
+    tbody td.col-roc {
+      background-color: var(--roc-bg);
+      color: #1e3a8a;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    tbody td.col-premium {
+      background-color: var(--premium-bg);
+      color: var(--premium-text);
+      font-weight: 600;
+    }
+
+    tbody td.col-xirr {
+      background-color: var(--xirr-bg);
+      color: var(--xirr-text);
+      font-weight: 700;
+    }
+
+    tbody td.col-xirr.neg {
+      background-color: var(--xirr-neg-bg);
+      color: var(--xirr-neg-text);
+    }
+
+    tbody td.cleared-cell {
+      color: #94a3b8;
+      text-align: center;
+      background-color: #f8fafc;
+    }
+
+    tbody tr.stripe-5 {
+      background-color: var(--row-stripe);
+    }
+
+    tbody tr.stripe-5 td.col-roc {
+      background-color: #e2e8f0;
+    }
+
+    tbody tr.stripe-5 td.col-premium {
+      background-color: #dcfce7;
+    }
+
+    tbody tr.stripe-5 td.col-xirr {
+      background-color: #fef08a;
+    }
+
+    tbody tr.stripe-5 td.col-xirr.neg {
+      background-color: #fee2e2;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+    }
+
+    tbody tr:hover td {
+      background-color: var(--green-hover) !important;
+      color: #052e16 !important;
+    }
+
+    tbody tr.selected-row td {
+      background-color: var(--green-accent) !important;
+      color: #052e16 !important;
+      font-weight: 700;
+    }
+
+    .doc-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1.5px solid var(--border-dark);
+      margin-top: 10px;
+      padding-top: 8px;
+    }
+
+    /* Interactive XIRR Inspector */
+    .inspector-box {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid #b45309;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .inspector-title {
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: 6px;
+    }
+
+    .cf-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .cf-pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+    }
+
+    .cf-pill.out {
+      color: #991b1b;
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .cf-pill.zero {
+      color: #475569;
+      border-color: #cbd5e1;
+      background: #f1f5f9;
+    }
+
+    .cf-pill.in {
+      color: #166534;
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    @keyframes pulseRed {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.28; }
+    }
+
+    .pulse-red {
+      color: #dc2626;
+      font-weight: 700;
+      animation: pulseRed 1.4s ease-in-out infinite;
+    }
+
+    .pulse-red-th {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background-color: #fef2f2;
+      color: #dc2626;
+      font-size: 11px;
+      font-weight: 700;
+      animation: pulseRed 1.4s ease-in-out infinite;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .top-nav, .inspector-box {
+        display: none !important;
+      }
+      .sheet-card {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        page-break-after: always;
+      }
+      thead th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Navigation: 2 Report Buttons + 1 Chart Icon Button -->
+    <div class="top-nav">
+      <button class="report-btn active" id="btnReportOrig" type="button">
+        <span class="report-btn-title">報表一：原保單建議書 (15,000 美元 / 繳 6 年)</span>
+      </button>
+      <button class="report-btn rpu-btn" id="btnReportRpu" type="button">
+        <span class="report-btn-title">報表二：第 2 年辦理減額繳清試算 (4,400 美元 / 繳 2 年)</span>
+      </button>
+      <button class="chart-btn" id="btnToggleChart" type="button" title="顯示或隱藏保費、保額、保單價值曲線圖">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 3v18h18" />
+          <path d="M7 15l4-4 4 2 5-7" />
+        </svg>
+        <span>曲線圖表現</span>
+      </button>
+    </div>
+
+    <!-- Interactive Line Chart Panel (Toggled by Chart Button) -->
+    <section class="chart-card hidden" id="chartCard">
+      <div class="chart-header">
+        <h2 class="chart-title" id="chartTitle">保費、保額與保單價值準備金曲線圖（第 1～40 保單年度 / 民國 102～141 年）</h2>
+        <div class="chart-legend" id="chartLegend">
+          <span class="legend-item"><span class="legend-dot" style="background:#16a34a;"></span>累積總保費</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#2563eb;"></span>保險金額</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span>保單價值準備金</span>
+        </div>
+      </div>
+      <div class="chart-svg-wrap">
+        <svg id="policyChartSvg" viewBox="0 0 960 320" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="chart-tooltip" id="chartTooltip">
+        <span>將滑鼠移至曲線圖上方可檢視各年度數值（點擊曲線圖可固定/切換檢視年度）</span>
+      </div>
+    </section>
+
+    <!-- Page 1 Sheet -->
+    <section class="sheet-card" id="sheetPage1">
+      <div class="doc-header">
+        <div class="brand-title">
+          <div>
+            <h1 class="doc-title" id="p1DocTitle">保險金額/保單價值準備金/累積總保費表</h1>
+            <span class="mode-pill" id="p1ModePill">原保單建議書 (15,000美元)</span>
+          </div>
+        </div>
+        <div class="insured-info">
+          <div>性別/年齡：女性/45 歲</div>
+          <div>職業代碼：A01 &nbsp;|&nbsp; 生效日：102/08/28</div>
+        </div>
+      </div>
+
+      <div class="sub-meta">
+        <div class="sub-meta-left">
+          <div>險種名稱：UIL2IR</div>
+          <div id="p1SumAssuredMeta">投保金額：15000元</div>
+        </div>
+        <div class="unit-note">〈幣別/單位：美元/元〉</div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="tablePage1">
+          <thead>
+            <tr>
+              <th>保單年度 (末)</th>
+              <th class="col-added-roc">年度 (民國)</th>
+              <th class="col-added-premium" id="p1PremHeader">每年保費 (6年)</th>
+              <th>保險年齡</th>
+              <th id="thP1SumAssured">保險金額</th>
+              <th id="thP1Reserve">保單價值準備金</th>
+              <th>累積總保費</th>
+              <th class="col-added-xirr">XIRR<br />(第6年起)</th>
+              <th class="col-added-deposit">美元1年定存<br />平均利率(%)</th>
+              <th class="col-added-deposit-xirr">定存複利<br />XIRR</th>
+              <th>累計已領回之<br />生存還本</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPage1"></tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- Page 2 Sheet -->
+    <section class="sheet-card" id="sheetPage2">
+      <div class="doc-header">
+        <div class="brand-title">
+          <div>
+            <h1 class="doc-title" id="p2DocTitle">各商品保證給付項目說明</h1>
+            <span class="mode-pill" id="p2ModePill">原保單建議書 (15,000美元)</span>
+          </div>
+        </div>
+        <div class="insured-info">
+          <div>性別/年齡：女性/45 歲</div>
+          <div>職業代碼：A01 &nbsp;|&nbsp; 生效日：102/08/28</div>
+        </div>
+      </div>
+
+      <div class="sub-meta">
+        <div class="sub-meta-left">
+          <div>險種名稱：UIL2IR</div>
+          <div id="p2SumAssuredMeta">投保金額：15000元</div>
+        </div>
+        <div class="unit-note">〈幣別/單位：美元/元〉</div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="tablePage2">
+          <thead>
+            <tr>
+              <th rowspan="3">保單年度<br />(末)</th>
+              <th rowspan="3" class="col-added-roc">年度<br />(民國)</th>
+              <th rowspan="3" class="col-added-premium" id="p2PremHeader">每年保費<br />(6年)</th>
+              <th rowspan="3">保險<br />年齡</th>
+              <th colspan="12">保證給付項目</th>
+            </tr>
+            <tr>
+              <th rowspan="2">壽險保障</th>
+              <th colspan="2">年度末領回</th>
+              <th rowspan="2" id="thP2Surr">解約金</th>
+              <th rowspan="2" class="col-added-xirr">解約時 XIRR<br />(第6年起)</th>
+              <th rowspan="2" class="col-added-deposit">美元1年定存<br />平均利率(%)</th>
+              <th rowspan="2" class="col-added-deposit-xirr">定存複利<br />XIRR</th>
+              <th rowspan="2">減額繳清保險<br />基本保額</th>
+              <th colspan="3">展期定期保險</th>
+              <th rowspan="2">繳清生存保險金額</th>
+            </tr>
+            <tr>
+              <th>生存還本</th>
+              <th>滿期</th>
+              <th>展期定期<br />保險金額</th>
+              <th>展延期間<br />(年)</th>
+              <th>展延期間<br />(日)</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPage2"></tbody>
+        </table>
+      </div>
+
+      <div class="inspector-box" id="xirrInspector">
+        <div class="inspector-title">XIRR 現金流檢視（點擊頁二第 6 年起任一列可查看該年度解約現金流）</div>
+        <div id="inspectorDetail"></div>
+        <div class="cf-pills" id="inspectorPills"></div>
+      </div>
+
+    </section>
+  </div>
+
+  <script>
+    // Exact data from 任少玲uil2-15000美元.pdf Page 1 (Years 1-40)
+    const origPage1Data = [
+      { year: 1,  age: 45, sumAssured: 17250, reserve: 3825,  cumPrem: 6120,  survival: null },
+      { year: 2,  age: 46, sumAssured: 19500, reserve: 10410, cumPrem: 12240, survival: null },
+      { year: 3,  age: 47, sumAssured: 21750, reserve: 17190, cumPrem: 18360, survival: null },
+      { year: 4,  age: 48, sumAssured: 24000, reserve: 24150, cumPrem: 24480, survival: null },
+      { year: 5,  age: 49, sumAssured: 26250, reserve: 31305, cumPrem: 30600, survival: null },
+      { year: 6,  age: 50, sumAssured: 28500, reserve: 38655, cumPrem: 36720, survival: null },
+      { year: 7,  age: 51, sumAssured: 30750, reserve: 39735, cumPrem: 36720, survival: null },
+      { year: 8,  age: 52, sumAssured: 33000, reserve: 40830, cumPrem: 36720, survival: null },
+      { year: 9,  age: 53, sumAssured: 35250, reserve: 41970, cumPrem: 36720, survival: null },
+      { year: 10, age: 54, sumAssured: 37500, reserve: 43125, cumPrem: 36720, survival: null },
+      { year: 11, age: 55, sumAssured: 39750, reserve: 44325, cumPrem: 36720, survival: null },
+      { year: 12, age: 56, sumAssured: 42000, reserve: 45555, cumPrem: 36720, survival: null },
+      { year: 13, age: 57, sumAssured: 44250, reserve: 46815, cumPrem: 36720, survival: null },
+      { year: 14, age: 58, sumAssured: 46500, reserve: 48120, cumPrem: 36720, survival: null },
+      { year: 15, age: 59, sumAssured: 48750, reserve: 49455, cumPrem: 36720, survival: null },
+      { year: 16, age: 60, sumAssured: 50115, reserve: 50820, cumPrem: 36720, survival: null },
+      { year: 17, age: 61, sumAssured: 51495, reserve: 52230, cumPrem: 36720, survival: null },
+      { year: 18, age: 62, sumAssured: 52935, reserve: 53685, cumPrem: 36720, survival: null },
+      { year: 19, age: 63, sumAssured: 54405, reserve: 55170, cumPrem: 36720, survival: null },
+      { year: 20, age: 64, sumAssured: 55905, reserve: 56700, cumPrem: 36720, survival: null },
+      { year: 21, age: 65, sumAssured: 57465, reserve: 58275, cumPrem: 36720, survival: null },
+      { year: 22, age: 66, sumAssured: 59055, reserve: 59895, cumPrem: 36720, survival: null },
+      { year: 23, age: 67, sumAssured: 60690, reserve: 61560, cumPrem: 36720, survival: null },
+      { year: 24, age: 68, sumAssured: 62370, reserve: 63270, cumPrem: 36720, survival: null },
+      { year: 25, age: 69, sumAssured: 64110, reserve: 65025, cumPrem: 36720, survival: null },
+      { year: 26, age: 70, sumAssured: 65880, reserve: 66825, cumPrem: 36720, survival: null },
+      { year: 27, age: 71, sumAssured: 67710, reserve: 68685, cumPrem: 36720, survival: null },
+      { year: 28, age: 72, sumAssured: 69585, reserve: 70590, cumPrem: 36720, survival: null },
+      { year: 29, age: 73, sumAssured: 71520, reserve: 72540, cumPrem: 36720, survival: null },
+      { year: 30, age: 74, sumAssured: 73500, reserve: 74565, cumPrem: 36720, survival: null },
+      { year: 31, age: 75, sumAssured: 75540, reserve: 76635, cumPrem: 36720, survival: null },
+      { year: 32, age: 76, sumAssured: 77640, reserve: 78750, cumPrem: 36720, survival: null },
+      { year: 33, age: 77, sumAssured: 79800, reserve: 80940, cumPrem: 36720, survival: null },
+      { year: 34, age: 78, sumAssured: 82005, reserve: 83190, cumPrem: 36720, survival: null },
+      { year: 35, age: 79, sumAssured: 84285, reserve: 85500, cumPrem: 36720, survival: null },
+      { year: 36, age: 80, sumAssured: 86625, reserve: 87870, cumPrem: 36720, survival: null },
+      { year: 37, age: 81, sumAssured: 89025, reserve: 90300, cumPrem: 36720, survival: null },
+      { year: 38, age: 82, sumAssured: 91500, reserve: 92805, cumPrem: 36720, survival: null },
+      { year: 39, age: 83, sumAssured: 94035, reserve: 95385, cumPrem: 36720, survival: null },
+      { year: 40, age: 84, sumAssured: 96645, reserve: 98025, cumPrem: 36720, survival: null }
+    ];
+
+    // Exact data from 任少玲uil2-15000美元.pdf Page 2 (Years 1-30, 65)
+    const origPage2Data = [
+      { year: 1,  age: 45, life: 6304,   surv: null, mat: null,   surr: 2880,   rpu: 1635,  etiAmt: 6304,  etiYr: 64, etiDay: 0, paidUpSurv: 1560 },
+      { year: 2,  age: 46, life: 12607,  surv: null, mat: null,   surr: 7815,   rpu: 4440,  etiAmt: 12607, etiYr: 63, etiDay: 0, paidUpSurv: 6165 },
+      { year: 3,  age: 47, life: 18911,  surv: null, mat: null,   surr: 12900,  rpu: 7185,  etiAmt: 18911, etiYr: 62, etiDay: 0, paidUpSurv: 10575 },
+      { year: 4,  age: 48, life: 25214,  surv: null, mat: null,   surr: 18120,  rpu: 9840,  etiAmt: 25214, etiYr: 61, etiDay: 0, paidUpSurv: 14790 },
+      { year: 5,  age: 49, life: 31518,  surv: null, mat: null,   surr: 23490,  rpu: 12420, etiAmt: 31518, etiYr: 60, etiDay: 0, paidUpSurv: 18825 },
+      { year: 6,  age: 50, life: 38655,  surv: null, mat: null,   surr: 38655,  rpu: 15000, etiAmt: 38655, etiYr: 59, etiDay: 0, paidUpSurv: 22485 },
+      { year: 7,  age: 51, life: 39735,  surv: null, mat: null,   surr: 39735,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 8,  age: 52, life: 40830,  surv: null, mat: null,   surr: 40830,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 9,  age: 53, life: 41970,  surv: null, mat: null,   surr: 41970,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 10, age: 54, life: 43125,  surv: null, mat: null,   surr: 43125,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 11, age: 55, life: 44325,  surv: null, mat: null,   surr: 44325,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 12, age: 56, life: 45555,  surv: null, mat: null,   surr: 45555,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 13, age: 57, life: 46815,  surv: null, mat: null,   surr: 46815,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 14, age: 58, life: 48120,  surv: null, mat: null,   surr: 48120,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 15, age: 59, life: 49455,  surv: null, mat: null,   surr: 49455,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 16, age: 60, life: 50820,  surv: null, mat: null,   surr: 50820,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 17, age: 61, life: 52230,  surv: null, mat: null,   surr: 52230,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 18, age: 62, life: 53685,  surv: null, mat: null,   surr: 53685,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 19, age: 63, life: 55170,  surv: null, mat: null,   surr: 55170,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 20, age: 64, life: 56700,  surv: null, mat: null,   surr: 56700,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 21, age: 65, life: 58275,  surv: null, mat: null,   surr: 58275,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 22, age: 66, life: 59895,  surv: null, mat: null,   surr: 59895,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 23, age: 67, life: 61560,  surv: null, mat: null,   surr: 61560,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 24, age: 68, life: 63270,  surv: null, mat: null,   surr: 63270,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 25, age: 69, life: 65025,  surv: null, mat: null,   surr: 65025,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 26, age: 70, life: 66825,  surv: null, mat: null,   surr: 66825,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 27, age: 71, life: 68685,  surv: null, mat: null,   surr: 68685,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 28, age: 72, life: 70590,  surv: null, mat: null,   surr: 70590,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 29, age: 73, life: 72540,  surv: null, mat: null,   surr: 72540,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 30, age: 74, life: 74565,  surv: null, mat: null,   surr: 74565,  rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null },
+      { year: 65, age: 109, life: 191580, surv: null, mat: 191580, surr: 191580, rpu: null,  etiAmt: null,  etiYr: null, etiDay: null, paidUpSurv: null }
+    ];
+
+    const ANNUAL_PREMIUM = 6120;
+    const RPU_RATIO = 4400 / 15000;
+    const START_ROC_YEAR = 102; // 保單生效日 102/08/28 -> 第1保單年度為民國102年
+    const BASE_DATE = new Date(2013, 7, 28); // 民國102/08/28 = 2013-08-28
+
+    // 各年度美元 1 年期定存平均利率（%）：111~114 年為臺銀歷史牌告，115 年為 9 家銀行平均 2.11%；102~110 年與 116 年起預設空白可手動補入
+    const usdDepositRatesByRocYear = {
+      111: 3.70,
+      112: 3.85,
+      113: 2.55,
+      114: 1.80,
+      115: 2.11
+    };
+
+    function getDepositRate(policyYear) {
+      const rocYr = getRocYear(policyYear);
+      const val = usdDepositRatesByRocYear[rocYr];
+      return (val !== undefined && val !== null && Number.isFinite(val)) ? val : null;
+    }
+
+    // 依年度定存利率計算從第 1 年至第 targetYear 年末之複利累積金額，並求算對應 XIRR
+    function calcDepositCompoundXIRR(targetYear, reportMode) {
+      if (targetYear < 6) return null;
+      const payYears = reportMode === "orig" ? 6 : 2;
+      let balance = 0;
+      for (let yr = 1; yr <= targetYear; yr++) {
+        const r = getDepositRate(yr);
+        if (r === null) return null; // 若該區間有年度尚未填寫定存利率，無法從第1年起連續複利
+        const prem = yr <= payYears ? ANNUAL_PREMIUM : 0;
+        balance = (balance + prem) * (1 + r / 100);
+      }
+      return calcXIRR(targetYear, balance, reportMode);
+    }
+
+    function getRocYear(policyYear) {
+      return START_ROC_YEAR + policyYear - 1;
+    }
+
+    function scaleVal(val) {
+      if (val === null || val === undefined) return null;
+      return Math.round(val * RPU_RATIO);
+    }
+
+    // Derived Reduced Paid-Up (第2年辦理減額繳清) datasets
+    const rpuPage1Data = origPage1Data.map((row) => {
+      if (row.year <= 2) return { ...row };
+      return {
+        year: row.year,
+        age: row.age,
+        sumAssured: scaleVal(row.sumAssured),
+        reserve: scaleVal(row.reserve),
+        cumPrem: 12240,
+        survival: scaleVal(row.survival)
+      };
+    });
+
+    const rpuPage2Data = origPage2Data.map((row) => {
+      if (row.year <= 2) return { ...row };
+      return {
+        year: row.year,
+        age: row.age,
+        life: scaleVal(row.life),
+        surv: scaleVal(row.surv),
+        mat: scaleVal(row.mat),
+        surr: scaleVal(row.surr),
+        rpu: null, // 第3到6年減額繳清數據清空
+        etiAmt: scaleVal(row.etiAmt),
+        etiYr: row.etiYr,
+        etiDay: row.etiDay,
+        paidUpSurv: scaleVal(row.paidUpSurv)
+      };
+    });
+
+    let activeReport = "orig"; // "orig" | "rpu"
+    let selectedYear = 6;
+    let isChartVisible = false;
+
+    function fmtNum(val) {
+      if (val === null || val === undefined) return "—";
+      return val.toLocaleString("en-US");
+    }
+
+    function getAnnualPremium(year, reportMode) {
+      if (reportMode === "orig") {
+        return year <= 6 ? ANNUAL_PREMIUM : null;
+      }
+      return year <= 2 ? ANNUAL_PREMIUM : 0;
+    }
+
+    // Excel-compatible XIRR using 365-day year basis and Newton-Raphson + bisection fallback
+    function calcXIRR(surrenderYear, surrenderValue, reportMode) {
+      if (surrenderYear < 6 || !surrenderValue) return null;
+
+      const payYears = reportMode === "orig" ? 6 : 2;
+      const flows = [];
+      for (let i = 0; i < payYears; i++) {
+        const dt = new Date(BASE_DATE.getFullYear() + i, BASE_DATE.getMonth(), BASE_DATE.getDate());
+        flows.push({ amount: -ANNUAL_PREMIUM, days: (dt - BASE_DATE) / 86400000 });
+      }
+      const endDt = new Date(BASE_DATE.getFullYear() + surrenderYear, BASE_DATE.getMonth(), BASE_DATE.getDate());
+      flows.push({ amount: surrenderValue, days: (endDt - BASE_DATE) / 86400000 });
+
+      const npv = (r) => {
+        let sum = 0;
+        for (const f of flows) {
+          sum += f.amount / Math.pow(1 + r, f.days / 365);
+        }
+        return sum;
+      };
+
+      const dnpv = (r) => {
+        let sum = 0;
+        for (const f of flows) {
+          const t = f.days / 365;
+          sum -= (t * f.amount) / Math.pow(1 + r, t + 1);
+        }
+        return sum;
+      };
+
+      let r = 0.02;
+      for (let iter = 0; iter < 100; iter++) {
+        const y = npv(r);
+        const dy = dnpv(r);
+        if (Math.abs(y) < 1e-9) return r;
+        if (Math.abs(dy) < 1e-12) break;
+        const next = r - y / dy;
+        if (next <= -0.999 || next > 10 || !Number.isFinite(next)) break;
+        if (Math.abs(next - r) < 1e-10) return next;
+        r = next;
+      }
+
+      let lo = -0.99, hi = 5.0;
+      let fLo = npv(lo);
+      for (let iter = 0; iter < 120; iter++) {
+        const mid = (lo + hi) / 2;
+        const fMid = npv(mid);
+        if (Math.abs(fMid) < 1e-9) return mid;
+        if (fLo * fMid <= 0) {
+          hi = mid;
+        } else {
+          lo = mid;
+          fLo = fMid;
+        }
+      }
+      return (lo + hi) / 2;
+    }
+
+    function fmtXIRR(rate) {
+      if (rate === null || rate === undefined || !Number.isFinite(rate)) return "—";
+      return (rate * 100).toFixed(2) + "%";
+    }
+
+    function getCurrentDatasets() {
+      return activeReport === "orig"
+        ? { p1: origPage1Data, p2: origPage2Data }
+        : { p1: rpuPage1Data, p2: rpuPage2Data };
+    }
+
+    function renderDepositRateCell(policyYear) {
+      const rocYr = getRocYear(policyYear);
+      const rate = getDepositRate(policyYear);
+      const valAttr = rate !== null ? rate.toFixed(2) : "";
+      return `<td class="col-deposit-rate"><input class="rate-input" type="number" step="0.01" min="0" max="20" data-roc="${rocYr}" value="${valAttr}" placeholder="—" title="民國 ${rocYr} 年美元1年期定存平均利率(%)" /></td>`;
+    }
+
+    function renderPage1() {
+      const { p1 } = getCurrentDatasets();
+      const tbody = document.getElementById("tbodyPage1");
+      tbody.innerHTML = p1.map((row) => {
+        const prem = getAnnualPremium(row.year, activeReport);
+        const xirr = calcXIRR(row.year, row.reserve, activeReport);
+        const negClass = xirr !== null && xirr < 0 ? " neg" : "";
+        const depXirr = calcDepositCompoundXIRR(row.year, activeReport);
+        const depNegClass = depXirr !== null && depXirr < 0 ? " neg" : "";
+        const stripe = row.year % 5 === 0 ? ' class="stripe-5"' : "";
+        return `<tr${stripe}>
+          <td class="center">${row.year}</td>
+          <td class="col-roc">${getRocYear(row.year)}</td>
+          <td class="col-premium">${fmtNum(prem)}</td>
+          <td class="center">${row.age}</td>
+          <td>${fmtNum(row.sumAssured)}</td>
+          <td>${fmtNum(row.reserve)}</td>
+          <td>${fmtNum(row.cumPrem)}</td>
+          <td class="col-xirr${negClass}">${fmtXIRR(xirr)}</td>
+          ${renderDepositRateCell(row.year)}
+          <td class="col-deposit-xirr${depNegClass}" title="${depXirr === null && row.year >= 6 ? '需補齊第1年起各年度定存利率後方可計算連續複利XIRR' : ''}">${fmtXIRR(depXirr)}</td>
+          <td class="center">${fmtNum(row.survival)}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function updateInspector(year) {
+      const { p2 } = getCurrentDatasets();
+      const row = p2.find((d) => d.year === year);
+      if (!row || row.year < 6) return;
+      selectedYear = year;
+
+      const payYears = activeReport === "orig" ? 6 : 2;
+      const totalPaid = ANNUAL_PREMIUM * payYears;
+      const xirr = calcXIRR(row.year, row.surr, activeReport);
+      const netGain = row.surr - totalPaid;
+      const gainStr = netGain >= 0 ? `+$${fmtNum(netGain)}` : `-$${fmtNum(Math.abs(netGain))}`;
+      const xirrHtml = xirr !== null && xirr < 0
+        ? `<span style="color:#dc2626;font-weight:700;">${fmtXIRR(xirr)}</span>`
+        : `<span>${fmtXIRR(xirr)}</span>`;
+
+      document.getElementById("inspectorDetail").innerHTML =
+        `第 ${row.year} 保單年度末（民國 ${getRocYear(row.year)} 年 / 保險年齡 ${row.age} 歲）解約：累積總保費 $${fmtNum(totalPaid)} 美元，解約金 $${fmtNum(row.surr)} 美元，淨損益 ${gainStr} 美元，XIRR = ${xirrHtml}`;
+
+      const pills = [];
+      for (let i = 0; i < 6; i++) {
+        const rocYr = START_ROC_YEAR + i;
+        if (i < payYears) {
+          pills.push(`<span class="cf-pill out">民國 ${rocYr} 年 (t=${i}): -$6,120</span>`);
+        } else {
+          pills.push(`<span class="cf-pill zero">民國 ${rocYr} 年 (t=${i}): $0 (已減額繳清)</span>`);
+        }
+      }
+      pills.push(`<span class="cf-pill in">民國 ${getRocYear(row.year)} 年 (t=${row.year}): +$${fmtNum(row.surr)}</span>`);
+      document.getElementById("inspectorPills").innerHTML = pills.join("");
+
+      document.querySelectorAll("#tbodyPage2 tr").forEach((tr) => {
+        tr.classList.toggle("selected-row", Number(tr.dataset.year) === year);
+      });
+    }
+
+    function renderPage2() {
+      const { p2 } = getCurrentDatasets();
+      const tbody = document.getElementById("tbodyPage2");
+      tbody.innerHTML = p2.map((row) => {
+        const prem = getAnnualPremium(row.year, activeReport);
+        const xirr = calcXIRR(row.year, row.surr, activeReport);
+        const negClass = xirr !== null && xirr < 0 ? " neg" : "";
+        const depXirr = calcDepositCompoundXIRR(row.year, activeReport);
+        const depNegClass = depXirr !== null && depXirr < 0 ? " neg" : "";
+        const stripe = row.year % 5 === 0 ? ' class="stripe-5"' : "";
+        const isClearedRpu = activeReport === "rpu" && row.year >= 3 && row.year <= 6;
+        const rpuCell = isClearedRpu
+          ? `<td class="cleared-cell" title="第2年已辦理減額繳清，第3~6年清空">—</td>`
+          : `<td>${fmtNum(row.rpu)}</td>`;
+
+        return `<tr${stripe} data-year="${row.year}">
+          <td class="center">${row.year}</td>
+          <td class="col-roc">${getRocYear(row.year)}</td>
+          <td class="col-premium">${fmtNum(prem)}</td>
+          <td class="center">${row.age}</td>
+          <td>${fmtNum(row.life)}</td>
+          <td class="center">${fmtNum(row.surv)}</td>
+          <td>${fmtNum(row.mat)}</td>
+          <td>${fmtNum(row.surr)}</td>
+          <td class="col-xirr${negClass}">${fmtXIRR(xirr)}</td>
+          ${renderDepositRateCell(row.year)}
+          <td class="col-deposit-xirr${depNegClass}" title="${depXirr === null && row.year >= 6 ? '需補齊第1年起各年度定存利率後方可計算連續複利XIRR' : ''}">${fmtXIRR(depXirr)}</td>
+          ${rpuCell}
+          <td>${fmtNum(row.etiAmt)}</td>
+          <td class="center">${row.etiYr !== null ? row.etiYr : "—"}</td>
+          <td class="center">${row.etiDay !== null ? row.etiDay : "—"}</td>
+          <td>${fmtNum(row.paidUpSurv)}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function updateMetadata() {
+      const isRpu = activeReport === "rpu";
+      const p1Pill = document.getElementById("p1ModePill");
+      const p2Pill = document.getElementById("p2ModePill");
+      const metaText = isRpu
+        ? "投保金額：15000元（第2年減額繳清為 4,400 元，第3年起數值按 4400/15000 比例計算）"
+        : "投保金額：15000元";
+
+      p1Pill.textContent = isRpu ? "第2年減額繳清試算 (4,400美元)" : "原保單建議書 (15,000美元)";
+      p2Pill.textContent = p1Pill.textContent;
+      p1Pill.classList.toggle("rpu", isRpu);
+      p2Pill.classList.toggle("rpu", isRpu);
+
+      document.getElementById("p1SumAssuredMeta").textContent = metaText;
+      document.getElementById("p2SumAssuredMeta").textContent = metaText;
+
+      document.getElementById("p1PremHeader").textContent = isRpu ? "每年保費 (第3年起為0)" : "每年保費 (6年)";
+      document.getElementById("p2PremHeader").innerHTML = isRpu ? "每年保費<br />(第3年起為0)" : "每年保費<br />(6年)";
+
+      document.getElementById("p1DocTitle").innerHTML = isRpu
+        ? '保障內容預估表 <span class="pulse-red">(僅為預估不保證數據正確)</span>'
+        : '保險金額/保單價值準備金/累積總保費表';
+
+      document.getElementById("p2DocTitle").innerHTML = isRpu
+        ? '各商品保證給付項目說明 <span class="pulse-red">(僅為預估不保證數據正確)</span>'
+        : '各商品保證給付項目說明';
+
+      document.getElementById("thP1SumAssured").innerHTML = isRpu
+        ? '保險金額<br /><span class="pulse-red-th">(僅為預估值)</span>'
+        : '保險金額';
+
+      document.getElementById("thP1Reserve").innerHTML = isRpu
+        ? '保單價值準備金<br /><span class="pulse-red-th">(僅為預估值)</span>'
+        : '保單價值準備金';
+
+      document.getElementById("thP2Surr").innerHTML = isRpu
+        ? '解約金<br /><span class="pulse-red-th">(僅為預估值)</span>'
+        : '解約金';
+    }
+
+    function renderChart() {
+      if (!isChartVisible) return;
+      const { p1 } = getCurrentDatasets();
+      const svg = document.getElementById("policyChartSvg");
+      const titleEl = document.getElementById("chartTitle");
+      const isRpu = activeReport === "rpu";
+      titleEl.innerHTML = isRpu
+        ? '保費、保額與保單價值準備金曲線圖 — 第2年減額繳清試算 <span class="pulse-red">(僅為預估不保證數據正確)</span>'
+        : '保費、保額與保單價值準備金曲線圖 — 原保單建議書 (15,000美元)';
+
+      document.getElementById("chartLegend").innerHTML = isRpu
+        ? '<span class="legend-item"><span class="legend-dot" style="background:#16a34a;"></span>累積總保費</span>' +
+          '<span class="legend-item"><span class="legend-dot" style="background:#2563eb;"></span>保險金額 <span class="pulse-red">(僅為預估值)</span></span>' +
+          '<span class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span>保單價值準備金 <span class="pulse-red">(僅為預估值)</span></span>'
+        : '<span class="legend-item"><span class="legend-dot" style="background:#16a34a;"></span>累積總保費</span>' +
+          '<span class="legend-item"><span class="legend-dot" style="background:#2563eb;"></span>保險金額</span>' +
+          '<span class="legend-item"><span class="legend-dot" style="background:#dc2626;"></span>保單價值準備金</span>';
+
+      const W = 960, H = 320;
+      const pad = { top: 24, right: 28, bottom: 42, left: 72 };
+      const plotW = W - pad.left - pad.right;
+      const plotH = H - pad.top - pad.bottom;
+
+      const maxVal = Math.max(...p1.map((d) => Math.max(d.sumAssured, d.reserve, d.cumPrem)));
+      const yMax = Math.ceil(maxVal / 10000) * 10000 || 10000;
+
+      const xPos = (idx) => pad.left + (idx / (p1.length - 1)) * plotW;
+      const yPos = (val) => pad.top + plotH - (val / yMax) * plotH;
+
+      const makePath = (key) =>
+        p1.map((d, i) => `${i === 0 ? "M" : "L"}${xPos(i).toFixed(1)},${yPos(d[key]).toFixed(1)}`).join(" ");
+
+      let gridHtml = "";
+      for (let i = 0; i <= 5; i++) {
+        const val = (yMax / 5) * i;
+        const y = yPos(val).toFixed(1);
+        gridHtml += `<line x1="${pad.left}" y1="${y}" x2="${W - pad.right}" y2="${y}" stroke="#e2e8f0" stroke-width="1" />`;
+        gridHtml += `<text x="${pad.left - 8}" y="${Number(y) + 4}" text-anchor="end" font-size="11" fill="#475569">$${val.toLocaleString("en-US")}</text>`;
+      }
+
+      const xTicks = [1, 5, 10, 15, 20, 25, 30, 35, 40];
+      xTicks.forEach((yr) => {
+        const idx = yr - 1;
+        const x = xPos(idx).toFixed(1);
+        gridHtml += `<line x1="${x}" y1="${pad.top}" x2="${x}" y2="${pad.top + plotH}" stroke="#f1f5f9" stroke-width="1" />`;
+        gridHtml += `<text x="${x}" y="${H - 22}" text-anchor="middle" font-size="11" fill="#334155">第${yr}年</text>`;
+        gridHtml += `<text x="${x}" y="${H - 8}" text-anchor="middle" font-size="10.5" fill="#1e3a8a">(${getRocYear(yr)})</text>`;
+      });
+
+      const pathsHtml = `
+        <path d="${makePath("cumPrem")}" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="6,4" />
+        <path d="${makePath("sumAssured")}" fill="none" stroke="#2563eb" stroke-width="2.8" />
+        <path d="${makePath("reserve")}" fill="none" stroke="#dc2626" stroke-width="2.8" />
+      `;
+
+      const pointsHtml = p1.map((d, i) => {
+        const cx = xPos(i).toFixed(1);
+        return `<rect class="chart-hit" data-idx="${i}" x="${(Number(cx) - plotW / p1.length / 2).toFixed(1)}" y="${pad.top}" width="${(plotW / p1.length).toFixed(1)}" height="${plotH}" fill="transparent" style="cursor:crosshair;" />`;
+      }).join("");
+
+      svg.innerHTML = gridHtml + pathsHtml +
+        `<line id="chartHoverLine" x1="0" y1="${pad.top}" x2="0" y2="${pad.top + plotH}" stroke="#334155" stroke-width="1.8" stroke-dasharray="4,3" visibility="hidden" />` +
+        `<rect id="chartHoverBadgeBg" x="0" y="2" width="84" height="20" rx="5" fill="#1e3a8a" visibility="hidden" />` +
+        `<text id="chartHoverBadgeText" x="0" y="16" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ffffff" visibility="hidden"></text>` +
+        `<circle id="dotPrem" r="4.5" fill="#16a34a" stroke="#fff" stroke-width="1.5" visibility="hidden" />` +
+        `<circle id="dotSum" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="1.5" visibility="hidden" />` +
+        `<circle id="dotRes" r="4.5" fill="#dc2626" stroke="#fff" stroke-width="1.5" visibility="hidden" />` +
+        pointsHtml;
+
+      const updateHover = (idx) => {
+        const d = p1[idx];
+        if (!d) return;
+        const cx = xPos(idx);
+        const rocYr = getRocYear(d.year);
+        const line = document.getElementById("chartHoverLine");
+        const badgeBg = document.getElementById("chartHoverBadgeBg");
+        const badgeTxt = document.getElementById("chartHoverBadgeText");
+        const dPrem = document.getElementById("dotPrem");
+        const dSum = document.getElementById("dotSum");
+        const dRes = document.getElementById("dotRes");
+
+        line.setAttribute("x1", cx);
+        line.setAttribute("x2", cx);
+        line.setAttribute("visibility", "visible");
+
+        const badgeW = 84;
+        const clampedX = Math.max(pad.left + badgeW / 2, Math.min(W - pad.right - badgeW / 2, cx));
+        badgeBg.setAttribute("x", (clampedX - badgeW / 2).toFixed(1));
+        badgeBg.setAttribute("visibility", "visible");
+        badgeTxt.setAttribute("x", clampedX.toFixed(1));
+        badgeTxt.textContent = `民國 ${rocYr} 年`;
+        badgeTxt.setAttribute("visibility", "visible");
+
+        dPrem.setAttribute("cx", cx);
+        dPrem.setAttribute("cy", yPos(d.cumPrem));
+        dPrem.setAttribute("visibility", "visible");
+
+        dSum.setAttribute("cx", cx);
+        dSum.setAttribute("cy", yPos(d.sumAssured));
+        dSum.setAttribute("visibility", "visible");
+
+        dRes.setAttribute("cx", cx);
+        dRes.setAttribute("cy", yPos(d.reserve));
+        dRes.setAttribute("visibility", "visible");
+
+        document.getElementById("chartTooltip").innerHTML = `
+          <strong>第 ${d.year} 保單年度（民國 ${getRocYear(d.year)} 年 / ${d.age} 歲）</strong>
+          <span style="color:#16a34a;font-weight:700;">累積總保費：$${fmtNum(d.cumPrem)}</span>
+          <span style="color:#2563eb;font-weight:700;">保險金額：$${fmtNum(d.sumAssured)}${isRpu ? ' <span class="pulse-red">(僅為預估值)</span>' : ''}</span>
+          <span style="color:#dc2626;font-weight:700;">保單價值準備金：$${fmtNum(d.reserve)}${isRpu ? ' <span class="pulse-red">(僅為預估值)</span>' : ''}</span>
+        `;
+      };
+
+      svg.querySelectorAll(".chart-hit").forEach((el) => {
+        const idx = Number(el.dataset.idx);
+        el.addEventListener("mouseenter", () => updateHover(idx));
+        el.addEventListener("click", () => updateHover(idx));
+        el.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          updateHover(idx);
+        }, { passive: false });
+      });
+
+      // Default highlight 民國 115 年 (第 14 保單年度, idx = 13)
+      updateHover(13);
+    }
+
+    function renderAll() {
+      renderPage1();
+      renderPage2();
+      updateMetadata();
+      updateInspector(selectedYear);
+      renderChart();
+    }
+
+    // Report Switcher (2 Primary Buttons)
+    const btnReportOrig = document.getElementById("btnReportOrig");
+    const btnReportRpu = document.getElementById("btnReportRpu");
+
+    function setReport(mode) {
+      activeReport = mode;
+      btnReportOrig.classList.toggle("active", mode === "orig");
+      btnReportRpu.classList.toggle("active", mode === "rpu");
+      renderAll();
+    }
+
+    btnReportOrig.addEventListener("click", () => setReport("orig"));
+    btnReportRpu.addEventListener("click", () => setReport("rpu"));
+
+    // Chart Icon Button Toggle
+    const btnToggleChart = document.getElementById("btnToggleChart");
+    const chartCard = document.getElementById("chartCard");
+    btnToggleChart.addEventListener("click", () => {
+      isChartVisible = !isChartVisible;
+      btnToggleChart.classList.toggle("active", isChartVisible);
+      chartCard.classList.toggle("hidden", !isChartVisible);
+      if (isChartVisible) {
+        renderChart();
+      }
+    });
+
+    // Delegate deposit rate input changes across both tables
+    document.addEventListener("change", (e) => {
+      if (!e.target.classList.contains("rate-input")) return;
+      const rocYr = Number(e.target.dataset.roc);
+      const raw = e.target.value.trim();
+      usdDepositRatesByRocYear[rocYr] = raw === "" ? null : Number(raw);
+      renderPage1();
+      renderPage2();
+    });
+
+    // Delegate row click on Page 2 tbody once
+    document.getElementById("tbodyPage2").addEventListener("click", (e) => {
+      const tr = e.target.closest("tr");
+      if (!tr) return;
+      const yr = Number(tr.dataset.year);
+      if (yr >= 6) updateInspector(yr);
+    });
+
+    // Init
+    renderAll();
+  </script>
+</body>
+</html>
