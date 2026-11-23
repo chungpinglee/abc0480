@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="pop">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1151123主委及區經理會議摘要 — 動態簡報</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* =====================================================================
+       BASE RESET & THEME VARIABLES
+       ===================================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font-sans: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-display: 'Space Grotesk', 'Inter', 'Noto Sans TC', sans-serif;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --anim-speed: 1s;
+    }
+
+    /* 1. 普普風 (Pop Art - Default) */
+    html[data-theme="pop"] {
+      --bg-page: #ffe600;
+      --bg-stage: #fff3b0;
+      --bg-card: #ffffff;
+      --bg-card-alt: #00d2ff;
+      --bg-badge: #ff2a85;
+      --text-main: #111111;
+      --text-muted: #333333;
+      --text-accent: #ff2a85;
+      --accent-1: #ff2a85;
+      --accent-2: #00d2ff;
+      --accent-danger: #ff2a2a;
+      --accent-success: #00c853;
+      --border-card: 3px solid #111111;
+      --shadow-card: 6px 6px 0px #111111;
+      --radius-card: 14px;
+      --radius-pill: 999px;
+      --btn-bg: #ff2a85;
+      --btn-text: #ffffff;
+      --btn-border: 3px solid #111111;
+      --topbar-bg: #ffffff;
+      --stage-pattern: radial-gradient(#111111 1.4px, transparent 1.4px);
+      --stage-pattern-size: 16px 16px;
+      --anim-speed: 1s;
+    }
+
+    /* 2. Apple 風 (Apple Minimalist Keynote) */
+    html[data-theme="apple"] {
+      --bg-page: #f5f5f7;
+      --bg-stage: linear-gradient(180deg, #ffffff 0%, #f2f2f7 100%);
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-alt: #f5f5f7;
+      --bg-badge: rgba(0, 113, 227, 0.1);
+      --text-main: #1d1d1f;
+      --text-muted: #6e6e73;
+      --text-accent: #0071e3;
+      --accent-1: #0071e3;
+      --accent-2: #bf5af2;
+      --accent-danger: #ff3b30;
+      --accent-success: #34c759;
+      --border-card: 1px solid rgba(0, 0, 0, 0.08);
+      --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.06);
+      --radius-card: 20px;
+      --radius-pill: 999px;
+      --btn-bg: #0071e3;
+      --btn-text: #ffffff;
+      --btn-border: 1px solid transparent;
+      --topbar-bg: rgba(255, 255, 255, 0.88);
+      --stage-pattern: none;
+      --stage-pattern-size: 0 0;
+      --anim-speed: 1s;
+    }
+
+    /* 3. 瑞士風 (Swiss International Style) */
+    html[data-theme="swiss"] {
+      --bg-page: #eae8e1;
+      --bg-stage: #f4f3ee;
+      --bg-card: #ffffff;
+      --bg-card-alt: #111111;
+      --bg-badge: #e10600;
+      --text-main: #111111;
+      --text-muted: #4a4a4a;
+      --text-accent: #e10600;
+      --accent-1: #e10600;
+      --accent-2: #111111;
+      --accent-danger: #e10600;
+      --accent-success: #0f7b3e;
+      --border-card: 2px solid #111111;
+      --shadow-card: none;
+      --radius-card: 0px;
+      --radius-pill: 0px;
+      --btn-bg: #111111;
+      --btn-text: #ffffff;
+      --btn-border: 2px solid #111111;
+      --topbar-bg: #f4f3ee;
+      --stage-pattern: linear-gradient(to right, rgba(17,17,17,0.06) 1px, transparent 1px);
+      --stage-pattern-size: 80px 100%;
+      --anim-speed: 1s;
+    }
+
+    /* 4. 手繪風 (Hand-Drawn Sketchbook) */
+    html[data-theme="sketch"] {
+      --bg-page: #f3ede2;
+      --bg-stage: #fdfbf7;
+      --bg-card: #ffffff;
+      --bg-card-alt: #fff8dc;
+      --bg-badge: #ffd166;
+      --text-main: #2b2d42;
+      --text-muted: #5c6078;
+      --text-accent: #e76f51;
+      --accent-1: #e76f51;
+      --accent-2: #2a9d8f;
+      --accent-danger: #d62828;
+      --accent-success: #2a9d8f;
+      --border-card: 2.5px dashed #3d405b;
+      --shadow-card: 4px 5px 0px rgba(61, 64, 91, 0.18);
+      --radius-card: 18px 22px 16px 24px;
+      --radius-pill: 14px 18px 12px 16px;
+      --btn-bg: #e76f51;
+      --btn-text: #ffffff;
+      --btn-border: 2px solid #2b2d42;
+      --topbar-bg: rgba(253, 251, 247, 0.96);
+      --stage-pattern: radial-gradient(rgba(61, 64, 91, 0.14) 1px, transparent 1px);
+      --stage-pattern-size: 20px 20px;
+      --anim-speed: 1s;
+    }
+
+    /* 5. 包浩斯風 (Bauhaus) */
+    html[data-theme="bauhaus"] {
+      --bg-page: #e8e2d5;
+      --bg-stage: #f2ede4;
+      --bg-card: #ffffff;
+      --bg-card-alt: #1d4ed8;
+      --bg-badge: #eab308;
+      --text-main: #18181b;
+      --text-muted: #3f3f46;
+      --text-accent: #d92b2b;
+      --accent-1: #d92b2b;
+      --accent-2: #1d4ed8;
+      --accent-danger: #d92b2b;
+      --accent-success: #15803d;
+      --border-card: 3px solid #18181b;
+      --shadow-card: 8px 8px 0px #eab308;
+      --radius-card: 4px;
+      --radius-pill: 999px;
+      --btn-bg: #1d4ed8;
+      --btn-text: #ffffff;
+      --btn-border: 2.5px solid #18181b;
+      --topbar-bg: #f2ede4;
+      --stage-pattern: linear-gradient(rgba(24,24,27,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(24,24,27,0.05) 1px, transparent 1px);
+      --stage-pattern-size: 48px 48px;
+      --anim-speed: 1s;
+    }
+
+    /* 6. 科幻風 (Sci-Fi HUD) */
+    html[data-theme="scifi"] {
+      --bg-page: #050a14;
+      --bg-stage: radial-gradient(circle at 50% 25%, #0e1d38 0%, #050a14 75%);
+      --bg-card: rgba(13, 25, 48, 0.78);
+      --bg-card-alt: rgba(18, 36, 66, 0.85);
+      --bg-badge: rgba(0, 240, 255, 0.14);
+      --text-main: #eef6ff;
+      --text-muted: #93b0d4;
+      --text-accent: #00f0ff;
+      --accent-1: #00f0ff;
+      --accent-2: #ffb800;
+      --accent-danger: #ff4d6d;
+      --accent-success: #00e699;
+      --border-card: 1px solid rgba(0, 240, 255, 0.32);
+      --shadow-card: 0 0 24px rgba(0, 240, 255, 0.12), inset 0 0 18px rgba(0, 240, 255, 0.05);
+      --radius-card: 12px;
+      --radius-pill: 6px;
+      --btn-bg: rgba(0, 240, 255, 0.12);
+      --btn-text: #00f0ff;
+      --btn-border: 1px solid rgba(0, 240, 255, 0.45);
+      --topbar-bg: rgba(5, 10, 20, 0.92);
+      --stage-pattern: linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+      --stage-pattern-size: 36px 36px;
+      --anim-speed: 1s;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    /* =====================================================================
+       TOP BAR (RWD + PREV/NEXT + STYLE SWITCHER + GEAR ICON ONLY)
+       ===================================================================== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(14px);
+      border-bottom: var(--border-card);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .page-badge {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.88rem;
+      padding: 6px 11px;
+      background: var(--bg-card);
+      border: var(--border-card);
+      border-radius: var(--radius-pill);
+      color: var(--text-main);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px 13px;
+      min-height: 36px;
+      font-weight: 800;
+      font-size: 0.84rem;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: var(--btn-border);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.18s ease, opacity 0.2s ease;
+    }
+    .nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .nav-btn:not(:disabled):hover { transform: translateY(-1px); }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 11px;
+      min-height: 36px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: var(--border-card);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.2s ease;
+    }
+    .icon-btn:hover { transform: translateY(-1px); }
+
+    .style-switcher {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .style-pill {
+      padding: 6px 11px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      border: var(--border-card);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .style-pill .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid rgba(0,0,0,0.25);
+      flex-shrink: 0;
+    }
+    .style-pill.active {
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: var(--btn-border);
+      transform: scale(1.04);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .gear-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: var(--btn-border);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .gear-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+    .gear-btn svg {
+      transition: transform 0.5s var(--ease-out-expo);
+    }
+    .gear-btn:hover svg {
+      transform: rotate(90deg);
+    }
+
+    /* Locked standalone export mode hides switcher & gear */
+    html[data-locked="true"] .style-switcher,
+    html[data-locked="true"] .gear-btn {
+      display: none !important;
+    }
+
+    /* =====================================================================
+       FULL-SCREEN PRESENTATION STAGE (RWD, ONE SLIDE AT A TIME)
+       ===================================================================== */
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .slide-stage {
+      width: 100%;
+      min-height: calc(100vh - 56px);
+      min-height: calc(100dvh - 56px);
+      background: var(--bg-stage);
+      background-image: var(--stage-pattern);
+      background-size: var(--stage-pattern-size);
+      padding: clamp(16px, 2.5vw, 30px) clamp(14px, 3.5vw, 44px);
+      position: relative;
+      overflow-x: hidden;
+      touch-action: pan-y;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: background 0.35s ease;
+    }
+
+    .slide-inner {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 1.8vw, 18px);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Theme-specific subtle decorative accents */
+    html[data-theme="bauhaus"] .slide-stage::before {
+      content: "";
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: rgba(234, 179, 8, 0.25);
+      pointer-events: none;
+    }
+    html[data-theme="pop"] .slide-stage::before {
+      content: "POW!";
+      position: absolute;
+      bottom: 18px;
+      right: 26px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 2.6rem;
+      color: rgba(255, 42, 133, 0.14);
+      transform: rotate(-10deg);
+      pointer-events: none;
+    }
+    html[data-theme="swiss"] .slide-stage::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 100%;
+      background: #e10600;
+      pointer-events: none;
+    }
+
+    /* =====================================================================
+       SLIDE TYPOGRAPHY & CARDS
+       ===================================================================== */
+    .slide-header {
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 2.6vw, 2.3rem);
+      font-weight: 900;
+      line-height: 1.25;
+      color: var(--text-main);
+    }
+
+    .slide-subtitle {
+      margin-top: 5px;
+      font-size: clamp(0.92rem, 1.2vw, 1.04rem);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .slide-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(12px, 1.6vw, 16px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: var(--border-card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: clamp(14px, 1.8vw, 20px) clamp(16px, 2vw, 22px);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+    html[data-theme="sketch"] .card:nth-child(odd) { transform: rotate(-0.4deg); }
+    html[data-theme="sketch"] .card:nth-child(even) { transform: rotate(0.4deg); }
+    html[data-theme="sketch"] .card:hover { transform: rotate(0deg) translateY(-3px); }
+
+    .card-title {
+      font-size: clamp(1rem, 1.3vw, 1.14rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.8vw, 18px); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.8vw, 18px); }
+    .grid-1-2 { display: grid; grid-template-columns: 1.05fr 1.35fr; gap: clamp(12px, 1.8vw, 18px); }
+
+    .banner-callout {
+      padding: clamp(12px, 1.5vw, 16px) clamp(14px, 2vw, 20px);
+      border-radius: var(--radius-card);
+      border: var(--border-card);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-card);
+      font-weight: 700;
+      font-size: clamp(0.92rem, 1.15vw, 1.04rem);
+      line-height: 1.55;
+      border-left: 6px solid var(--accent-2);
+    }
+    .banner-callout.danger {
+      border-left-color: var(--accent-danger);
+    }
+
+    .pill-item {
+      padding: 9px 12px;
+      border-radius: var(--radius-card);
+      border: var(--border-card);
+      background: var(--bg-stage);
+      margin-bottom: 7px;
+      font-size: clamp(0.86rem, 1.05vw, 0.95rem);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pill-item:last-child { margin-bottom: 0; }
+
+    .kpi-huge {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5.5vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--accent-1);
+      margin-bottom: 8px;
+    }
+    .kpi-label {
+      font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Animated Comparison Bar (Slide 5) */
+    .bar-track {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(128, 128, 128, 0.22);
+      overflow: hidden;
+      margin: 10px 0 12px;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 1s var(--ease-out-expo);
+    }
+
+    /* =====================================================================
+       DYNAMIC ENTRANCE ANIMATIONS (~1s, SEQUENTIAL FRAME APPEARANCE)
+       ===================================================================== */
+    @keyframes animFadeUp {
+      from { opacity: 0; transform: translateY(28px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes animPopIn {
+      0% { opacity: 0; transform: scale(0.78) rotate(-2.5deg); }
+      70% { opacity: 1; transform: scale(1.03) rotate(0.8deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    @keyframes animSwissSlide {
+      from { opacity: 0; transform: translateX(-42px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes animPulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.03); opacity: 0.9; }
+    }
+    @keyframes animSlowSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .anim-item {
+      opacity: 0;
+    }
+    .slide-stage.is-animating .anim-item {
+      animation: animFadeUp var(--anim-speed) var(--ease-out-expo) forwards;
+      animation-delay: calc(var(--stagger, 0) * 260ms);
+    }
+    html[data-theme="pop"] .slide-stage.is-animating .anim-item {
+      animation-name: animPopIn;
+      animation-timing-function: var(--ease-spring);
+    }
+    html[data-theme="swiss"] .slide-stage.is-animating .anim-item {
+      animation-name: animSwissSlide;
+    }
+
+    .pulse-alert {
+      animation: animPulseGlow 2.2s infinite ease-in-out;
+    }
+
+    .ring-progress {
+      transition: stroke-dashoffset 1s var(--ease-out-expo);
+    }
+
+    .glory-orbit {
+      transform-origin: 60px 60px;
+      animation: animSlowSpin 18s linear infinite;
+    }
+
+    /* =====================================================================
+       MODALS (PASSWORD + GEAR EXPORT)
+       ===================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.62);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: var(--border-card);
+      border-radius: var(--radius-card);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      padding: 24px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+    .close-btn {
+      background: transparent;
+      border: var(--border-card);
+      color: var(--text-main);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .pwd-input {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: var(--border-card);
+      border-radius: var(--radius-card);
+      background: var(--bg-stage);
+      color: var(--text-main);
+      outline: none;
+      margin-bottom: 10px;
+    }
+    .pwd-error {
+      color: var(--accent-danger);
+      font-size: 0.86rem;
+      font-weight: 800;
+      min-height: 20px;
+      margin-bottom: 10px;
+    }
+
+    .export-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: var(--border-card);
+      border-radius: var(--radius-card);
+      margin-bottom: 12px;
+      cursor: pointer;
+      background: var(--bg-stage);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #111827;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* =====================================================================
+       RWD BREAKPOINTS (TABLET & MOBILE)
+       ===================================================================== */
+    @media (max-width: 960px) {
+      .grid-2, .grid-3, .grid-1-2 { grid-template-columns: 1fr; }
+      .topbar { padding: 8px 12px; gap: 8px; }
+      .style-switcher { order: 3; width: 100%; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+      .topbar-right { margin-left: auto; }
+    }
+
+    @media (max-width: 540px) {
+      .nav-btn { padding: 6px 10px; font-size: 0.8rem; }
+      .page-badge { font-size: 0.8rem; padding: 5px 9px; }
+      .style-pill { padding: 5px 10px; font-size: 0.78rem; }
+      .slide-stage { justify-content: flex-start; padding-top: 18px; padding-bottom: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP BAR: PREV/NEXT ON LEFT, 6 STYLES IN CENTER, FULLSCREEN + GEAR ICON ON RIGHT -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="page-badge" id="pageCounter">01 / 14</span>
+    </div>
+
+    <nav class="style-switcher" id="styleSwitcher" aria-label="簡報風格選擇">
+      <button class="style-pill active" data-set-theme="pop" type="button"><span class="swatch" style="background:#ffe600"></span>普普風</button>
+      <button class="style-pill" data-set-theme="apple" type="button"><span class="swatch" style="background:#0071e3"></span>Apple 風</button>
+      <button class="style-pill" data-set-theme="swiss" type="button"><span class="swatch" style="background:#e10600"></span>瑞士風</button>
+      <button class="style-pill" data-set-theme="sketch" type="button"><span class="swatch" style="background:#e76f51"></span>手繪風</button>
+      <button class="style-pill" data-set-theme="bauhaus" type="button"><span class="swatch" style="background:#eab308"></span>包浩斯風</button>
+      <button class="style-pill" data-set-theme="scifi" type="button"><span class="swatch" style="background:#00f0ff"></span>科幻風</button>
+    </nav>
+
+    <div class="topbar-right">
+      <button class="icon-btn" id="btnFullscreen" type="button" title="切換瀏覽器全螢幕">⛶</button>
+      <button class="gear-btn" id="btnGearExport" type="button" aria-label="設定與匯出">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- FULL-SCREEN PRESENTATION STAGE -->
+  <main class="stage-wrapper">
+    <section class="slide-stage" id="slideStage" aria-live="polite"></section>
+  </main>
+
+  <!-- PASSWORD MODAL (NO HINT) -->
+  <div class="modal-backdrop" id="pwdModal" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width:380px;">
+      <div class="modal-header">
+        <h2 class="modal-title">請輸入密碼</h2>
+        <button class="close-btn" id="btnClosePwd" type="button">✕</button>
+      </div>
+      <form id="pwdForm">
+        <input class="pwd-input" id="pwdInput" type="password" autocomplete="off" />
+        <div class="pwd-error" id="pwdError"></div>
+        <button class="nav-btn" type="submit" style="width:100%; padding:10px;">確認</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- GEAR EXPORT MODAL -->
+  <div class="modal-backdrop" id="exportModal" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">⚙ 產生專屬風格動態簡報</h2>
+        <button class="close-btn" id="btnCloseExport" type="button">✕</button>
+      </div>
+      <p style="color:var(--text-muted); font-size:0.94rem; margin-bottom:14px; line-height:1.6;">
+        您目前選定的簡報風格為：<strong id="exportThemeName" style="color:var(--text-accent);">普普風 (Pop Art)</strong>。<br/>
+        點擊下方按鈕，即可立即產生並下載該風格的獨立 HTML 動態簡報檔案，雙擊即可離線播放！
+      </p>
+      <label class="export-option">
+        <input type="radio" name="exportMode" value="locked" checked style="margin-top:4px;" />
+        <div>
+          <div style="font-weight:800;">純淨簡報版（推薦）</div>
+          <div style="font-size:0.84rem; color:var(--text-muted);">鎖定為目前所選風格，並隱藏上方風格切換器與齒輪按鈕，直接作為正式簡報使用。</div>
+        </div>
+      </label>
+      <label class="export-option">
+        <input type="radio" name="exportMode" value="editable" style="margin-top:4px;" />
+        <div>
+          <div style="font-weight:800;">保留切換器版本</div>
+          <div style="font-size:0.84rem; color:var(--text-muted);">以目前風格為預設開啟，但保留右上角齒輪與風格切換列供日後調整。</div>
+        </div>
+      </label>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;">
+        <button class="nav-btn" id="btnDownloadHtml" type="button" style="flex:1; justify-content:center; padding:10px 18px;">⬇ 下載獨立動態簡報 (.html)</button>
+        <button class="icon-btn" id="btnCopyHtml" type="button">📋 複製 HTML 程式碼</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const THEME_META = {
+      pop: { name: '普普風 (Pop Art)', fileSlug: '普普風' },
+      apple: { name: 'Apple 風 (極簡科技)', fileSlug: 'Apple風' },
+      swiss: { name: '瑞士風 (國際主義網格)', fileSlug: '瑞士風' },
+      sketch: { name: '手繪風 (筆記本插畫)', fileSlug: '手繪風' },
+      bauhaus: { name: '包浩斯風 (幾何現代)', fileSlug: '包浩斯風' },
+      scifi: { name: '科幻風 (Cyber HUD)', fileSlug: '科幻風' }
+    };
+
+    const SLIDES = [
+      {
+        title: '1151123主委及區經理會議摘要',
+        subtitle: '聚焦榮耀、精準佈局、團隊共贏（戰術教戰手冊）',
+        render: () => {
+          const r = 46;
+          return `
+          <div class="grid-1-2">
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div class="card anim-item" style="--stagger:1;">
+                <div class="card-title">🎯 核心聚焦 & 榮耀願景</div>
+                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                  <svg width="116" height="116" viewBox="0 0 120 120" style="flex-shrink:0;">
+                    <circle cx="60" cy="60" r="${r}" fill="none" stroke="rgba(128,128,128,0.18)" stroke-width="14"/>
+                    <g class="glory-orbit">
+                      <circle class="ring-progress" cx="60" cy="60" r="${r}" fill="none" stroke="var(--accent-1)" stroke-width="14"
+                        stroke-dasharray="90 205" stroke-dashoffset="289" data-target-offset="0" stroke-linecap="round"/>
+                      <circle class="ring-progress" cx="60" cy="60" r="${r}" fill="none" stroke="var(--accent-2)" stroke-width="14"
+                        stroke-dasharray="90 205" stroke-dashoffset="289" data-target-offset="-96" stroke-linecap="round"/>
+                      <circle class="ring-progress" cx="60" cy="60" r="${r}" fill="none" stroke="var(--accent-danger)" stroke-width="14"
+                        stroke-dasharray="90 205" stroke-dashoffset="289" data-target-offset="-192" stroke-linecap="round"/>
+                    </g>
+                    <text x="60" y="57" text-anchor="middle" fill="var(--text-main)" font-size="11.5" font-weight="900">聚焦榮耀</text>
+                    <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-weight="800">GLORY</text>
+                  </svg>
+                  <div style="flex:1; min-width:150px;">
+                    <div class="pill-item">🏆 榮耀共贏：設定卓越標杆</div>
+                    <div class="pill-item">🎯 精準佈局：優化資源配置</div>
+                    <div class="pill-item">🔗 戰略共識：統一行動指令</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card anim-item" style="--stagger:2;">
+                <div class="card-title">📊 戰術執行力儀表</div>
+                <div style="display:flex; align-items:center; justify-content:space-around; gap:10px; text-align:center;">
+                  <div><div style="font-size:1.6rem; font-weight:900; color:var(--accent-1);" data-count="95" data-suffix="%">0%</div><div style="font-size:0.82rem; color:var(--text-muted); font-weight:700;">戰略對齊</div></div>
+                  <div><div style="font-size:1.6rem; font-weight:900; color:var(--accent-2);" data-count="98" data-suffix="%">0%</div><div style="font-size:0.82rem; color:var(--text-muted); font-weight:700;">資源優化</div></div>
+                  <div><div style="font-size:1.6rem; font-weight:900; color:var(--accent-danger);" data-count="2" data-suffix="%">0%</div><div style="font-size:0.82rem; color:var(--text-muted); font-weight:700;">潛在風險</div></div>
+                </div>
+                <div style="margin-top:8px; font-size:0.85rem; color:var(--accent-danger); font-weight:700;">⚠ 風險提示：關注市場波動</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div class="card anim-item" style="--stagger:3;">
+                <div class="card-title">⚖️ 戰略對比矩陣</div>
+                <div class="grid-2">
+                  <div>
+                    <div style="font-weight:800; margin-bottom:6px; color:var(--accent-danger);">當前狀態</div>
+                    <div class="pill-item">⚠ 溝通障礙</div>
+                    <div class="pill-item">⚠ 資源分散</div>
+                    <div class="pill-item">⚠ 執行力不足</div>
+                  </div>
+                  <div>
+                    <div style="font-weight:800; margin-bottom:6px; color:var(--accent-success);">未來目標</div>
+                    <div class="pill-item">✔ 即時協同</div>
+                    <div class="pill-item">✔ 資源集中</div>
+                    <div class="pill-item">✔ 高效執行</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card anim-item" style="--stagger:4;">
+                <div class="card-title">🚀 執行路徑與關鍵行動</div>
+                <div class="grid-3" style="gap:10px; text-align:center;">
+                  <div class="pill-item" style="flex-direction:column; margin:0;"><strong>第一步：聚焦</strong><span style="font-size:0.82rem; color:var(--text-muted);">識別核心增長點</span></div>
+                  <div class="pill-item" style="flex-direction:column; margin:0;"><strong>第二步：佈局</strong><span style="font-size:0.82rem; color:var(--text-muted);">部署資源與計畫</span></div>
+                  <div class="pill-item" style="flex-direction:column; margin:0;"><strong>第三步：衝刺</strong><span style="font-size:0.82rem; color:var(--text-muted);">快速行動與交付</span></div>
+                </div>
+                <div class="banner-callout danger" style="margin-top:10px; padding:10px 14px; font-size:0.9rem;">
+                  行動指令：12月31日前完成關鍵任務
+                </div>
+              </div>
+            </div>
+          </div>
+          `;
+        }
+      },
+      {
+        title: '全國頂尖標杆：分組與全國排名雙料前段班',
+        subtitle: '頂尖實力驗證，距離年度巔峰僅一步之遙',
+        render: () => `
+          <div class="grid-2">
+            <div class="card anim-item" style="--stagger:1; text-align:center; padding:42px 24px;">
+              <div class="kpi-huge" data-prefix="#" data-count="1">#0</div>
+              <div class="kpi-label">分組排名第一</div>
+              <div style="margin-top:6px; font-weight:700; color:var(--text-accent);">（穩居榜首）</div>
+            </div>
+            <div class="card anim-item" style="--stagger:2; text-align:center; padding:42px 24px;">
+              <div class="kpi-huge" data-prefix="#" data-count="2" style="color:var(--accent-2);">#0</div>
+              <div class="kpi-label">全國排名第二</div>
+              <div style="margin-top:6px; font-weight:700; color:var(--text-muted);">全國頂尖競逐</div>
+            </div>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:3; text-align:center; font-size:1.12rem;">
+            從全國 <strong>260 個通訊處</strong>中脫穎而出，我們的業績表現已達頂尖水準。
+          </div>
+        `
+      },
+      {
+        title: '解鎖最終榮耀：東方文華忘年會團隊加碼獎',
+        subtitle: '每人 3,000 元活動補助 — 三項指標僅剩最後 1.9% 缺口！',
+        render: () => {
+          const ring = (pct, color, label, sub, stagger, isWarn) => {
+            const r = 48, c = 2 * Math.PI * r;
+            const dash = c - (Math.min(pct, 100) / 100) * c;
+            return `
+              <div class="card anim-item ${isWarn ? 'pulse-alert' : ''}" style="--stagger:${stagger}; text-align:center;">
+                <svg width="128" height="128" viewBox="0 0 120 120" style="margin:0 auto 10px; display:block;">
+                  <circle cx="60" cy="60" r="${r}" fill="none" stroke="rgba(128,128,128,0.22)" stroke-width="11"/>
+                  <circle class="ring-progress" cx="60" cy="60" r="${r}" fill="none" stroke="${color}" stroke-width="11"
+                    stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-target-offset="${dash}"
+                    transform="rotate(-90 60 60)"/>
+                  <text x="60" y="65" text-anchor="middle" fill="var(--text-main)" font-size="20" font-weight="900">${pct}%</text>
+                </svg>
+                <div style="font-weight:800; font-size:1.02rem; margin-bottom:4px;">${label}</div>
+                <div style="font-size:0.88rem; font-weight:700; color:${isWarn ? 'var(--accent-danger)' : 'var(--accent-success)'};">${sub}</div>
+              </div>
+            `;
+          };
+          return `
+            <div class="grid-3">
+              ${ring(100, 'var(--accent-success)', '通訊處達聯會參加資格', '達成進度：100%', 1, false)}
+              ${ring(139, 'var(--accent-1)', '11 月業績達成率 100% 目標', '目前進度：139% - 超標達成', 2, false)}
+              ${ring(78.1, 'var(--accent-danger)', '11 月「投保通」使用率達 80%', '目前卡關：78.1%（差 1.9%）', 3, true)}
+            </div>
+            <div class="banner-callout danger anim-item" style="--stagger:4;">
+              🚨 最後的防線：即日起全力推動電子『投保通』。紙本件將拉低整體活動率，請務必以數位送件守住這最後 <strong>1.9%</strong> 的差距！
+            </div>
+          `;
+        }
+      },
+      {
+        title: '市場劇變下的財富守護者：傳統保單的底層價值',
+        subtitle: '在極端波動行情中，保險是守住客戶資產與底氣的最後壁壘',
+        render: () => `
+          <div class="grid-2">
+            <div class="card anim-item" style="--stagger:1;">
+              <div class="card-title" style="color:var(--accent-danger);">📉 股市動盪期 / 財富風險暴露</div>
+              <div class="pill-item" style="align-items:flex-start;">
+                <div><strong>近期現象：</strong>股市劇烈波段、融資斷頭壓力。</div>
+              </div>
+              <div class="pill-item" style="align-items:flex-start;">
+                <div><strong>真實案例：</strong>宜蘭大型民宿老闆因股市虧損，欲解約外孫女的保單以換取現金流。</div>
+              </div>
+            </div>
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="card-title" style="color:var(--accent-success);">🛡️ 傳統保單 / 資產防禦壁壘</div>
+              <div class="pill-item" style="align-items:flex-start;">
+                <div><strong>核心防禦：</strong>守住底層資產，拒絕非理性解約。</div>
+              </div>
+              <div class="pill-item" style="align-items:flex-start;">
+                <div><strong>長期確定性：</strong>在極端行情中提供穩定底氣，不受短期融資追繳影響。</div>
+              </div>
+            </div>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:3; text-align:center; font-size:1.1rem;">
+            「保險不是幫客戶賺大錢，而是在極端行情中，幫客戶守住資產與底氣。」
+          </div>
+        `
+      },
+      {
+        title: '高齡化市場突圍利器：SUPA 專案額度升級（100萬 ➔ 300萬）',
+        subtitle: '解決高齡長者「有資產但缺現金」的緊急醫療痛點',
+        render: () => `
+          <div class="grid-2" style="align-items:stretch;">
+            <div class="card anim-item" style="--stagger:1; display:flex; flex-direction:column; justify-content:center;">
+              <div style="font-size:0.85rem; font-weight:800; color:var(--text-muted);">升級前額度</div>
+              <div class="kpi-huge" data-count="100" data-suffix="萬" style="color:var(--text-muted); font-size:3.2rem;">0萬</div>
+              <div class="bar-track">
+                <div class="bar-fill" data-target-width="33%" style="background:var(--text-muted);"></div>
+              </div>
+              <p style="line-height:1.65; font-weight:600;">
+                <strong>客戶無感：</strong>多數長者自認已有基礎保障，缺乏加保動力。
+              </p>
+            </div>
+            <div class="card anim-item" style="--stagger:2; border-width:3px;">
+              <div style="font-size:0.85rem; font-weight:800; color:var(--accent-1);">🚀 專案升級後額度</div>
+              <div class="kpi-huge" data-count="300" data-suffix="萬" style="font-size:3.4rem;">0萬</div>
+              <div class="bar-track">
+                <div class="bar-fill" data-target-width="100%" style="background:var(--accent-1);"></div>
+              </div>
+              <div class="pill-item">🎯 <strong>痛點精準打擊</strong></div>
+              <div class="pill-item">🦴 <strong>關鍵數據：</strong>骨折理賠 35% ➔ 直接對應 <strong>100 萬理賠金</strong></div>
+              <div class="pill-item">🚆 <strong>涵蓋範圍：</strong>擴大涵蓋大眾運輸與跌倒意外（<strong>增加 50% 效益</strong>）</div>
+            </div>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:3;">
+            高齡長者往往『有資產但缺現金』（如房產、套牢股票），意外發生時無法立即變現。高額度 SUPA 是保護緊急醫療現金流的最佳防線。
+          </div>
+        `
+      },
+      {
+        title: '產險防護網：拒絕預設立場，落實專業免責',
+        subtitle: '真實案例：69歲客戶駕駛 15 年老車，於高速公路追撞 Tesla 與 Benz',
+        render: () => `
+          <div class="card anim-item" style="--stagger:1; text-align:center; padding:12px;">
+            <strong style="font-size:1.06rem;">⚠ 觸發事件：發生重大追撞事故</strong>
+          </div>
+          <div class="grid-2">
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="card-title" style="color:var(--accent-danger);">路徑 A：只有第三責任險</div>
+              <div class="pill-item">❌ 無法理賠自身車損（約七、八萬）</div>
+              <div class="pill-item">💬 家屬質疑：「為何當初沒規劃車體險？」</div>
+            </div>
+            <div class="card anim-item" style="--stagger:3;">
+              <div class="card-title" style="color:var(--accent-success);">路徑 B：具備完整紀錄</div>
+              <div class="pill-item">📱 顧問出示 LINE 對話紀錄</div>
+              <div class="pill-item">✔ 證明當初已盡告知義務，因車齡問題或客戶拒絕而未保 ➔ <strong>專業免責</strong></div>
+            </div>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:4;">
+            無論車齡多舊（10年內皆可保車體險），第三責任險與車體險務必一併報價！透過 LINE 留下建議紀錄，保護客戶也保護你自己。
+          </div>
+        `
+      },
+      {
+        title: '領導者的體悟：健康風險沒有豁免權',
+        subtitle: '醫療通膨與突發風險不分年齡，充沛理賠金是維持醫療尊嚴的唯一依靠',
+        render: () => `
+          <div class="grid-3">
+            <div class="card anim-item" style="--stagger:1;">
+              <div class="card-title">🏥 真實場景</div>
+              <p style="line-height:1.7; font-size:0.95rem;">台大醫院候診區爆滿。生病絕對不是長者的專利，各年齡層皆面臨突發健康風險。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="card-title">💸 檢查成本</div>
+              <p style="line-height:1.7; font-size:0.95rem;">醫療通膨真實存在。高階影像檢查（如頭部 MRI、CT）一次自費動輒十幾萬元，且需漫長排隊。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:3;">
+              <div class="card-title">🧠 身心考驗</div>
+              <p style="line-height:1.7; font-size:0.95rem;">檢查過程煎熬。單一部位 MRI 需絕對靜止平躺一個半小時，伴隨極大身心壓力。</p>
+            </div>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:4; text-align:center;">
+            定期盤點自身與客戶的健康醫療險缺口。當風險來臨時，充沛的理賠金是維持醫療尊嚴的唯一依靠。
+          </div>
+        `
+      },
+      {
+        title: '組織協作升級：通訊處教育訓練排程守則',
+        subtitle: '守護常規晨會節奏，提前規劃確保學習品質',
+        render: () => `
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <div class="card anim-item" style="--stagger:1;">
+              <div class="card-title">1️⃣ 晨會主軸</div>
+              <p style="font-size:0.98rem; line-height:1.6;">嚴格遵守總公司規範比率排課（<strong>增員課程 2 堂/月，產險課程 1 堂/月</strong>）。<span style="color:var(--accent-danger); font-weight:700;">不可任意壓縮常規晨會時間。</span></p>
+            </div>
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="card-title" style="color:var(--accent-danger);">2️⃣ 新商品宣導</div>
+              <p style="font-size:0.98rem; line-height:1.6;">請各商品主委「<strong>提前一個月</strong>」提出排程需求，<span style="color:var(--accent-danger); font-weight:700;">拒絕臨時安插</span>（如要求晨會後加時 20 分鐘）。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:3;">
+              <div class="card-title" style="color:var(--accent-2);">3️⃣ 條款深讀 / 專案加課</div>
+              <p style="font-size:0.98rem; line-height:1.6;">若需進行商品條款深度解析，請另闢專屬時段（如 <strong>10:00 - 11:00</strong>）或善用「<strong>視訊會議 (Video Conference)</strong>」，確保學習品質且不干擾日常節奏。</p>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: '數位化轉型陣痛期：出勤 QR Code 簽到新制',
+        subtitle: '配合總公司 11/1 上線之無紙化政策，全面廢除紙本點名',
+        render: () => `
+          <div class="grid-3">
+            <div class="card anim-item" style="--stagger:1;">
+              <div class="kpi-huge" style="font-size:2.4rem;">01</div>
+              <div class="card-title">主委產出</div>
+              <p style="font-size:0.95rem; line-height:1.65;">教育主委每日客製化產出專屬 QR Code（系統無法自動派發，<strong style="color:var(--accent-danger);">需人工設定</strong>）。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="kpi-huge" style="font-size:2.4rem;">02</div>
+              <div class="card-title">群組公告</div>
+              <p style="font-size:0.95rem; line-height:1.65;">每日課程 QR Code 將發佈於<strong>教務 LINE 群組</strong>。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:3;">
+              <div class="kpi-huge" style="font-size:2.4rem;">03</div>
+              <div class="card-title">數位簽到</div>
+              <p style="font-size:0.95rem; line-height:1.65;">同仁請落實<strong>每日掃碼數位簽到</strong>，完成無紙化出勤紀錄。</p>
+            </div>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:4; text-align:center;">
+            🤝 體諒教務主委每日深夜/清晨產出 QR Code 的辛勞，請全體同仁主動配合掃碼，勿要求紙本通融。
+          </div>
+        `
+      },
+      {
+        title: '12/24 歲末聯歡活動佈達（演講與聚餐）',
+        subtitle: '報名現況、收費時程與演講廳座位規範說明',
+        render: () => `
+          <div class="grid-2">
+            <div class="card anim-item" style="--stagger:1;">
+              <div class="card-title">👥 進度與規模</div>
+              <p style="font-size:1rem; line-height:1.65;">目前報名人數 <strong style="color:var(--accent-1); font-size:1.25rem;" data-count="41" data-suffix=" 人">0 人</strong>（預計開設 <strong>4 桌</strong>，歡迎同仁踴躍湊齊人數）。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="card-title">📅 收費時程</div>
+              <p style="font-size:1rem; line-height:1.65;">預計於 <strong>12 月第一週</strong>開始進行費用收繳，請留意群組公告金額。</p>
+            </div>
+          </div>
+          <div class="card anim-item" style="--stagger:3;">
+            <div class="card-title">💺 演講廳座位規則</div>
+            <div class="grid-2" style="align-items:center;">
+              <div>
+                <div class="pill-item"><strong>Zone A 保留席：</strong>A7、A8、A9（前排保留給特定主管與行動不便同仁）。</div>
+                <div class="pill-item"><strong>Zone B 一般席：</strong>採「先到先選位 (First-come, first-served)」，無需抽籤，給予提早入席者選擇權。</div>
+              </div>
+              <div style="display:flex; gap:12px; align-items:center; justify-content:center; padding:12px; border:var(--border-card); border-radius:var(--radius-card); background:var(--bg-stage);">
+                <div style="display:flex; gap:6px;">
+                  <span style="padding:10px 12px; background:var(--accent-2); color:#fff; font-weight:800; border-radius:6px;">A7</span>
+                  <span style="padding:10px 12px; background:var(--accent-2); color:#fff; font-weight:800; border-radius:6px;">A8</span>
+                  <span style="padding:10px 12px; background:var(--accent-2); color:#fff; font-weight:800; border-radius:6px;">A9</span>
+                </div>
+                <span style="font-weight:800; color:var(--text-muted);">|</span>
+                <div style="font-size:0.86rem; font-weight:700; color:var(--text-muted);">Zone B 一般席<br/>（先到先選位）</div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: '業績核實提醒：不要讓你的努力憑空消失',
+        subtitle: '真實痛點：報帳業績（例如 50 萬）不等於核保業績（最終僅核過 25 萬）',
+        render: () => `
+          <div class="grid-2">
+            <div class="card anim-item" style="--stagger:1;">
+              <div class="card-title" style="color:var(--accent-danger);">❌ 你以為的業績 — 報帳</div>
+              <p style="font-size:1rem; line-height:1.7; margin-bottom:10px;">僅填寫申請、送出意向，尚未走完行政流程。</p>
+              <div style="font-weight:800; color:var(--accent-danger);">不列入最終排名與獎勵！</div>
+            </div>
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="card-title" style="color:var(--accent-success);">✅ 系統認列的業績 — 核保</div>
+              <p style="font-size:1rem; line-height:1.7; margin-bottom:10px;">照會解除、保費扣款成功、正式發單。</p>
+              <div style="font-weight:800; color:var(--accent-success);">這才是真正的戰果！</div>
+            </div>
+          </div>
+          <div class="banner-callout danger anim-item" style="--stagger:3;">
+            下班後請自主登入系統追蹤核保狀態。如有跨月業績歸屬問題，請立刻與行政主管（<strong>俊國</strong>）進行人工對齊確認！
+          </div>
+        `
+      },
+      {
+        title: '2026 年終致勝鐵三角 (The Winning Formula)',
+        subtitle: '三大戰術支柱並進，拿下東方文華加碼獎，全處頂峰相見！',
+        render: () => `
+          <div class="grid-3">
+            <div class="card anim-item" style="--stagger:1;">
+              <div class="card-title">🛡️ 商品防禦</div>
+              <p style="font-size:0.95rem; line-height:1.7;">善用傳統壽險穩定客戶資產，配置升級版 SPA 與完整產險車體險填補防護缺口。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:2;">
+              <div class="card-title" style="color:var(--accent-2);">📱 數位紀律</div>
+              <p style="font-size:0.95rem; line-height:1.7;">100% 啟用「投保通」衝刺活動率，落實 QR Code 每日無紙化簽到，減輕後勤負擔。</p>
+            </div>
+            <div class="card anim-item" style="--stagger:3;">
+              <div class="card-title" style="color:var(--accent-success);">🏆 團隊共榮</div>
+              <p style="font-size:0.95rem; line-height:1.7;">尊重常規排課制度，全力衝刺 MDRT 人數，共同解鎖「高峯通訊處」榮耀。</p>
+            </div>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:4; text-align:center; font-size:1.15rem;">
+            ⛰ 目標核心：拿下東方文華加碼獎，全處頂峰相見！
+          </div>
+        `
+      },
+      {
+        title: '四冠王典範與運動家精神 (The Role Model)',
+        subtitle: '預告週四新高峯四冠王（三冠一季，包含 FYC 第一）同仁的結業分享',
+        render: () => `
+          <div class="card anim-item" style="--stagger:1; padding:32px 26px; text-align:center;">
+            <div style="font-size:2.4rem; margin-bottom:10px;">🏆</div>
+            <blockquote style="font-size:clamp(1.12rem, 2.2vw, 1.52rem); font-weight:800; line-height:1.65; max-width:820px; margin:0 auto;">
+              「保持運動家精神。當別人拿第一名時，給予最熱烈的掌聲。<br/>
+              <span style="color:var(--text-accent);">今天你為第一名鼓掌，明天你就有機會成為下一個第一名。</span>」
+            </blockquote>
+          </div>
+          <div class="banner-callout anim-item" style="--stagger:2; text-align:center;">
+            頂尖的團隊不僅在乎個人的業績，更在乎<strong>彼此成就的格局</strong>。
+          </div>
+        `
+      },
+      {
+        title: '只差一點點，我們就是傳奇 (We are inches away from legendary)',
+        subtitle: '最後衝刺三項即刻行動清單',
+        render: () => `
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="card anim-item" style="--stagger:1; display:flex; align-items:center; gap:14px;">
+              <span style="font-size:1.5rem;">☑</span>
+              <div><strong>全面啟用投保通：</strong>立刻停止紙本送件，跨過 80% 的最後門檻。</div>
+            </div>
+            <div class="card anim-item" style="--stagger:2; display:flex; align-items:center; gap:14px;">
+              <span style="font-size:1.5rem;">☑</span>
+              <div><strong>盤點客戶缺口：</strong>主動出擊，檢視高齡客戶醫療險與產險車體險缺口。</div>
+            </div>
+            <div class="card anim-item" style="--stagger:3; display:flex; align-items:center; gap:14px;">
+              <span style="font-size:1.5rem;">☑</span>
+              <div><strong>追蹤核保進度：</strong>緊盯未承保案件，確保每一分努力都轉化為實質業績。</div>
+            </div>
+          </div>
+          <div class="banner-callout anim-item pulse-alert" style="--stagger:4; text-align:center; font-size:1.28rem;">
+            🔥 最後 30 天，我們東方文華見！
+          </div>
+        `
+      }
+    ];
+
+    let currentIndex = 0;
+
+    const stageEl = document.getElementById('slideStage');
+    const counterEl = document.getElementById('pageCounter');
+
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    const btnGearExport = document.getElementById('btnGearExport');
+    const pwdModal = document.getElementById('pwdModal');
+    const pwdForm = document.getElementById('pwdForm');
+    const pwdInput = document.getElementById('pwdInput');
+    const pwdError = document.getElementById('pwdError');
+    const exportModal = document.getElementById('exportModal');
+    const exportThemeNameEl = document.getElementById('exportThemeName');
+    const toastEl = document.getElementById('toast');
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toastEl.classList.remove('show'), 2600);
+    }
+
+    function animateCountersAndRings() {
+      stageEl.querySelectorAll('[data-count]').forEach(el => {
+        const target = parseFloat(el.dataset.count);
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const duration = 1000;
+        const start = performance.now();
+        function step(now) {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const val = Math.round(target * eased);
+          el.textContent = `${prefix}${val}${suffix}`;
+          if (p < 1) requestAnimationFrame(step);
+          else el.textContent = `${prefix}${target}${suffix}`;
+        }
+        requestAnimationFrame(step);
+      });
+
+      requestAnimationFrame(() => {
+        stageEl.querySelectorAll('.ring-progress').forEach(circle => {
+          const targetOffset = circle.getAttribute('data-target-offset');
+          setTimeout(() => {
+            circle.style.strokeDashoffset = targetOffset;
+          }, 160);
+        });
+        stageEl.querySelectorAll('.bar-fill').forEach(bar => {
+          const targetWidth = bar.getAttribute('data-target-width');
+          setTimeout(() => {
+            bar.style.width = targetWidth;
+          }, 200);
+        });
+      });
+    }
+
+    function renderSlide(idx) {
+      currentIndex = Math.max(0, Math.min(SLIDES.length - 1, idx));
+      const s = SLIDES[currentIndex];
+      stageEl.classList.remove('is-animating');
+      stageEl.innerHTML = `
+        <div class="slide-inner">
+          <div class="slide-header anim-item" style="--stagger:0;">
+            <h1 class="slide-title">${s.title}</h1>
+            <p class="slide-subtitle">${s.subtitle}</p>
+          </div>
+          <div class="slide-body">${s.render()}</div>
+        </div>
+      `;
+      void stageEl.offsetWidth;
+      stageEl.classList.add('is-animating');
+
+      counterEl.textContent = `${String(currentIndex + 1).padStart(2, '0')} / ${SLIDES.length}`;
+
+
+      animateCountersAndRings();
+    }
+
+    function setTheme(themeKey) {
+      if (!THEME_META[themeKey]) return;
+      document.documentElement.setAttribute('data-theme', themeKey);
+      document.querySelectorAll('.style-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.setTheme === themeKey);
+      });
+      exportThemeNameEl.textContent = THEME_META[themeKey].name;
+      renderSlide(currentIndex);
+    }
+
+    function buildStandaloneHtml(mode) {
+      const themeKey = document.documentElement.getAttribute('data-theme') || 'pop';
+      const clone = document.documentElement.cloneNode(true);
+      clone.setAttribute('data-theme', themeKey);
+      if (mode === 'locked') {
+        clone.setAttribute('data-locked', 'true');
+      } else {
+        clone.removeAttribute('data-locked');
+      }
+      const clonedExportModal = clone.querySelector('#exportModal');
+      const clonedPwdModal = clone.querySelector('#pwdModal');
+      const clonedStage = clone.querySelector('#slideStage');
+      if (clonedExportModal) clonedExportModal.classList.remove('open');
+      if (clonedPwdModal) clonedPwdModal.classList.remove('open');
+      if (clonedStage) clonedStage.innerHTML = '';
+      return '<!DOCTYPE html>\n' + clone.outerHTML;
+    }
+
+    document.getElementById('styleSwitcher').addEventListener('click', e => {
+      const btn = e.target.closest('[data-set-theme]');
+      if (btn) setTheme(btn.dataset.setTheme);
+    });
+
+
+
+    // Gear button opens password prompt (no hint)
+    btnGearExport.addEventListener('click', () => {
+      pwdInput.value = '';
+      pwdError.textContent = '';
+      pwdModal.classList.add('open');
+      setTimeout(() => pwdInput.focus(), 60);
+    });
+    document.getElementById('btnClosePwd').addEventListener('click', () => pwdModal.classList.remove('open'));
+
+    pwdForm.addEventListener('submit', e => {
+      e.preventDefault();
+      if (pwdInput.value === '362963') {
+        pwdModal.classList.remove('open');
+        const themeKey = document.documentElement.getAttribute('data-theme') || 'pop';
+        exportThemeNameEl.textContent = THEME_META[themeKey].name;
+        exportModal.classList.add('open');
+      } else {
+        pwdError.textContent = '密碼錯誤';
+        pwdInput.select();
+      }
+    });
+
+    document.getElementById('btnCloseExport').addEventListener('click', () => exportModal.classList.remove('open'));
+
+    document.getElementById('btnDownloadHtml').addEventListener('click', () => {
+      const mode = document.querySelector('input[name="exportMode"]:checked').value;
+      const themeKey = document.documentElement.getAttribute('data-theme') || 'pop';
+      const html = buildStandaloneHtml(mode);
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `1151123主委及區經理會議摘要_${THEME_META[themeKey].fileSlug}.html`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      exportModal.classList.remove('open');
+      showToast(`已產生並下載「${THEME_META[themeKey].fileSlug}」動態簡報！`);
+    });
+
+    document.getElementById('btnCopyHtml').addEventListener('click', () => {
+      const mode = document.querySelector('input[name="exportMode"]:checked').value;
+      const html = buildStandaloneHtml(mode);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(html).then(() => showToast('已複製完整 HTML 程式碼！')).catch(() => fallbackCopy(html));
+      } else {
+        fallbackCopy(html);
+      }
+    });
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('已複製完整 HTML 程式碼！');
+      } catch (err) {
+        showToast('複製失敗，請改用下載按鈕。');
+      }
+      ta.remove();
+    }
+
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => showToast('目前環境不支援全螢幕切換'));
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    // Touch swipe navigation anywhere on screen for mobile/tablet
+    let touchStartX = 0;
+    let touchStartY = 0;
+    document.addEventListener('touchstart', e => {
+      if (pwdModal.classList.contains('open') || exportModal.classList.contains('open')) return;
+      if (e.target.closest('.style-switcher')) return;
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    document.addEventListener('touchend', e => {
+      if (pwdModal.classList.contains('open') || exportModal.classList.contains('open')) return;
+      if (e.target.closest('.style-switcher')) return;
+      const dx = e.changedTouches[0].screenX - touchStartX;
+      const dy = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        if (dx < 0 && currentIndex < SLIDES.length - 1) renderSlide(currentIndex + 1);
+        else if (dx > 0 && currentIndex > 0) renderSlide(currentIndex - 1);
+      }
+    }, { passive: true });
+
+    document.addEventListener('keydown', e => {
+      if (pwdModal.classList.contains('open')) {
+        if (e.key === 'Escape') pwdModal.classList.remove('open');
+        return;
+      }
+      if (exportModal.classList.contains('open')) {
+        if (e.key === 'Escape') exportModal.classList.remove('open');
+        return;
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        if (currentIndex < SLIDES.length - 1) renderSlide(currentIndex + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentIndex > 0) renderSlide(currentIndex - 1);
+      }
+    });
+
+    // Init
+    const initialTheme = document.documentElement.getAttribute('data-theme') || 'pop';
+    setTheme(initialTheme);
+  </script>
+</body>
+</html>
