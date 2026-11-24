@@ -699,8 +699,7 @@
     }
 
     .glory-orbit {
-      transform-origin: 60px 60px;
-      animation: animSlowSpin 18s linear infinite;
+      /* rotation animated by GSAP with svgOrigin 60 60 */
     }
 
     /* =====================================================================
@@ -1782,8 +1781,8 @@
       if (idx === 0) {
         const orbit = stageEl.querySelector('.glory-orbit');
         if (orbit) {
-          tl.fromTo(orbit, { scale: 0.72, rotation: -90, transformOrigin: '60px 60px' }, {
-            scale: 1, rotation: 0, duration: 0.9, ease: 'power3.out'
+          tl.fromTo(orbit, { scale: 0.8, rotation: -90, svgOrigin: '60 60' }, {
+            scale: 1, rotation: 0, duration: 0.9, ease: 'power3.out', svgOrigin: '60 60'
           }, 0.25);
         }
         const steps = stageEl.querySelectorAll('.grid-3 .pill-item');
@@ -1827,6 +1826,16 @@
 
     function startAmbientAndParallax() {
       clearAmbientAndParallax();
+      const orbit = stageEl.querySelector('.glory-orbit');
+      if (orbit) {
+        ambientTweens.push(gsap.to(orbit, {
+          rotation: '+=360',
+          duration: 18,
+          repeat: -1,
+          ease: 'none',
+          svgOrigin: '60 60'
+        }));
+      }
       const kpis = stageEl.querySelectorAll('.kpi-huge');
       if (kpis.length) {
         ambientTweens.push(gsap.to(kpis, {
