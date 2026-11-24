@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>陳心盈車禍損害賠償評估暨調解分析報告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Utilitarian · Answer-first compact hero · Verdict → Medical 6-col table → Total Claims & Legal Basis → Solatium & Judgments → Action Checklist → Sources · IBM Plex Sans + Noto Sans TC + IBM Plex Mono · Crisp White #FFFFFF + Cobalt #1D4ED8 + Teal #0F766E · 0px radius · Giant total range numeral · Stacked bar chart */
+    :root {
+      --paper: #FFFFFF;
+      --ink: #111827;
+      --ink2: #374151;
+      --mute: #4B5563;
+      --hair: #E5E7EB;
+      --accent: #1D4ED8;
+      --accent-text: #1E3A8A;
+      --accent-2: #0F766E;
+      --accent-2-text: #115E59;
+      --warn-text: #991B1B;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 68px clamp(24px, 10.4vw, 112px) 92px;
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.65;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .col-full {
+      grid-column: 1 / -1;
+    }
+
+    .col-left {
+      grid-column: 1 / 5;
+    }
+
+    .col-right {
+      grid-column: 5 / -1;
+    }
+
+    .measure {
+      max-width: 68ch;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+
+    .deck {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink2);
+      max-width: 62ch;
+    }
+
+    .hero-split {
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 2px solid var(--ink);
+      align-items: end;
+    }
+
+    .hero-num {
+      font-family: "IBM Plex Mono", "Noto Sans TC", monospace;
+      font-size: clamp(22px, 2.5vw, 32px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--accent-text);
+      overflow-wrap: break-word;
+    }
+
+    .hero-sub {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--mute);
+    }
+
+    .sec {
+      margin-top: 68px;
+      padding-top: 28px;
+      border-top: 1px solid var(--hair);
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(22px, 2.4vw, 28px);
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    p {
+      margin: 0 0 16px;
+      color: var(--ink2);
+    }
+
+    a {
+      color: var(--accent-text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    a:hover {
+      color: var(--ink);
+    }
+
+    .num, .mono {
+      font-family: "IBM Plex Mono", "Noto Sans TC", monospace;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .warn {
+      color: var(--warn-text);
+      font-weight: 600;
+    }
+
+    /* Open 3-column strip */
+    .strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--hair);
+    }
+
+    .strip-item h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      color: var(--mute);
+      font-weight: 600;
+    }
+
+    .strip-val {
+      font-family: "IBM Plex Mono", "Noto Sans TC", monospace;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .strip-note {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: var(--ink2);
+    }
+
+    /* Open Tables (max 3) */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    thead th {
+      text-align: left;
+      font-family: "IBM Plex Mono", "Noto Sans TC", monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--mute);
+      padding: 12px 12px 12px 0;
+      border-bottom: 2px solid var(--ink);
+      white-space: nowrap;
+    }
+
+    thead th.r, tbody td.r, tfoot td.r {
+      text-align: right;
+      padding-right: 12px;
+    }
+
+    tbody td {
+      padding: 12px 12px 12px 0;
+      border-bottom: 1px solid var(--hair);
+      vertical-align: top;
+      color: var(--ink2);
+    }
+
+    tfoot td {
+      padding: 14px 12px 14px 0;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      font-weight: 700;
+      color: var(--ink);
+      vertical-align: top;
+    }
+
+    .subhead-row td {
+      padding-top: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink2);
+    }
+
+    /* Pull quote */
+    blockquote.pull {
+      margin: 32px 0;
+      padding: 4px 0 4px 24px;
+      border-left: 3px solid var(--accent);
+      font-size: clamp(20px, 2.2vw, 26px);
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--ink);
+      max-width: 54ch;
+    }
+
+    /* Figures */
+    figure {
+      margin: 28px 0 8px;
+    }
+
+    figure .fig-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    figcaption {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--mute);
+    }
+
+    /* Lists */
+    ol.clean, ul.clean {
+      margin: 12px 0 0;
+      padding-left: 22px;
+      color: var(--ink2);
+    }
+
+    ol.clean li, ul.clean li {
+      margin-bottom: 10px;
+    }
+
+    .sources-list {
+      margin: 16px 0 0;
+      padding-left: 22px;
+      font-size: 14px;
+      color: var(--ink2);
+    }
+
+    .sources-list li {
+      margin-bottom: 8px;
+    }
+
+
+    /* Expandable case summary ("說明" button, pure CSS/HTML) */
+    details.case-detail {
+      margin-top: 8px;
+    }
+
+    details.case-detail summary.btn-note {
+      display: inline-block;
+      padding: 2px 10px;
+      border: 1px solid var(--accent);
+      color: var(--accent-text);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+
+    details.case-detail summary.btn-note::-webkit-details-marker {
+      display: none;
+    }
+
+    details.case-detail[open] summary.btn-note {
+      background-color: var(--accent);
+      color: #FFFFFF;
+    }
+
+    details.case-detail .case-summary {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-left: 2px solid var(--accent);
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink2);
+      min-width: 260px;
+    }
+
+    details.case-detail .case-summary div {
+      margin-bottom: 4px;
+    }
+
+    details.case-detail .case-summary div:last-child {
+      margin-bottom: 0;
+    }
+
+
+    /* Highlight classes inside judgment summaries */
+    mark.hl-cervical {
+      background-color: #FEF08A;
+      color: #111827;
+      padding: 1px 4px;
+      font-weight: 600;
+    }
+
+    span.hl-award {
+      background-color: #DBEAFE;
+      color: #1E3A8A;
+      padding: 1px 4px;
+      font-weight: 700;
+    }
+
+    span.hl-fault {
+      background-color: #CCFBF1;
+      color: #115E59;
+      padding: 1px 4px;
+      font-weight: 600;
+    }
+
+    span.hl-impact {
+      background-color: #FEE2E2;
+      color: #991B1B;
+      padding: 1px 4px;
+      font-weight: 600;
+    }
+
+
+    /* Report text color emphasis & highlighter pen for critical alerts */
+    .pt-blue {
+      color: #1E3A8A;
+      font-weight: 700;
+    }
+
+    .pt-teal {
+      color: #115E59;
+      font-weight: 600;
+    }
+
+    .pt-red {
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    mark.hl-pen {
+      background: linear-gradient(180deg, transparent 38%, #FEF08A 38%, #FEF08A 94%, transparent 94%);
+      color: #111827;
+      padding: 0 3px;
+      font-weight: 700;
+    }
+
+
+    .strip-item.frame-blue {
+      border: 2px solid #1D4ED8;
+      padding: 16px;
+    }
+
+    .strip-item.frame-green {
+      border: 2px solid #15803D;
+      padding: 16px;
+    }
+
+    .strip-item.frame-orange {
+      border: 2px solid #EA580C;
+      padding: 16px;
+    }
+
+    @media (max-width: 860px) {
+      .col-left, .col-right {
+        grid-column: 1 / -1;
+      }
+      .strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        padding: 16px 24px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .hero-num {
+        font-size: 24px;
+      }
+      .sec {
+        margin-top: 36px;
+        padding-top: 18px;
+      }
+      tr {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="grid">
+    <div class="col-full">
+      <h1>無肇責頸椎傷勢總求償上看 151.9 萬元，手術估價與醫囑佐證為談判關鍵</h1>
+      <p class="deck">被害人陳心盈（45 歲，無肇事責任）經亞東紀念醫院診斷為<span class="pt-teal">頸椎第 5-6、6-7 節椎間盤突出併椎管狹窄及中心脊髓症候群</span>。本報告依現有診斷證明書、醫療收據筆記及對話紀錄（截至 2026 年 11 月 24 日），彙整醫療明細、全案法定求償項目、精神慰撫金判決行情及證據補強清單。</p>
+    </div>
+
+    <div class="col-full grid hero-split">
+      <div class="col-left">
+        <div class="hero-num">50.3萬–151.9萬</div>
+        <div class="hero-sub">依是否接受頸椎手術與健保給付結果分級（新臺幣）</div>
+      </div>
+      <div class="col-right measure">
+        <p>因陳心盈在本起交通事故中<mark class="hl-pen">無肇事責任（0% 過失）</mark>，依<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=184" target="_blank" rel="noopener noreferrer">民法第 184 條</a>及<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=191-2" target="_blank" rel="noopener noreferrer">第 191 條之 2</a>，<span class="pt-teal">對方應負 100% 賠償責任</span>。若未動手術，總求償合理區間約 <span class="pt-blue">50.3 萬至 60.9 萬元</span>；若確定植入 2 個頸椎活動支架且未獲健保給付，總求償金額將提升至 <span class="pt-blue">121.3 萬至 151.9 萬元</span>（含精神慰撫金建議區間）。</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="sec grid">
+    <div class="col-full">
+      <h2>醫療費用支出明細與預估（含健保點數及自費金額）</h2>
+      <p class="measure">依建議至少 6 欄格式編列，將已發生醫療費與後續預估治療分列呈現，並標註目前收據與診斷書之間待核對的數字落差。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>就診日期／期間</th>
+              <th>醫院名稱</th>
+              <th>科別</th>
+              <th>就診項目</th>
+              <th class="r">健保點數</th>
+              <th class="r">自費金額（元）</th>
+              <th>備註與佐證狀態</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="subhead-row">
+              <td colspan="7">一、已發生醫療費用（依筆記與診斷證明書）</td>
+            </tr>
+            <tr>
+              <td class="num">115/06/02</td>
+              <td>亞東紀念醫院</td>
+              <td>神經外科</td>
+              <td>急診就診</td>
+              <td class="r num">22,581</td>
+              <td class="r num">1,485</td>
+              <td>11:12 急診；林哲光醫師診斷（診字第 1151802249 號）</td>
+            </tr>
+            <tr>
+              <td class="num">115/06/03–06/05</td>
+              <td>亞東紀念醫院</td>
+              <td>神經外科</td>
+              <td>住院（一般病房）</td>
+              <td class="r num">5,837</td>
+              <td class="r num">1,174</td>
+              <td>6/3 11:58 入院，6/5 出院（筆記標註 06/05 住院）</td>
+            </tr>
+            <tr>
+              <td class="num">115/06/15</td>
+              <td>亞東紀念醫院</td>
+              <td>神經外科</td>
+              <td>門診複查</td>
+              <td class="r num">2,201</td>
+              <td class="r num">480</td>
+              <td>診斷書醫囑載明之第 1 次門診複查</td>
+            </tr>
+            <tr>
+              <td class="num">115/06/29</td>
+              <td>亞東紀念醫院</td>
+              <td>神經外科</td>
+              <td>門診複查（待核對）</td>
+              <td class="r num">待補</td>
+              <td class="r num warn">390（推估差額）</td>
+              <td class="warn">診斷書有 6/29 複查紀錄但筆記漏列；筆記亞東總計 6,709 元與已列明細 6,319 元相差 390 元，請核對收據</td>
+            </tr>
+            <tr>
+              <td class="num">115/07/01</td>
+              <td>亞東紀念醫院</td>
+              <td>神經外科</td>
+              <td>門診回診＋自費</td>
+              <td class="r num">480</td>
+              <td class="r num">2,390</td>
+              <td>含掛號／部分負擔 850 元＋自費項目 1,540 元</td>
+            </tr>
+            <tr>
+              <td class="num">115/07/17</td>
+              <td>亞東紀念醫院</td>
+              <td>神經外科</td>
+              <td>門診複查</td>
+              <td class="r num">335</td>
+              <td class="r num">790</td>
+              <td>診斷書醫囑載明之第 3 次門診複查</td>
+            </tr>
+            <tr>
+              <td class="num">115/06/06–11/16</td>
+              <td>仁祐骨科診所</td>
+              <td>骨科</td>
+              <td>門診看診（7 次）</td>
+              <td class="r num">待補</td>
+              <td class="r num">1,750</td>
+              <td>陳漢祐醫師診治；每次 250 元 × 7 次</td>
+            </tr>
+            <tr>
+              <td class="num">115/06/06–11/16</td>
+              <td>仁祐骨科診所</td>
+              <td>骨科</td>
+              <td>復健治療（27 次）</td>
+              <td class="r num">待補</td>
+              <td class="r num">1,350</td>
+              <td class="warn">筆記計 50 元 × 27 次；惟 11/16 診斷書載復健共 35 次，若補齊剩餘 8 次收據可增列 400 元</td>
+            </tr>
+            <tr>
+              <td class="num">期間未載</td>
+              <td>皮膚科（院所待補）</td>
+              <td>皮膚科</td>
+              <td>門診看診（2 次）</td>
+              <td class="r num">待補</td>
+              <td class="r num">400</td>
+              <td class="warn">每次 200 元 × 2 次；須補院所名稱及與車禍擦挫傷或用藥之因果關係證明</td>
+            </tr>
+            <tr class="subhead-row">
+              <td colspan="7">二、後續預估醫療費用（依醫囑及 2026/11/24 對話紀錄）</td>
+            </tr>
+            <tr>
+              <td class="num">115/11/16 以後</td>
+              <td>仁祐骨科診所</td>
+              <td>骨科</td>
+              <td>高能量雷射治療（4–8 次）</td>
+              <td class="r num">0</td>
+              <td class="r num">6,000–12,000</td>
+              <td>陳漢祐醫師醫囑「需使用高能量雷射治療」，自費 1,500 元／次；建議補開書面估價單</td>
+            </tr>
+            <tr>
+              <td class="num">預估手術</td>
+              <td class="warn">醫院名稱待補</td>
+              <td>神經外科／骨科</td>
+              <td>頸椎手術（2 個活動支架＋止血帶）</td>
+              <td class="r num">視健保審查</td>
+              <td class="r num">510,000<br><span style="font-size:13px;color:var(--mute);">（健保通過：14,000）</span></td>
+              <td>活動支架 25 萬 × 2 個（<span class="pt-red">健保不好通過</span>，通過則 2,000 × 2）＋止血帶等雜項 1 萬。<mark class="hl-pen">務必補齊醫院名稱、醫師姓名與書面估價單</mark></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">已發生醫療費合計（按筆記 6,709＋3,100＋400）</td>
+              <td class="r num">31,434 點<br><span style="font-size:12px;font-weight:400;color:var(--mute);">（僅亞東已列）</span></td>
+              <td class="r num">10,209 元</td>
+              <td>若補齊仁祐剩餘 8 次復健（400 元）為 10,609 元</td>
+            </tr>
+            <tr>
+              <td colspan="4">預估醫療費小計（雷射 4–8 次＋頸椎手術）</td>
+              <td class="r num">0 點（自費基準）</td>
+              <td class="r num">516,000–522,000 元</td>
+              <td>若頸椎手術特材獲健保給付，預估小計降為 20,000–26,000 元</td>
+            </tr>
+            <tr>
+              <td colspan="4">醫療費總計（已發生＋預估手術全額自費）</td>
+              <td class="r num">31,434 點＋待補</td>
+              <td class="r num" style="color:var(--accent-text);">526,209–532,209 元</td>
+              <td><mark class="hl-pen">強制險傷害醫療上限為 20 萬元</mark>，<span class="pt-blue">超出部分向對方保險或本人求償</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec grid">
+    <div class="col-full">
+      <h2>全案可請求賠償項目與全國法規資料庫法源</h2>
+      <p class="measure">下列各項均以陳心盈<span class="pt-teal">無肇事責任</span>為前提計算。其中<a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390060" target="_blank" rel="noopener noreferrer">強制汽車責任保險法</a><mark class="hl-pen">僅賠付人身醫療（上限 20 萬元，含看護每日 1,200 元上限 30 日及接送費上限 2 萬元）</mark>，<span class="pt-blue">財物車損與精神慰撫金則全數向對方第三人責任險或肇事者本人請求</span>。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>求償項目</th>
+              <th class="r">金額／建議區間（元）</th>
+              <th>法源依據（全國法規資料庫連結）</th>
+              <th>證據現況與實務風險提醒</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>已發生醫療費用</td>
+              <td class="r num">10,209</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條第 1 項</a><br><a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390060" target="_blank" rel="noopener noreferrer">強制汽車責任保險法</a></td>
+              <td>已具亞東、仁祐診斷書；需補 6/29 亞東收據、仁祐 8 次復健收據及皮膚科就診與車禍關聯證明。</td>
+            </tr>
+            <tr>
+              <td>預估高能量雷射治療</td>
+              <td class="r num">6,000–12,000</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條第 1 項</a></td>
+              <td>仁祐骨科陳漢祐醫師醫囑已載明必要，建議補具療程次數與單價之書面估價單。</td>
+            </tr>
+            <tr>
+              <td>預估頸椎活動支架手術</td>
+              <td class="r num">510,000<br><span style="font-size:13px;color:var(--mute);">（健保過：14,000）</span></td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條第 1 項</a></td>
+              <td><span class="pt-red">目前僅有口頭轉述，調解時極易遭質疑</span>；<mark class="hl-pen">務必請執刀醫院及醫師開立「手術必要性與自費特材估價單」</mark>。</td>
+            </tr>
+            <tr>
+              <td>藥品與護具費</td>
+              <td class="r num">4,735</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條第 1 項</a></td>
+              <td>須檢附購買發票及明細（如頸圈、護膝、外用藥），並確認符合治療必要性。</td>
+            </tr>
+            <tr>
+              <td>專人看護費（1 個月）</td>
+              <td class="r num">66,000</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條第 1 項</a></td>
+              <td>2,200 元 × 30 日；<span class="pt-teal">亞東診斷書已明確記載「住院及休養期間需專人照護一個月」，縱為親屬照顧亦得請求</span>。</td>
+            </tr>
+            <tr>
+              <td>不能工作之薪資損失</td>
+              <td class="r num">68,000</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條第 1 項</a><br><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=216" target="_blank" rel="noopener noreferrer">民法第 216 條</a></td>
+              <td>40,000＋28,000 元；亞東診斷書載明宜休養 1 個月，需補薪資轉帳／扣繳憑單及公司請假扣薪證明。若未來手術可再追加術後休養損失。</td>
+            </tr>
+            <tr>
+              <td>就醫交通費</td>
+              <td class="r num">7,015</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條第 1 項</a></td>
+              <td>需比對就診日期與計程車收據或乘車證明；強制險僅認列往返門診交通費（上限 2 萬元），<span class="pt-red">不含停車費</span>。</td>
+            </tr>
+            <tr>
+              <td>車輛修復費</td>
+              <td class="r num">40,850</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=196" target="_blank" rel="noopener noreferrer">民法第 196 條</a><br><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=213" target="_blank" rel="noopener noreferrer">民法第 213 條</a></td>
+              <td><mark class="hl-pen">強制險不賠車損</mark>；需附車損照片、估價單與維修發票，<span class="pt-red">對方可能依車齡主張「零件折舊」（工資不折舊）</span>。</td>
+            </tr>
+            <tr>
+              <td>精神慰撫金（非財產損害）</td>
+              <td class="r num">300,000–800,000</td>
+              <td><a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=195" target="_blank" rel="noopener noreferrer">民法第 195 條第 1 項</a></td>
+              <td>未手術建議請求 <span class="pt-blue">30–40 萬元</span>；若確定動頸椎人工椎間盤手術，建議請求 <span class="pt-blue">50–80 萬元</span>。<mark class="hl-pen">請求權時效依民法第 197 條為知悉起 2 年</mark>（<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=197" target="_blank" rel="noopener noreferrer">條文連結</a>）。</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>財產上損害小計（不含手術）</td>
+              <td class="r num">202,809–208,809</td>
+              <td colspan="2">含已發生醫療、雷射 4–8 次、護具、看護、薪資、交通與車損</td>
+            </tr>
+            <tr>
+              <td>全案總求償金額（未手術情境）</td>
+              <td class="r num">502,809–608,809</td>
+              <td colspan="2">財產損害 20.3–20.9 萬 ＋ 精神慰撫金 30–40 萬</td>
+            </tr>
+            <tr>
+              <td>全案總求償金額（含手術全額自費）</td>
+              <td class="r num" style="color:var(--accent-text);">1,212,809–1,518,809</td>
+              <td colspan="2">財產損害 71.3–71.9 萬 ＋ 精神慰撫金 50–80 萬（若支架獲健保給付，總額約 71.7 萬–102.3 萬）</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <figure>
+        <div class="fig-title">頸椎手術與否使總求償金額相差逾 2 倍，自費醫材與慰撫金佔比最高</div>
+        <svg viewBox="0 0 680 390" width="100%" role="img" aria-label="三種醫療與調解情境下的求償金額結構比較圖">
+          <!-- Grid lines -->
+          <line x1="170" y1="50" x2="170" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+          <line x1="270" y1="50" x2="270" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+          <line x1="370" y1="50" x2="370" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+          <line x1="470" y1="50" x2="470" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+          <line x1="570" y1="50" x2="570" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+
+          <!-- X axis labels (scale: 100萬 = 250px -> 1萬 = 2.5px? Wait: max 151.9萬 -> let 160萬 = 400px, so 1萬 = 2.5px, 40萬 = 100px!) -->
+          <text x="170" y="315" font-size="13" fill="#4B5563" text-anchor="middle" font-family="IBM Plex Mono, monospace">0</text>
+          <text x="270" y="315" font-size="13" fill="#4B5563" text-anchor="middle" font-family="IBM Plex Mono, monospace">40萬</text>
+          <text x="370" y="315" font-size="13" fill="#4B5563" text-anchor="middle" font-family="IBM Plex Mono, monospace">80萬</text>
+          <text x="470" y="315" font-size="13" fill="#4B5563" text-anchor="middle" font-family="IBM Plex Mono, monospace">120萬</text>
+          <text x="570" y="315" font-size="13" fill="#4B5563" text-anchor="middle" font-family="IBM Plex Mono, monospace">160萬</text>
+          <text x="370" y="340" font-size="13" fill="#4B5563" text-anchor="middle">求償金額（新臺幣萬元，取各情境中位估計值）</text>
+
+          <!-- Legend -->
+          <rect x="170" y="16" width="14" height="14" fill="#1D4ED8"/>
+          <text x="190" y="28" font-size="13" fill="#111827">醫療與復健（含手術）</text>
+          <rect x="345" y="16" width="14" height="14" fill="#0F766E"/>
+          <text x="365" y="28" font-size="13" fill="#111827">看護、薪資與車損雜支</text>
+          <rect x="520" y="16" width="14" height="14" fill="#64748B"/>
+          <text x="540" y="28" font-size="13" fill="#111827">精神慰撫金</text>
+
+          <!-- Row 1: 未手術情境 (醫療 1.9萬 = 4.75px, 其他 18.7萬 = 46.75px, 慰撫金 35萬 = 87.5px -> total 55.6萬 = 139px) -->
+          <text x="158" y="102" font-size="14" font-weight="600" fill="#111827" text-anchor="end">情境 A：未手術</text>
+          <text x="158" y="120" font-size="13" fill="#4B5563" text-anchor="end">（持續復健＋雷射）</text>
+          <rect x="170" y="88" width="5" height="36" fill="#1D4ED8"/>
+          <rect x="175" y="88" width="47" height="36" fill="#0F766E"/>
+          <rect x="222" y="88" width="88" height="36" fill="#64748B"/>
+          <text x="320" y="111" font-size="14" font-weight="700" fill="#111827" font-family="IBM Plex Mono, monospace">約 55.6 萬（50.3–60.9 萬）</text>
+
+          <!-- Row 2: 手術且健保通過 (醫療 3.3萬 = 8.25px, 其他 18.7萬 = 46.75px, 慰撫金 65萬 = 162.5px -> total 87萬 = 217.5px) -->
+          <text x="158" y="182" font-size="14" font-weight="600" fill="#111827" text-anchor="end">情境 B：手術＋健保</text>
+          <text x="158" y="200" font-size="13" fill="#4B5563" text-anchor="end">（特材核准僅 4 千）</text>
+          <rect x="170" y="168" width="8" height="36" fill="#1D4ED8"/>
+          <rect x="178" y="168" width="47" height="36" fill="#0F766E"/>
+          <rect x="225" y="168" width="163" height="36" fill="#64748B"/>
+          <text x="398" y="191" font-size="14" font-weight="700" fill="#111827" font-family="IBM Plex Mono, monospace">約 87.0 萬（71.7–102.3 萬）</text>
+
+          <!-- Row 3: 手術全額自費 (醫療 52.9萬 = 132.25px, 其他 18.7萬 = 46.75px, 慰撫金 65萬 = 162.5px -> total 136.6萬 = 341.5px) -->
+          <text x="158" y="262" font-size="14" font-weight="600" fill="#111827" text-anchor="end">情境 C：手術＋自費</text>
+          <text x="158" y="280" font-size="13" fill="#4B5563" text-anchor="end">（2 個支架 50 萬＋雜項）</text>
+          <rect x="170" y="248" width="132" height="36" fill="#1D4ED8"/>
+          <rect x="302" y="248" width="47" height="36" fill="#0F766E"/>
+          <rect x="349" y="248" width="163" height="36" fill="#64748B"/>
+          <text x="522" y="271" font-size="14" font-weight="700" fill="#1E3A8A" font-family="IBM Plex Mono, monospace">約 136.6 萬（121.3–151.9 萬）</text>
+        </svg>
+        <figcaption>單位：新臺幣萬元。資料來源：依陳心盈提出之診斷證明書、醫療筆記與對話預估彙整（未計入未來可能追加之術後休養與看護費）。</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec grid">
+    <div class="col-left">
+      <h2>精神慰撫金建議與臺灣法院判決參考</h2>
+      <p>依<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=195" target="_blank" rel="noopener noreferrer">民法第 195 條第 1 項</a>及最高法院實務見解，精神慰撫金沒有固定公式，法院主要審酌「傷勢嚴重度與後遺症」、「是否接受手術與長期復健」、「雙方學歷、職業與經濟資力」以及「加害人過失程度」。</p>
+    </div>
+    <div class="col-right">
+      <div class="strip" style="margin-top:0;padding-top:0;border-top:0;">
+        <div class="strip-item frame-blue">
+          <h3>情境 A：未手術持續復健</h3>
+          <div class="strip-val">30–40 萬</div>
+          <p class="strip-note">調解開價 40–45 萬，底線約 25–30 萬</p>
+        </div>
+        <div class="strip-item frame-green">
+          <h3>情境 B／C：確定頸椎手術</h3>
+          <div class="strip-val" style="color:var(--accent-text);">50–80 萬</div>
+          <p class="strip-note">調解開價 60–80 萬，底線約 45–50 萬</p>
+        </div>
+        <div class="strip-item frame-orange">
+          <h3>若達勞動能力減損／失能</h3>
+          <div class="strip-val">100–150 萬</div>
+          <p class="strip-note">須經醫院鑑定勞動能力減損比例或領有身障證明</p>
+        </div>
+      </div>
+
+      <blockquote class="pull">「頸椎中心脊髓症候群與兩節椎間盤突出已遠超一般皮肉挫傷，5 個半月 35 次復健紀錄與手術風險正是拉高慰撫金的核心籌碼。」</blockquote>
+
+      <p>根據<a href="https://lawyer.claims/methodology/car-accident-consolation-data/" target="_blank" rel="noopener noreferrer">2,730 件車禍民事判決實證統計</a>，無骨折但涉及神經或椎間盤損傷的案件，法院核定慰撫金中位數為 10 萬元、第 75 百分位為 18 萬元（多屬輕中度簡易庭案件）；一旦合併長期復健、勞動能力減損或頸椎手術，判決金額便顯著跳升至 30 萬至 150 萬元區間。陳心盈 45 歲正值壯年，且為<span class="pt-teal">中心脊髓症候群</span>併雙膝與臉部挫擦傷、<span class="pt-teal">連續復健達 35 次並預定接受雷射及可能之頸椎手術</span>，在<span class="pt-blue">對方負 100% 過失責任</span>下，具備充分理由主張高於一般椎間盤突出案件之慰撫金。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>法院與判決字號（連結）</th>
+              <th>傷勢與治療情形</th>
+              <th class="r">法院核定慰撫金</th>
+              <th>對本案之參考意義</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=SYEV,115,%E7%87%9F%E7%B0%A1,126,20260731,3" target="_blank" rel="noopener noreferrer">臺灣臺南地方法院柳營簡易庭<br>115 年度營簡字第 126 號</a><br><span style="font-size:13px;color:var(--mute);">（<a href="https://lawplayer.com/judgment/SYEV,115,%E7%87%9F%E7%B0%A1,126,20260731,3_63905220918bf6360f3e8012940edd7a4b377ff9" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</span>
+                <details class="case-detail">
+                  <summary class="btn-note">說明</summary>
+                  <div class="case-summary">
+                    <div><strong>事故經過：</strong>113/04/17 大貨車無人指揮貿然倒車撞擊機車（<span class="hl-fault">大貨車 70% 過失、機車 30% 過失</span>）。</div>
+                    <div><strong>受傷情形：</strong><mark class="hl-cervical">創傷性頸椎第 5-6 節椎間盤突出、頸椎第 6 節骨折併脊髓損傷</mark>，致<span class="hl-impact">下肢癱瘓、上肢無力、需終生照護</span>。</div>
+                    <div><strong>求償金額：</strong>主張醫療、未來照護（1,101 萬）、喪失勞動力（500 萬）及慰撫金（500 萬）共 2,197 萬餘元，扣強制險 183.57 萬後請求 2,013 萬 5,152 元。</div>
+                    <div><strong>法院判決金額：</strong>核定損害總額 763 萬 8,252 元（含<span class="hl-award">慰撫金 300 萬元</span>），乘 70% 過失並扣強制險後判賠 <span class="hl-award">351 萬 1,071 元</span>本息。</div>
+                  </div>
+                </details>
+              </td>
+              <td>創傷性頸椎第 5-6 節椎間盤突出、頸椎第 6 節骨折併脊髓損傷（下肢癱瘓、終生照護）</td>
+              <td class="r num">300 萬元</td>
+              <td>同樣涉及頸椎第 5-6 節椎間盤突出併脊髓損傷，屬造成癱瘓失能之最高標參照。</td>
+            </tr>
+            <tr>
+              <td>
+                <a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=PCDV,111,%E7%B0%A1%E4%B8%8A,542,20230529,1" target="_blank" rel="noopener noreferrer">臺灣新北地方法院<br>111 年度簡上字第 542 號</a><br><span style="font-size:13px;color:var(--mute);">（<a href="https://lawplayer.com/judgment/PCDV,111,%E7%B0%A1%E4%B8%8A,542,20230529,1_edf00783929aa1c82c6bc9ba16daf9414085c262" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</span>
+                <details class="case-detail">
+                  <summary class="btn-note">說明</summary>
+                  <div class="case-summary">
+                    <div><strong>事故經過：</strong>109/04/01 受僱小客車行經閃光黃燈路口未減速，碰撞閃光紅燈未讓幹道之機車（<span class="hl-fault">汽車 40% 過失、機車 60% 過失</span>）。</div>
+                    <div><strong>受傷情形：</strong><mark class="hl-cervical">頸椎第 5-6 節椎間盤突出併脊髓損傷（行融合手術）</mark>、鼻骨骨折、<span class="hl-impact">右側偏癱無力，領重度身障證明，勞動能力減損 18%，需終生 24 小時看護</span>。</div>
+                    <div><strong>求償金額：</strong>主張損害逾千萬元（含慰撫金 300 萬），按 5 成過失並扣強制險 167 萬後，訴請連帶給付 334 萬 8,585 元。</div>
+                    <div><strong>法院判決金額：</strong>核定損害總額 853 萬 7,170 元（含<span class="hl-award">慰撫金 150 萬</span>），乘以 40% 過失並扣強制險 167 萬後，判賠 <span class="hl-award">174 萬 4,868 元</span>本息。</div>
+                  </div>
+                </details>
+              </td>
+              <td>頸椎第 5-6 節椎間盤突出併脊髓損傷神經壓迫（接受切除併固定融合手術），勞動能力減損 18%，領重度身障證明</td>
+              <td class="r num">150 萬元</td>
+              <td>同樣是第 5-6 節頸椎椎間盤突出併脊髓損傷，屬術後遺留嚴重神經功能障礙之高標參照。</td>
+            </tr>
+            <tr>
+              <td>
+                <a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=SCDV,113,%E7%AB%B9%E7%B0%A1,50,20260317,1" target="_blank" rel="noopener noreferrer">臺灣新竹地方法院<br>113 年度竹簡字第 50 號</a><br><span style="font-size:13px;color:var(--mute);">（<a href="https://lawplayer.com/judgment/SCDV,113,%E7%AB%B9%E7%B0%A1,50,20260317,1_1e59e5f244f95fdc66cc08e665560d3bab344404" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</span>
+                <details class="case-detail">
+                  <summary class="btn-note">說明</summary>
+                  <div class="case-summary">
+                    <div><strong>事故經過：</strong>111/02/14 夜間機車自左側超車未保持安全間隔即右轉，擦撞直行機車（<span class="hl-fault">被告負 100% 過失責任</span>）。</div>
+                    <div><strong>受傷情形：</strong><mark class="hl-cervical">頸椎第 2-6 節椎間盤突出</mark>、右側三叉神經病變、部分缺牙及創傷後壓力症候群，<span class="hl-impact">經長庚鑑定勞動能力減損 35%</span>。</div>
+                    <div><strong>求償金額：</strong>請求醫療、交通、工作損失、勞動力減損（996 萬）及慰撫金（100 萬）等共 1,210 萬 3,293 元。</div>
+                    <div><strong>法院判決金額：</strong>核定損害總額 701 萬 0,616 元（含<span class="hl-award">慰撫金 50 萬元</span>、勞動力減損 575.85 萬），扣強制險 4.48 萬後判賠 <span class="hl-award">696 萬 5,806 元</span>本息。</div>
+                  </div>
+                </details>
+              </td>
+              <td>頸椎第 2-6 節椎間盤突出、右側三叉神經病變、創傷後壓力症候群，勞動能力減損 35%</td>
+              <td class="r num">50 萬元</td>
+              <td>被告全責且多節頸椎椎間盤突出併神經症狀、影響工作能力之實務判決參照。</td>
+            </tr>
+            <tr>
+              <td>
+                <a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHV,114,%E4%B8%8A,315,20260224,1" target="_blank" rel="noopener noreferrer">臺灣高等法院臺中分院<br>114 年度上字第 315 號</a><br><span style="font-size:13px;color:var(--mute);">（<a href="https://lawplayer.com/judgment/TCHV,114,%E4%B8%8A,315,20260224,1_82d6cf440fd13ebc3a34ed01aaee134032bd9374" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</span>
+                <details class="case-detail">
+                  <summary class="btn-note">說明</summary>
+                  <div class="case-summary">
+                    <div><strong>事故經過：</strong>110/03/10 統聯客運大客車未注意車前狀況，追撞停等紅燈之自小客車，<span class="hl-fault">大客車司機負 100% 過失責任</span>。</div>
+                    <div><strong>受傷情形：</strong><mark class="hl-cervical">創傷性頸椎損傷伴隨壓迫</mark>，經臺中榮總鑑定存<mark class="hl-cervical">頸部活動受限</mark>、感覺異常與抓握障礙，<span class="hl-impact">勞動能力減損 11%</span>。</div>
+                    <div><strong>求償金額：</strong>主張醫療、看護、工作損失、勞動能力減損及慰撫金（65 萬）共 245 萬 7,061 元，扣強制險 89 萬 6,190 元後請求 156 萬 0,871 元。</div>
+                    <div><strong>法院判決金額：</strong>核定損害總額 138 萬 2,061 元（含<span class="hl-award">慰撫金 30 萬</span>），扣強制險 89 萬 6,190 元後，二審改判連帶給付 <span class="hl-award">48 萬 5,871 元</span>本息。</div>
+                  </div>
+                </details>
+              </td>
+              <td>創傷性頸椎損傷、肩旋轉肌袖撕裂，需長期復健，勞動能力減損 11%（加害人負全責）</td>
+              <td class="r num">30 萬元</td>
+              <td>無須終身看護但有頸椎損傷與長期復健時，實務常見之慰撫金基準線。</td>
+            </tr>
+            <tr>
+              <td>
+                <a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDV,110,%E7%B0%A1,311,20230414,2" target="_blank" rel="noopener noreferrer">臺灣臺中地方法院<br>110 年度簡字第 311 號</a><br><span style="font-size:13px;color:var(--mute);">（<a href="https://lawplayer.com/judgment/TCDV,110,%E7%B0%A1,311,20230414,2_ea0edf606c56ebc440e70bb8807f0d4694feb9cd" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</span>
+                <details class="case-detail">
+                  <summary class="btn-note">說明</summary>
+                  <div class="case-summary">
+                    <div><strong>事故經過：</strong>109/06/20 小貨車跨越分向限制線駛入來車道，與對向自小客車對撞（<span class="hl-fault">被告負 100% 過失責任</span>）。</div>
+                    <div><strong>受傷情形：</strong>前胸壁挫傷、<mark class="hl-cervical">第 3-4 及第 6-7 節頸椎外傷性椎間盤突出症</mark>（使舊疾加劇），伴焦慮適應疾患，<span class="hl-impact">醫囑宜休養 3 個月（未手術）</span>。</div>
+                    <div><strong>求償金額：</strong>駕駛人請求不能工作損失 12 萬元及精神慰撫金 50 萬元，共 62 萬元（車主另訴請車損）。</div>
+                    <div><strong>法院判決金額：</strong>核定工作損失 7 萬 1,400 元及<span class="hl-award">慰撫金 15 萬元</span>，判賠駕駛人 <span class="hl-award">22 萬 1,400 元</span>本息。</div>
+                  </div>
+                </details>
+              </td>
+              <td>第 3-4 及第 6-7 節頸椎外傷性椎間盤突出症（未手術）、前胸壁挫傷、焦慮適應疾患</td>
+              <td class="r num">15 萬元</td>
+              <td>未接受手術且僅休養 3 個月之頸椎椎間盤突出案件中段參照。</td>
+            </tr>
+</tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec grid">
+    <div class="col-left">
+      <h2>調解前務必補齊的 5 項證據</h2>
+      <p>目前對話紀錄與筆記仍有幾處關鍵缺口，建議在調解會前逐一補齊，避免遭對方保險公司以「無法查證」為由刪減求償金額。</p>
+    </div>
+    <div class="col-right measure">
+      <ol class="clean">
+        <li><span class="pt-blue">補齊頸椎手術估價單與執刀資訊：</span>請告知並取得<mark class="hl-pen">「醫院名稱、科別、醫師姓名」開立之診斷書或自費醫材估價單</mark>，載明預定植入 2 個活動支架（各 25 萬元）及止血帶等雜項（1 萬元）之醫療必要性，並註明健保申請不易通過之原因。</li>
+        <li><span class="pt-teal">補開高能量雷射治療估價單：</span>請仁祐骨科陳漢祐醫師於診斷書或治療計畫單上補註建議次數（4 至 8 次）及單次費用（1,500 元）。</li>
+        <li><span class="pt-red">核對亞東 6/29 回診與仁祐 35 次復健收據：</span><mark class="hl-pen">釐清亞東筆記 6,709 元與明細加總 6,319 元之間 390 元差額</mark>，並向仁祐骨科補齊第 28 至 35 次復健收據（400 元）及所有門診健保點數明細。</li>
+        <li><span class="pt-red">補強皮膚科因果關係與車損文件：</span>補齊皮膚科診所名稱、收據及<mark class="hl-pen">診斷證明（說明與車禍擦挫傷或用藥反應之關聯）</mark>；車損 40,850 元須備妥維修發票、估價單與受損照片。</li>
+        <li><span class="pt-blue">備妥薪資與交通單據：</span>彙整薪轉存摺或扣繳憑單、公司請假扣薪證明（佐證 68,000 元工作損失），以及對應就診日期之計程車乘車證明（佐證 7,015 元交通費）。<mark class="hl-pen">若確定動頸椎手術，務必在調解方案中保留或追加「術後休養薪資損失」與「術後看護費」</mark>。</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec grid">
+    <div class="col-full">
+      <h2>Sources</h2>
+      <ol class="sources-list">
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=184" target="_blank" rel="noopener noreferrer">民法第 184 條（獨立侵權行為之責任）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=191-2" target="_blank" rel="noopener noreferrer">民法第 191 條之 2（動力車輛駕駛人之責任）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=193" target="_blank" rel="noopener noreferrer">民法第 193 條（侵害身體健康之財產上損害賠償）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=195" target="_blank" rel="noopener noreferrer">民法第 195 條（非財產上損害賠償／精神慰撫金）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=196" target="_blank" rel="noopener noreferrer">民法第 196 條（物之毀損之賠償方法）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=197" target="_blank" rel="noopener noreferrer">民法第 197 條（侵權行為損害賠償請求權之消滅時效）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=213" target="_blank" rel="noopener noreferrer">民法第 213 條（損害賠償之方法—回復原狀）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=B0000001&flno=216" target="_blank" rel="noopener noreferrer">民法第 216 條（法定損害賠償範圍）</a></li>
+        <li>全國法規資料庫：<a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=G0390060" target="_blank" rel="noopener noreferrer">強制汽車責任保險法</a></li>
+        <li>司法院裁判書系統：<a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=SYEV,115,%E7%87%9F%E7%B0%A1,126,20260731,3" target="_blank" rel="noopener noreferrer">臺灣臺南地方法院柳營簡易庭 115 年度營簡字第 126 號民事判決</a>（<a href="https://lawplayer.com/judgment/SYEV,115,%E7%87%9F%E7%B0%A1,126,20260731,3_63905220918bf6360f3e8012940edd7a4b377ff9" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</li>
+        <li>司法院裁判書系統：<a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=PCDV,111,%E7%B0%A1%E4%B8%8A,542,20230529,1" target="_blank" rel="noopener noreferrer">臺灣新北地方法院 111 年度簡上字第 542 號民事判決</a>（<a href="https://lawplayer.com/judgment/PCDV,111,%E7%B0%A1%E4%B8%8A,542,20230529,1_edf00783929aa1c82c6bc9ba16daf9414085c262" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</li>
+        <li>司法院裁判書系統：<a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=SCDV,113,%E7%AB%B9%E7%B0%A1,50,20260317,1" target="_blank" rel="noopener noreferrer">臺灣新竹地方法院 113 年度竹簡字第 50 號民事簡易判決</a>（<a href="https://lawplayer.com/judgment/SCDV,113,%E7%AB%B9%E7%B0%A1,50,20260317,1_1e59e5f244f95fdc66cc08e665560d3bab344404" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</li>
+        <li>司法院裁判書系統：<a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHV,114,%E4%B8%8A,315,20260224,1" target="_blank" rel="noopener noreferrer">臺灣高等法院臺中分院 114 年度上字第 315 號民事判決</a>（<a href="https://lawplayer.com/judgment/TCHV,114,%E4%B8%8A,315,20260224,1_82d6cf440fd13ebc3a34ed01aaee134032bd9374" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</li>
+        <li>司法院裁判書系統：<a href="https://judgment.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDV,110,%E7%B0%A1,311,20230414,2" target="_blank" rel="noopener noreferrer">臺灣臺中地方法院 110 年度簡字第 311 號民事判決</a>（<a href="https://lawplayer.com/judgment/TCDV,110,%E7%B0%A1,311,20230414,2_ea0edf606c56ebc440e70bb8807f0d4694feb9cd" target="_blank" rel="noopener noreferrer">LawPlayer 全文</a>）</li>
+        <li>車禍求償實證統計：<a href="https://lawyer.claims/methodology/car-accident-consolation-data/" target="_blank" rel="noopener noreferrer">車禍精神慰撫金判決統計：2,730 件判決依傷勢分組的金額區間</a></li>
+</ol>
+    </div>
+  </section>
+
+</body>
+</html>
